@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+<title>SMART DASHBOARD</title>
+
+<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+
+body{
+  background:#111;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+
+.card{
+  background:#1d1d1d;
+  padding:20px;
+  margin:15px;
+  border-radius:15px;
+  box-shadow:0 0 10px rgba(0,255,150,0.2);
+}
+
+button{
+  padding:15px;
+  margin:10px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+.open{
+  background:green;
+  color:white;
+}
+
+.close{
+  background:red;
+  color:white;
+}
+
+.restart{
+  background:orange;
+  color:white;
+}
+
+/* POPUP */
+
+.popup{
+  position:fixed;
+  top:20px;
+  right:-400px;
+  background:#222;
+  color:white;
+  padding:15px 25px;
+  border-radius:10px;
+  font-size:16px;
+  box-shadow:0 0 15px rgba(0,255,150,0.5);
+  transition:0.5s;
+  z-index:999;
+}
+
+.popup.show{
+  right:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>SMART SECURITY DASHBOARD</h1>
+
+<div class='card'>
+  <h2>LIVE MONITORING</h2>
+  <p>UID: <span id="uid">-</span></p>
+  <p>STATUS: <span id="status">-</span></p>
+  <p>WAKTU: <span id="time">-</span></p>
+</div>
+
+<div class='card'>
+  <h2>SENSOR HUJAN</h2>
+  <canvas id='gaugeChart'></canvas>
+  <p>RAIN VALUE: <span id="rain">0</span></p>
+</div>
+
+<div class='card'>
+  <h2>STATISTIK</h2>
+  <canvas id='barChart'></canvas>
+</div>
+
+<div class='card'>
+
+  <h2>KONTROL</h2>
+
+  <button class='open'
+  onclick="kontrol('OPEN','PALANG DIBUKA')">
+  OPEN PALANG
+  </button>
+
+  <button class='close'
+  onclick="kontrol('CLOSE','PALANG DITUTUP')">
+  CLOSE PALANG
+  </button>
+
+  <button class='restart'
+  onclick="kontrol('RESTART','ESP32 DIRESTART')">
+  RESTART ESP32
+  </button>
+
+</div>
+
+<!-- POPUP -->
+<div id='popup' class='popup'></div>
+
+<script>
+
+// ================= POPUP =================
+
+const client = mqtt.connect(
+"wss://broker.hivemq.com:8884/mqtt"
+);
+
+client.on("connect",()=>{
+
+  console.log("MQTT Connected");
+
+  client.subscribe("mansaci/rfid/uid");
+  client.subscribe("mansaci/rfid/status");
+  client.subscribe("mansaci/rain");
+  client.subscribe("mansaci/statistik");
+
+});
+
+function showPopup(text){
+
+  const popup = document.getElementById('popup');
+
+  popup.innerHTML = text;
+  popup.classList.add('show');
+
+  setTimeout(()=>{
+    popup.classList.remove('show');
+  },2500);
+}
+
+// ================= FETCH CONTROL =================
+
+function kontrol(command,pesan){
+
+  client.publish(
+    "mansaci/control",
+    command
+  );
+
+  showPopup(pesan);
+
+}
+
+// ================= GAUGE CHART =================
+
+const gaugeCtx=document.getElementById('gaugeChart');
+
+new Chart(gaugeCtx,{
+
+type:'doughnut',
+
+data:{
+datasets:[{
+data:[0,3000],
+backgroundColor:['#00ff88','#333'],
+borderWidth:0
+}]
+},
+
+options:{
+rotation:270,
+circumference:180,
+cutout:'75%',
+
+animation:{
+animateRotate:true,
+duration:1500
+},
+
+plugins:{
+legend:{display:false}
+}
+}
+
+});
+
+// ================= BAR CHART =================
+
+const barCtx=document.getElementById('barChart');
+
+new Chart(barCtx,{
+
+type:'bar',
+
+data:{
+labels:['DITERIMA','DITOLAK','TOTAL'],
+datasets:[{
+data:[0,0,0]
+}]
+}
+
+});
+
+// ================= AUTO REFRESH =================
+
+client.on("message",(topic,message)=>{
+
+  let data = message.toString();
+
+  if(topic==="mansaci/rfid/uid"){
+      document.getElementById("uid").innerHTML=data;
+      document.getElementById("time").innerHTML=
+      new Date().toLocaleTimeString();
+  }
+
+  if(topic==="mansaci/rfid/status"){
+      document.getElementById("status").innerHTML=data;
+  }
+
+  if(topic==="mansaci/rain"){
+      document.getElementById("rain").innerHTML=data;
+  }
+
+});
+
+
+</script>
+
+</body>
+</html>
