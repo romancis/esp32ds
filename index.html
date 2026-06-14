@@ -586,10 +586,8 @@ window.onload = function(){
         // UI restore login
         document.getElementById("username").innerText = username;
         document.getElementById("role").innerText = role;
-        document.getElementById("loginBtn").style.display = "none";
-        document.getElementById("logoutBtn").style.display = "block";
         sessionType = session;
-        if(!session || session === "limited" && !loginTime){
+        if(session === "limited" && !savedLoginTime){
     return;
 }
         // 🔥 PENTING: restart timer saat refresh
