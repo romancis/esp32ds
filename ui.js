@@ -140,17 +140,6 @@ export function initUI() {
 
 window.initUI = initUI;
 
-// PAGE SYSTEM
-window.showPage = function(page){
-
-  document.querySelectorAll(".page").forEach(p=>{
-    p.style.display = "none";
-  });
-
-  document.getElementById(page).style.display = "block";
-};
-
-showPage("dashboard");
 
 // MQTT STATUS UI
 export function setMQTTStatus(state){
