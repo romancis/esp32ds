@@ -333,19 +333,27 @@ color:white;
 /* ========================= */
 
 @media(max-width:800px){
-
 .sidebar{
-
 width:220px;
-
 }
 
 .content{
-
 margin-left:220px;
-
+}
 }
 
+.password-box{
+display:flex;
+gap:10px;
+align-items:center;
+}
+  
+.show-pass{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:var(--accent);
 }
 
 </style>
@@ -463,13 +471,29 @@ Monitoring sensor ESP32 realtime.
 id="loginUsername"
 type="text"
 placeholder="Username"
-class="input-box">
+class="input-box"
+onkeydown="
+if(event.key==='Enter')
+document.getElementById('loginPassword').focus();
+">
 <br><br>
+<div class="password-box">
 <input
 id="loginPassword"
 type="password"
 placeholder="Password"
-class="input-box">
+class="input-box"
+onkeydown="
+if(event.key==='Enter')
+loginFirebase();
+">
+<button
+type="button"
+class="show-pass"
+onclick="togglePassword()">
+👁️
+</button>
+</div>
 <br><br>
 <button
 class="login-btn"
@@ -596,6 +620,17 @@ document.getElementById("username")
 .innerHTML = "Guest";
 document.getElementById("role")
 .innerHTML = "Belum Login";
+}
+  
+function togglePassword(){
+const pw =
+document.getElementById("loginPassword");
+if(pw.type==="password"){
+pw.type="text";
+}
+else{
+pw.type="password";
+}
 }
 </script>
 
