@@ -10,152 +10,328 @@
 
 <style>
 
-/* ============================= */
-/* RESET */
-/* ============================= */
-
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
-/* ============================= */
-/* BODY */
-/* ============================= */
+:root{
+
+--bg:#f5f5f5;
+--card:#ffffff;
+--text:#222;
+--sidebar:#ffffff;
+--border:#dddddd;
+--accent:#00c16a;
+
+}
+
+.dark{
+
+--bg:#111;
+--card:#1d1d1d;
+--text:#ffffff;
+--sidebar:#181818;
+--border:#333;
+--accent:#00ff88;
+
+}
 
 body{
-  background:#111;
-  color:white;
-  font-family:Arial, sans-serif;
+
+background:var(--bg);
+color:var(--text);
+
+display:flex;
+
+transition:.3s;
+
 }
 
-/* ============================= */
+/* ========================= */
 /* SIDEBAR */
-/* ============================= */
+/* ========================= */
 
 .sidebar{
 
-  position:fixed;
+width:260px;
+height:100vh;
 
-  left:0;
-  top:0;
+background:var(--sidebar);
 
-  width:250px;
-  height:100vh;
+border-right:1px solid var(--border);
 
-  background:#181818;
+position:fixed;
 
-  padding:20px;
+left:0;
+top:0;
 
-  border-right:1px solid #333;
+padding:20px;
+
+display:flex;
+flex-direction:column;
+
 }
 
-.sidebar h2{
+.logo{
 
-  color:#00ff88;
+text-align:center;
 
-  margin-bottom:30px;
+font-size:24px;
+font-weight:bold;
 
-  text-align:center;
+color:var(--accent);
+
+margin-bottom:30px;
+
 }
 
-/* ============================= */
-/* MENU */
-/* ============================= */
+.menu button{
 
-.sidebar button{
+width:100%;
 
-  width:100%;
+padding:14px;
 
-  margin-bottom:10px;
+margin-bottom:10px;
 
-  padding:15px;
+border:none;
 
-  border:none;
+border-radius:12px;
 
-  border-radius:10px;
+background:var(--card);
 
-  background:#222;
+color:var(--text);
 
-  color:white;
+cursor:pointer;
 
-  cursor:pointer;
+text-align:left;
 
-  text-align:left;
+font-size:15px;
 
-  transition:0.3s;
+transition:.3s;
+
 }
 
-.sidebar button:hover{
+.menu button:hover{
 
-  background:#00ff88;
+background:var(--accent);
 
-  color:black;
+color:black;
+
 }
 
-/* ============================= */
+/* ========================= */
 /* PROFILE */
-/* ============================= */
+/* ========================= */
 
 .profile{
 
-  position:absolute;
+margin-top:auto;
 
-  bottom:20px;
+padding-top:20px;
 
-  left:20px;
-  right:20px;
+border-top:1px solid var(--border);
 
-  text-align:center;
 }
 
 .profile img{
 
-  width:70px;
-  height:70px;
+width:60px;
+height:60px;
 
-  border-radius:50%;
+border-radius:50%;
 
-  margin-bottom:10px;
+display:block;
+
+margin:auto;
+
+}
+
+.profile h4{
+
+text-align:center;
+
+margin-top:10px;
+
 }
 
 .profile p{
 
-  font-size:14px;
+text-align:center;
+
+font-size:13px;
+
+opacity:.8;
+
 }
 
-/* ============================= */
+/* ========================= */
+/* BUTTON LOGIN */
+/* ========================= */
+
+.bottom-btn{
+
+margin-top:15px;
+
+display:flex;
+flex-direction:column;
+gap:10px;
+
+}
+
+.bottom-btn button{
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.login-btn{
+
+background:#2196f3;
+color:white;
+
+}
+
+.logout-btn{
+
+background:#f44336;
+color:white;
+
+}
+
+.theme-btn{
+
+background:var(--accent);
+
+color:black;
+
+}
+
+/* ========================= */
 /* CONTENT */
-/* ============================= */
+/* ========================= */
 
 .content{
 
-  margin-left:250px;
+margin-left:260px;
 
-  padding:30px;
+width:100%;
+
+padding:30px;
+
 }
 
 .page{
 
-  display:none;
-}
+display:none;
 
-/* ============================= */
-/* CARD */
-/* ============================= */
+}
 
 .card{
 
-  background:#1d1d1d;
+background:var(--card);
 
-  padding:20px;
+padding:25px;
 
-  border-radius:15px;
+border-radius:18px;
 
-  margin-bottom:20px;
+margin-bottom:20px;
 
-  box-shadow:0 0 10px rgba(0,255,136,0.2);
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+
+}
+
+/* ========================= */
+/* POPUP */
+/* ========================= */
+
+.popup{
+
+position:fixed;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+background:var(--card);
+
+padding:25px;
+
+border-radius:15px;
+
+box-shadow:0 0 20px rgba(0,0,0,.3);
+
+display:none;
+
+z-index:999;
+
+min-width:300px;
+
+}
+
+.popup h3{
+
+margin-bottom:15px;
+
+}
+
+.popup button{
+
+padding:10px 20px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+margin:5px;
+
+}
+
+.yes{
+
+background:red;
+color:white;
+
+}
+
+.no{
+
+background:gray;
+color:white;
+
+}
+
+/* ========================= */
+/* MOBILE */
+/* ========================= */
+
+@media(max-width:800px){
+
+.sidebar{
+
+width:220px;
+
+}
+
+.content{
+
+margin-left:220px;
+
+}
+
 }
 
 </style>
@@ -164,153 +340,229 @@ body{
 
 <body>
 
-<!-- ============================= -->
+<!-- ========================= -->
 <!-- SIDEBAR -->
-<!-- ============================= -->
+<!-- ========================= -->
 
 <div class="sidebar">
 
-  <h2>RoManCiS</h2>
+<div class="logo">
+RoManCiS
+</div>
 
-  <button onclick="showPage('dashboard')">
-    🏠 Dashboard
-  </button>
+<div class="menu">
 
-  <button onclick="showPage('setname')">
-    📋 SetName RFID
-  </button>
+<button onclick="showPage('dashboard')">
+🏠 Dashboard
+</button>
 
-  <button onclick="showPage('monitoring')">
-    📡 Monitoring
-  </button>
+<button onclick="showPage('setname')">
+📋 SetName RFID
+</button>
 
-  <button onclick="showPage('login')">
-    👤 Login
-  </button>
+<button onclick="showPage('monitoring')">
+📡 Monitoring
+</button>
 
-  <button onclick="logout()">
-    ⚙ Logout
-  </button>
-
-  <div class="profile">
-
-    <img
-    src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-    <p id="userRole">
-      Guest
-    </p>
-
-  </div>
+<button onclick="showPage('login')">
+👤 Login
+</button>
 
 </div>
 
-<!-- ============================= -->
+<div class="profile">
+
+<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+<h4 id="username">
+Guest
+</h4>
+
+<p id="role">
+Belum Login
+</p>
+
+<div class="bottom-btn">
+
+<button
+class="theme-btn"
+onclick="toggleTheme()">
+🌙 Dark Mode
+</button>
+
+<button
+class="login-btn"
+onclick="showPage('login')">
+Login
+</button>
+
+<button
+class="logout-btn"
+onclick="showLogoutPopup()">
+Logout
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
 <!-- CONTENT -->
-<!-- ============================= -->
+<!-- ========================= -->
 
 <div class="content">
 
-  <!-- DASHBOARD -->
+<div id="dashboard" class="page">
 
-  <div id="dashboard" class="page">
+<div class="card">
 
-    <div class="card">
+<h1>🏠 Dashboard</h1>
 
-      <h1>🏠 Dashboard</h1>
+<br>
 
-      <br>
-
-      <p>
-        Selamat datang di SmartHome RoManCiS
-      </p>
-
-    </div>
-
-  </div>
-
-  <!-- SETNAME -->
-
-  <div id="setname" class="page">
-
-    <div class="card">
-
-      <h1>📋 SetName RFID</h1>
-
-      <br>
-
-      <p>
-        Kelola data UID RFID di sini.
-      </p>
-
-    </div>
-
-  </div>
-
-  <!-- MONITORING -->
-
-  <div id="monitoring" class="page">
-
-    <div class="card">
-
-      <h1>📡 Monitoring</h1>
-
-      <br>
-
-      <p>
-        Monitoring sensor dan kontrol perangkat.
-      </p>
-
-    </div>
-
-  </div>
-
-  <!-- LOGIN -->
-
-  <div id="login" class="page">
-
-    <div class="card">
-
-      <h1>👤 Login</h1>
-
-      <br>
-
-      <p>
-        Halaman login akan dibuat pada tahap berikutnya.
-      </p>
-
-    </div>
-
-  </div>
+<p>
+Selamat datang di SmartHome RoManCiS
+</p>
 
 </div>
 
-<!-- ============================= -->
-<!-- JAVASCRIPT -->
-<!-- ============================= -->
+</div>
+
+<div id="setname" class="page">
+
+<div class="card">
+
+<h1>📋 SetName RFID</h1>
+
+<br>
+
+<p>
+Halaman pengaturan UID RFID.
+</p>
+
+</div>
+
+</div>
+
+<div id="monitoring" class="page">
+
+<div class="card">
+
+<h1>📡 Monitoring</h1>
+
+<br>
+
+<p>
+Monitoring sensor ESP32 realtime.
+</p>
+
+</div>
+
+</div>
+
+<div id="login" class="page">
+
+<div class="card">
+
+<h1>👤 Login</h1>
+
+<br>
+
+<p>
+Form login Firebase akan dibuat tahap berikutnya.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========================= -->
+<!-- POPUP LOGOUT -->
+<!-- ========================= -->
+
+<div class="popup" id="logoutPopup">
+
+<h3>
+Apakah yakin ingin logout?
+</h3>
+
+<button
+class="yes"
+onclick="logout()">
+Ya
+</button>
+
+<button
+class="no"
+onclick="closePopup()">
+Tidak
+</button>
+
+</div>
 
 <script>
 
-function showPage(pageId){
+/* ========================= */
+/* PAGE */
+/* ========================= */
 
-  document
-  .querySelectorAll(".page")
-  .forEach(page=>{
+function showPage(page){
 
-    page.style.display="none";
+document
+.querySelectorAll(".page")
+.forEach(el=>{
 
-  });
+el.style.display="none";
 
-  document
-  .getElementById(pageId)
-  .style.display="block";
+});
+
+document
+.getElementById(page)
+.style.display="block";
+
 }
 
 showPage("dashboard");
 
+/* ========================= */
+/* THEME */
+/* ========================= */
+
+function toggleTheme(){
+
+document.body.classList.toggle("dark");
+
+}
+
+/* ========================= */
+/* LOGOUT */
+/* ========================= */
+
+function showLogoutPopup(){
+
+document
+.getElementById("logoutPopup")
+.style.display="block";
+
+}
+
+function closePopup(){
+
+document
+.getElementById("logoutPopup")
+.style.display="none";
+
+}
+
 function logout(){
 
-  alert("Logout berhasil");
+alert("Logout berhasil");
+
+closePopup();
 
 }
 
