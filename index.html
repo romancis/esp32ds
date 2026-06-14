@@ -61,6 +61,74 @@
 
   </div>
 
+  <div class="profile">
+
+  <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+  <h4 id="username">Guest</h4>
+  <p id="role">Belum Login</p>
+
+  <div id="sessionTimer" class="sidebar-timer">
+    ⏳ 06:00
+  </div>
+
+  <div class="bottom-btn">
+
+    <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
+      🌙 Dark Mode
+    </button>
+
+    <button id="loginBtn" class="login-btn" onclick="showPage('login')">
+      🔑 Login
+    </button>
+
+    <button id="logoutBtn" class="logout-btn" onclick="showLogoutPopup()">
+      🚪 Logout
+    </button>
+
+  </div>
+
+</div>
+
+  <div id="login" class="page">
+
+  <div class="card">
+
+    <h1>👤 Login</h1>
+
+    <input id="loginUsername"
+      type="text"
+      placeholder="Username"
+      class="input-box"
+      onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus();">
+
+    <br><br>
+
+    <div class="password-box">
+
+      <input id="loginPassword"
+        type="password"
+        placeholder="Password"
+        class="input-box"
+        onkeydown="if(event.key==='Enter') loginFirebase();">
+
+      <button class="show-pass" onclick="togglePassword()">👁️</button>
+
+    </div>
+
+    <br><br>
+
+    <button id="loginBtnAction" class="login-btn" onclick="loginFirebase()">
+      <span id="loginText">Masuk</span>
+      <span id="loginLoading" style="display:none;">Loading...</span>
+    </button>
+
+    <p id="loginInfo">Silakan login</p>
+
+  </div>
+
+</div>
+
 </div>
 
 <!-- MQTT LIB -->
