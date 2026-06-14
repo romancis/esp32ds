@@ -88,6 +88,20 @@ margin-bottom:30px;
 
 }
 
+.subtitle{
+
+font-size:12px;
+
+font-weight:normal;
+
+opacity:.7;
+
+margin-top:5px;
+
+line-height:18px;
+
+}
+
 .menu button{
 
 width:100%;
@@ -348,7 +362,9 @@ margin-left:220px;
 
 <div class="logo">
 RoManCiS <br>
-<small>Robotik Mansatu Cirebon Smarthome</small>
+<div class="subtitle">
+Robotik Mansatu Cirebon Smarthome
+</div>
 </div>
 
 <div class="menu">
@@ -389,15 +405,17 @@ onclick="toggleTheme()">
 </button>
 
 <button
+id="loginBtn"
 class="login-btn"
 onclick="showPage('login')">
-Login
+🔑 Login
 </button>
 
 <button
+id="logoutBtn"
 class="logout-btn"
 onclick="showLogoutPopup()">
-Logout
+🚪 Logout
 </button>
 
 </div>
@@ -525,7 +543,14 @@ document
 }
 
 showPage("dashboard");
+document.getElementById("logoutBtn")
+.style.display = "none";
+document.getElementById("loginBtn")
+.style.display = "none";
 
+document.getElementById("logoutBtn")
+.style.display = "block";
+  
 /* ========================= */
 /* THEME */
 /* ========================= */
@@ -566,9 +591,15 @@ document
 function logout(){
 
 alert("Logout berhasil");
-
 closePopup();
-
+document.getElementById("loginBtn")
+.style.display = "block";
+document.getElementById("logoutBtn")
+.style.display = "none";
+document.getElementById("username")
+.innerHTML = "Guest";
+document.getElementById("role")
+.innerHTML = "Belum Login";
 }
 
 </script>
