@@ -1,29 +1,16 @@
-// =========================
-// UI CONTROLLER
-// =========================
-
-// =========================
-// PAGE NAVIGATION
-// =========================
 export function showPage(page) {
-  const pages = document.querySelectorAll(".page");
 
-  pages.forEach((el) => {
+  document.querySelectorAll(".page").forEach((el) => {
     el.style.display = "none";
   });
 
   const target = document.getElementById(page);
-  if (target) {
-    target.style.display = "block";
-  }
+  if (target) target.style.display = "block";
 }
 
-// expose global (dipakai dari HTML onclick)
 window.showPage = showPage;
 
-// =========================
-// THEME TOGGLE
-// =========================
+// THEME
 export function toggleTheme() {
   const btn = document.getElementById("themeBtn");
 
@@ -40,9 +27,7 @@ export function toggleTheme() {
 
 window.toggleTheme = toggleTheme;
 
-// =========================
-// POPUP LOGOUT
-// =========================
+// LOGOUT POPUP
 export function showLogoutPopup() {
   const popup = document.getElementById("logoutPopup");
   if (popup) popup.style.display = "block";
@@ -56,43 +41,28 @@ export function closePopup() {
 window.showLogoutPopup = showLogoutPopup;
 window.closePopup = closePopup;
 
-// =========================
-// LOGOUT SYSTEM
-// =========================
+// LOGOUT
 export function logout() {
   alert("Logout berhasil");
 
-  localStorage.removeItem("role");
-  localStorage.removeItem("username");
-  localStorage.removeItem("loginTime");
-  localStorage.removeItem("sessionType");
+  localStorage.clear();
 
-  // reset UI
   document.getElementById("username").innerText = "Guest";
   document.getElementById("role").innerText = "Belum Login";
 
   document.getElementById("loginBtn").style.display = "block";
   document.getElementById("logoutBtn").style.display = "none";
 
-  const timerEl = document.getElementById("sessionTimer");
-  if (timerEl) timerEl.innerText = "⏳ 06:00";
-
-  // stop timer kalau ada
-  if (window.stopTimer) {
-    window.stopTimer();
-  }
+  if (window.stopTimer) window.stopTimer();
 
   closePopup();
 }
 
 window.logout = logout;
 
-// =========================
-// PASSWORD TOGGLE
-// =========================
+// PASSWORD
 export function togglePassword() {
   const pw = document.getElementById("loginPassword");
-
   if (!pw) return;
 
   pw.type = pw.type === "password" ? "text" : "password";
@@ -100,27 +70,7 @@ export function togglePassword() {
 
 window.togglePassword = togglePassword;
 
-// =========================
-// RESET LOGIN BUTTON UI
-// =========================
-export function resetLoginBtn() {
-  const btn = document.getElementById("loginBtnAction");
-  const text = document.getElementById("loginText");
-  const loading = document.getElementById("loginLoading");
-
-  if (!btn) return;
-
-  btn.classList.remove("loading");
-
-  if (text) text.style.display = "inline";
-  if (loading) loading.style.display = "none";
-}
-
-window.resetLoginBtn = resetLoginBtn;
-
-// =========================
-// INIT UI (RUN ON LOAD)
-// =========================
+// UI INIT
 export function initUI() {
   const theme = localStorage.getItem("theme");
 
@@ -130,31 +80,25 @@ export function initUI() {
     const btn = document.getElementById("themeBtn");
     if (btn) btn.innerText = "☀️ Light Mode";
   }
-
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  if (loginBtn) loginBtn.style.display = "block";
-  if (logoutBtn) logoutBtn.style.display = "none";
 }
 
 window.initUI = initUI;
 
-
-// MQTT STATUS UI
-export function setMQTTStatus(state){
+// MQTT UI SAFE
+export function setMQTTStatus(state) {
   const el = document.getElementById("mqttStatus");
+  if (!el) return;
 
-  if(state === "connected"){
-    el.innerText = "🟢 MQTT Connected";
-  } else {
-    el.innerText = "🔴 Disconnected";
-  }
+  el.innerText =
+    state === "connected"
+      ? "🟢 MQTT Connected"
+      : "🔴 Disconnected";
 }
 
-// LOG UI
-export function addLog(msg){
+// LOG SAFE
+export function addLog(msg) {
   const box = document.getElementById("logBox");
+  if (!box) return;
 
   const div = document.createElement("div");
   div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
