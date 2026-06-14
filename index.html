@@ -10,7 +10,9 @@
 
 <body>
 
+<!-- ========================= SIDEBAR ========================= -->
 <div class="sidebar">
+
   <div class="logo">
     RoManCiS <br>
     <div class="subtitle">
@@ -23,8 +25,41 @@
     <button onclick="showPage('setname')">📋 SetName RFID</button>
     <button onclick="showPage('monitoring')">📡 Monitoring</button>
   </div>
+
+  <!-- PROFILE -->
+  <div class="profile">
+
+    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+    <h4 id="username">Guest</h4>
+    <p id="role">Belum Login</p>
+
+    <!-- TIMER -->
+    <div id="sessionTimer" class="sidebar-timer">
+      ⏳ 06:00
+    </div>
+
+    <!-- BUTTON -->
+    <div class="bottom-btn">
+
+      <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
+        🌙 Dark Mode
+      </button>
+
+      <button id="loginBtn" class="login-btn" onclick="showPage('login')">
+        🔑 Login
+      </button>
+
+      <button id="logoutBtn" class="logout-btn" onclick="showLogoutPopup()">
+        🚪 Logout
+      </button>
+
+    </div>
+
+  </div>
 </div>
 
+<!-- ========================= CONTENT ========================= -->
 <div class="content">
 
   <!-- DASHBOARD -->
@@ -43,7 +78,6 @@
 
   <!-- MONITORING -->
   <div id="monitoring" class="page">
-
     <div class="card">
 
       <h1>📡 Monitoring Realtime</h1>
@@ -58,82 +92,60 @@
       <div id="logBox"></div>
 
     </div>
-
   </div>
 
-  <div class="profile">
-
-  <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-  <h4 id="username">Guest</h4>
-  <p id="role">Belum Login</p>
-
-  <div id="sessionTimer" class="sidebar-timer">
-    ⏳ 06:00
-  </div>
-
-  <div class="bottom-btn">
-
-    <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
-      🌙 Dark Mode
-    </button>
-
-    <button id="loginBtn" class="login-btn" onclick="showPage('login')">
-      🔑 Login
-    </button>
-
-    <button id="logoutBtn" class="logout-btn" onclick="showLogoutPopup()">
-      🚪 Logout
-    </button>
-
-  </div>
-
-</div>
-
+  <!-- LOGIN -->
   <div id="login" class="page">
+    <div class="card">
 
-  <div class="card">
+      <h1>👤 Login</h1>
 
-    <h1>👤 Login</h1>
-
-    <input id="loginUsername"
-      type="text"
-      placeholder="Username"
-      class="input-box"
-      onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus();">
-
-    <br><br>
-
-    <div class="password-box">
-
-      <input id="loginPassword"
-        type="password"
-        placeholder="Password"
+      <input id="loginUsername"
+        type="text"
+        placeholder="Username"
         class="input-box"
-        onkeydown="if(event.key==='Enter') loginFirebase();">
+        onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus();">
 
-      <button class="show-pass" onclick="togglePassword()">👁️</button>
+      <br><br>
+
+      <div class="password-box">
+
+        <input id="loginPassword"
+          type="password"
+          placeholder="Password"
+          class="input-box"
+          onkeydown="if(event.key==='Enter') loginFirebase();">
+
+        <button class="show-pass" onclick="togglePassword()">👁️</button>
+
+      </div>
+
+      <br><br>
+
+      <button id="loginBtnAction" class="login-btn" onclick="loginFirebase()">
+        <span id="loginText">Masuk</span>
+        <span id="loginLoading" style="display:none;">Loading...</span>
+      </button>
+
+      <p id="loginInfo">Silakan login</p>
 
     </div>
-
-    <br><br>
-
-    <button id="loginBtnAction" class="login-btn" onclick="loginFirebase()">
-      <span id="loginText">Masuk</span>
-      <span id="loginLoading" style="display:none;">Loading...</span>
-    </button>
-
-    <p id="loginInfo">Silakan login</p>
-
   </div>
 
 </div>
 
+<!-- ========================= POPUP ========================= -->
+<div class="popup" id="logoutPopup">
+  <h3>Apakah yakin ingin logout?</h3>
+
+  <button class="yes" onclick="logout()">Ya</button>
+  <button class="no" onclick="closePopup()">Tidak</button>
 </div>
 
-<!-- MQTT LIB -->
+<!-- MQTT -->
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+<!-- MODULES -->
 <script type="module" src="./config.js"></script>
 <script type="module" src="./ui.js"></script>
 <script type="module" src="./mqtt.js"></script>
