@@ -290,21 +290,7 @@ display:none;
 z-index:999;
 min-width:300px;
 }
-
-#sessionTimer{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:var(--card);
-  color:var(--text);
-  padding:10px 14px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.2);
-  font-weight:bold;
-  font-size:14px;
-  z-index:9999;
-}
-
+  
 .popup h3{
 margin-bottom:15px;
 }
@@ -370,6 +356,18 @@ animation:pulse 1s infinite;
 100%{transform:scale(1);}
 }
 
+.sidebar-timer{
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+    background:var(--card);
+    color:var(--text);
+    font-weight:bold;
+    font-size:14px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
 </style>
 
 </head>
@@ -406,16 +404,13 @@ Robotik Mansatu Cirebon Smarthome
 </div>
 
 <div class="profile">
-
 <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-<h4 id="username">
-Guest
-</h4>
-
-<p id="role">
-Belum Login
-</p>
+<h4 id="username">Guest</h4>
+<p id="role">Belum Login</p>
+<!-- 🔥 TIMER PINDAH KE SINI -->
+<div id="sessionTimer" class="sidebar-timer">
+⏳ 06:00
+</div>
 
 <div class="bottom-btn">
 
@@ -576,17 +571,30 @@ document
 
 showPage("dashboard");
 window.onload = function(){
-const role = localStorage.getItem("role");
-const username = localStorage.getItem("username");
-const session = localStorage.getItem("sessionType");
-if(role && username){
-document.getElementById("username").innerText = username;
-document.getElementById("role").innerText = role;
-document.getElementById("loginBtn").style.display = "none";
-document.getElementById("logoutBtn").style.display = "block";
-sessionType = role;
+    const role = localStorage.getItem("role");
+    const username = localStorage.getItem("username");
+    const session = localStorage.getItem("sessionType");
+    const savedLoginTime = parseInt(localStorage.getItem("loginTime"));
+    if(role && username){
+        // ❗ CEK EXPIRED USER
+        if(session === "limited" && savedLoginTime){
+            if(Date.now() - savedLoginTime > 6 * 60 * 1000){
+                logout();
+                return;
+            }
+        }
+        // UI restore login
+        document.getElementById("username").innerText = username;
+        document.getElementById("role").innerText = role;
+        document.getElementById("loginBtn").style.display = "none";
+        document.getElementById("logoutBtn").style.display = "block";
+        sessionType = session;
+        if(!session || session === "limited" && !loginTime){
+    return;
 }
-startTimer();
+        // 🔥 PENTING: restart timer saat refresh
+        startTimer();
+    }
 };
 document.getElementById("loginBtn")
 .style.display = "block";
@@ -657,16 +665,9 @@ document.getElementById("username")
 .innerHTML = "Guest";
 document.getElementById("role")
 .innerHTML = "Belum Login";
+document.getElementById("sessionTimer").innerText = "⏳ 06:00";
 }
-setInterval(() => {
-const session = localStorage.getItem("sessionType");
-const time = localStorage.getItem("loginTime");
-if(session === "limited" && time){
-if(Date.now() - time > 6 * 60 * 1000){
-  logout();
-}
-}
-}, 5000);
+
   
 function togglePassword(){
 const pw =
@@ -688,25 +689,40 @@ document.getElementById("loginLoading").style.display = "none";
 let timerInterval;
 function startTimer(){
 clearInterval(timerInterval);
-let duration = 6 * 60; // 6 menit (USER)
-timerInterval = setInterval(() => {
-const session = localStorage.getItem("sessionType");
-// ❗ ADMIN tidak pakai timer
-if(session === "admin"){
-document.getElementById("sessionTimer").innerText = "👑 Admin Mode";
+timerInterval = null;
+let session = localStorage.getItem("sessionType");
+const loginTime = Number(localStorage.getItem("loginTime"));
+if(!loginTime && session !== "admin"){
 return;
 }
-let minutes = Math.floor(duration / 60);
-let seconds = duration % 60;
-document.getElementById("sessionTimer").innerText =
-`⏳ ${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`;
-if(duration <= 0){
+if(session === "admin"){
+    clearInterval(timerInterval);
+    const timer = document.getElementById("sessionTimer");
+    if(!timer) return;
+    timer.innerText = "👑 Admin Mode";
+    timer.style.background = "var(--card)";
+    timer.style.opacity = "1";
+    timer.style.boxShadow = "0 3px 10px rgba(0,0,0,0.1)";
+    return;
+}
+timerInterval = setInterval(() => {
+let total = 6 * 60;
+let elapsed = Math.floor((Date.now() - loginTime)/1000);
+let remaining = total - elapsed;
+if(remaining <= 0){
 clearInterval(timerInterval);
 logout();
+return;
 }
-duration--;
+let m = Math.floor(remaining / 60);
+let s = remaining % 60;
+const timerEl = document.getElementById("sessionTimer");
+if(!timerEl) return;
+timerEl.innerText =
+`⏳ ${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
 }, 1000);
 }
+
 </script>
 
 <script type="module">
@@ -777,7 +793,6 @@ document.getElementById("loginBtn")
 .style.display = "none";
 document.getElementById("logoutBtn")
 .style.display = "block";
-startTimer();
 setTimeout(()=>{
   showPage("dashboard");
 }, 300);
@@ -785,7 +800,7 @@ document.getElementById("loginUsername").value = "";
 document.getElementById("loginPassword").value = "";
 localStorage.setItem("role", data.role);
 localStorage.setItem("username", username);
-sessionType = data.role;
+sessionType = localStorage.getItem("sessionType");
 if(data.role === "user"){
   loginTime = Date.now();
   localStorage.setItem("loginTime", loginTime);
@@ -793,11 +808,9 @@ if(data.role === "user"){
 } else {
   localStorage.setItem("sessionType", "admin");
 }
+startTimer();
 resetLoginBtn();
 };
 </script>
-<div id="sessionTimer">
-  ⏳ 06:00
-</div>
 </body>
 </html>
