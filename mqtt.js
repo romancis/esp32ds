@@ -3,7 +3,12 @@ import { setMQTTStatus, addLog } from "./ui.js";
 
 export let client;
 
-export function initMQTT(){
+export function initMQTT() {
+
+  if (typeof mqtt === "undefined") {
+    console.error("MQTT library not loaded");
+    return;
+  }
 
   client = mqtt.connect(MQTT_CONFIG.broker);
 
@@ -18,29 +23,27 @@ export function initMQTT(){
 
     const data = message.toString();
 
-    switch(topic){
-
-      case MQTT_CONFIG.topics.uid:
-        document.getElementById("uid").innerText = data;
-        addLog("UID: " + data);
-        break;
-
-      case MQTT_CONFIG.topics.status:
-        document.getElementById("status").innerText = data;
-        addLog("Status: " + data);
-        break;
-
-      case MQTT_CONFIG.topics.rain:
-        document.getElementById("rain").innerText = data;
-        addLog("Rain: " + data);
-        break;
+    if (topic === MQTT_CONFIG.topics.uid) {
+      const el = document.getElementById("uid");
+      if (el) el.innerText = data;
+      addLog("UID: " + data);
     }
 
+    if (topic === MQTT_CONFIG.topics.status) {
+      const el = document.getElementById("status");
+      if (el) el.innerText = data;
+      addLog("Status: " + data);
+    }
+
+    if (topic === MQTT_CONFIG.topics.rain) {
+      const el = document.getElementById("rain");
+      if (el) el.innerText = data;
+      addLog("Rain: " + data);
+    }
   });
 
   client.on("close", () => {
     setMQTTStatus("disconnected");
     addLog("MQTT Disconnected");
   });
-
 }
