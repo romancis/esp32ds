@@ -57,7 +57,7 @@ transition:.3s;
 .sidebar{
 
 width:260px;
-height:100vh;
+min-height:100vh;
 
 background:var(--sidebar);
 
@@ -301,24 +301,16 @@ margin-bottom:15px;
 }
 
 .popup button{
-
 padding:10px 20px;
-
 border:none;
-
 border-radius:8px;
-
 cursor:pointer;
-
 margin:5px;
-
 }
 
 .yes{
-
 background:red;
 color:white;
-
 }
 
 .no{
@@ -547,6 +539,15 @@ document.getElementById("loginBtn")
 .style.display = "block";
 document.getElementById("logoutBtn")
 .style.display = "none";
+if(
+localStorage.getItem("theme")
+==="dark"
+){
+document.body.classList.add("dark");
+document.getElementById("themeBtn")
+.innerHTML =
+"☀️ Light Mode";
+}
   
 /* ========================= */
 /* THEME */
@@ -558,10 +559,18 @@ document.getElementById("themeBtn");
 if(document.body.classList.contains("dark")){
 btn.innerHTML =
 "☀️ Light Mode";
+localStorage.setItem(
+"theme",
+"dark"
+);
 }
 else{
 btn.innerHTML =
 "🌙 Dark Mode";
+localStorage.setItem(
+"theme",
+"light"
+);
 }
 }
 
