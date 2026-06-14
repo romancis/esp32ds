@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>RoManCiS SmartHome</title>
+<title>RoManCiS Dashboard</title>
 
 <style>
 
@@ -347,7 +347,8 @@ margin-left:220px;
 <div class="sidebar">
 
 <div class="logo">
-RoManCiS
+RoManCiS <br>
+<small>Robotik Mansatu Cirebon Smarthome</small>
 </div>
 
 <div class="menu">
@@ -362,10 +363,6 @@ RoManCiS
 
 <button onclick="showPage('monitoring')">
 📡 Monitoring
-</button>
-
-<button onclick="showPage('login')">
-👤 Login
 </button>
 
 </div>
@@ -385,6 +382,7 @@ Belum Login
 <div class="bottom-btn">
 
 <button
+id="themeBtn"
 class="theme-btn"
 onclick="toggleTheme()">
 🌙 Dark Mode
@@ -531,11 +529,18 @@ showPage("dashboard");
 /* ========================= */
 /* THEME */
 /* ========================= */
-
 function toggleTheme(){
-
 document.body.classList.toggle("dark");
-
+const btn =
+document.getElementById("themeBtn");
+if(document.body.classList.contains("dark")){
+btn.innerHTML =
+"☀️ Light Mode";
+}
+else{
+btn.innerHTML =
+"🌙 Dark Mode";
+}
 }
 
 /* ========================= */
