@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RoManCiS SmartHome</title>
+
+<style>
+
+/* ============================= */
+/* RESET */
+/* ============================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+/* ============================= */
+/* BODY */
+/* ============================= */
+
+body{
+  background:#111;
+  color:white;
+  font-family:Arial, sans-serif;
+}
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+.sidebar{
+
+  position:fixed;
+
+  left:0;
+  top:0;
+
+  width:250px;
+  height:100vh;
+
+  background:#181818;
+
+  padding:20px;
+
+  border-right:1px solid #333;
+}
+
+.sidebar h2{
+
+  color:#00ff88;
+
+  margin-bottom:30px;
+
+  text-align:center;
+}
+
+/* ============================= */
+/* MENU */
+/* ============================= */
+
+.sidebar button{
+
+  width:100%;
+
+  margin-bottom:10px;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:10px;
+
+  background:#222;
+
+  color:white;
+
+  cursor:pointer;
+
+  text-align:left;
+
+  transition:0.3s;
+}
+
+.sidebar button:hover{
+
+  background:#00ff88;
+
+  color:black;
+}
+
+/* ============================= */
+/* PROFILE */
+/* ============================= */
+
+.profile{
+
+  position:absolute;
+
+  bottom:20px;
+
+  left:20px;
+  right:20px;
+
+  text-align:center;
+}
+
+.profile img{
+
+  width:70px;
+  height:70px;
+
+  border-radius:50%;
+
+  margin-bottom:10px;
+}
+
+.profile p{
+
+  font-size:14px;
+}
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+
+.content{
+
+  margin-left:250px;
+
+  padding:30px;
+}
+
+.page{
+
+  display:none;
+}
+
+/* ============================= */
+/* CARD */
+/* ============================= */
+
+.card{
+
+  background:#1d1d1d;
+
+  padding:20px;
+
+  border-radius:15px;
+
+  margin-bottom:20px;
+
+  box-shadow:0 0 10px rgba(0,255,136,0.2);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ============================= -->
+<!-- SIDEBAR -->
+<!-- ============================= -->
+
+<div class="sidebar">
+
+  <h2>RoManCiS</h2>
+
+  <button onclick="showPage('dashboard')">
+    🏠 Dashboard
+  </button>
+
+  <button onclick="showPage('setname')">
+    📋 SetName RFID
+  </button>
+
+  <button onclick="showPage('monitoring')">
+    📡 Monitoring
+  </button>
+
+  <button onclick="showPage('login')">
+    👤 Login
+  </button>
+
+  <button onclick="logout()">
+    ⚙ Logout
+  </button>
+
+  <div class="profile">
+
+    <img
+    src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+    <p id="userRole">
+      Guest
+    </p>
+
+  </div>
+
+</div>
+
+<!-- ============================= -->
+<!-- CONTENT -->
+<!-- ============================= -->
+
+<div class="content">
+
+  <!-- DASHBOARD -->
+
+  <div id="dashboard" class="page">
+
+    <div class="card">
+
+      <h1>🏠 Dashboard</h1>
+
+      <br>
+
+      <p>
+        Selamat datang di SmartHome RoManCiS
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- SETNAME -->
+
+  <div id="setname" class="page">
+
+    <div class="card">
+
+      <h1>📋 SetName RFID</h1>
+
+      <br>
+
+      <p>
+        Kelola data UID RFID di sini.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- MONITORING -->
+
+  <div id="monitoring" class="page">
+
+    <div class="card">
+
+      <h1>📡 Monitoring</h1>
+
+      <br>
+
+      <p>
+        Monitoring sensor dan kontrol perangkat.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- LOGIN -->
+
+  <div id="login" class="page">
+
+    <div class="card">
+
+      <h1>👤 Login</h1>
+
+      <br>
+
+      <p>
+        Halaman login akan dibuat pada tahap berikutnya.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ============================= -->
+<!-- JAVASCRIPT -->
+<!-- ============================= -->
+
+<script>
+
+function showPage(pageId){
+
+  document
+  .querySelectorAll(".page")
+  .forEach(page=>{
+
+    page.style.display="none";
+
+  });
+
+  document
+  .getElementById(pageId)
+  .style.display="block";
+}
+
+showPage("dashboard");
+
+function logout(){
+
+  alert("Logout berhasil");
+
+}
+
+</script>
+
+</body>
+</html>
