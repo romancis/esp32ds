@@ -31,3 +31,12 @@ console.log("Firebase Connected");
 // EXPORT
 // =========================
 export { db };
+
+export const MQTT_CONFIG = {
+  broker: "wss://broker.hivemq.com:8884/mqtt",
+  topics: {
+    uid: "romancis/rfid/uid",
+    status: "romancis/rfid/status",
+    rain: "romancis/sensor/rain"
+  }
+};
