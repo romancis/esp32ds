@@ -1,13 +1,13 @@
 // =========================
-// FIREBASE CONFIG
+// FIREBASE CONFIG + INIT
 // =========================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import {
-  getFirestore
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// Konfigurasi Firebase project kamu
+// =========================
+// FIREBASE CONFIG
+// =========================
 const firebaseConfig = {
   apiKey: "AIzaSyAcYGCGQcwaFuXxd7R4Oq-hJRgaBRYuRPM",
   authDomain: "romancis--smarthome.firebaseapp.com",
@@ -19,19 +19,21 @@ const firebaseConfig = {
 };
 
 // =========================
-// INIT FIREBASE APP
+// INIT FIREBASE
 // =========================
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Debug
 console.log("Firebase Connected");
 
 // =========================
-// EXPORT
+// EXPORT FIREBASE DB
 // =========================
 export { db };
 
+// =========================
+// MQTT CONFIG
+// =========================
 export const MQTT_CONFIG = {
   broker: "wss://broker.hivemq.com:8884/mqtt",
   topics: {
