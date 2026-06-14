@@ -355,6 +355,19 @@ border-radius:10px;
 cursor:pointer;
 background:var(--accent);
 }
+#loginBtnAction{
+transition:0.2s;
+}
+#loginBtnAction.loading{
+opacity:0.7;
+cursor:not-allowed;
+animation:pulse 1s infinite;
+}
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.03);}
+100%{transform:scale(1);}
+}
 
 </style>
 
@@ -486,6 +499,7 @@ class="input-box"
 onkeydown="
 if(event.key==='Enter')
 loginFirebase();
+
 ">
 <button
 type="button"
@@ -496,9 +510,11 @@ onclick="togglePassword()">
 </div>
 <br><br>
 <button
+id="loginBtnAction"
 class="login-btn"
 onclick="loginFirebase()">
-Masuk
+<span id="loginText">Masuk</span>
+<span id="loginLoading" style="display:none;">Loading...</span>
 </button>
 <br><br>
 <p id="loginInfo">
@@ -632,6 +648,12 @@ else{
 pw.type="password";
 }
 }
+
+function resetLoginBtn(){
+document.getElementById("loginBtnAction").classList.remove("loading");
+document.getElementById("loginText").style.display = "inline";
+document.getElementById("loginLoading").style.display = "none";
+}
 </script>
 
 <script type="module">
@@ -663,6 +685,9 @@ console.log(
 );
 window.db = db;
 window.loginFirebase = async function(){
+document.getElementById("loginBtnAction").classList.add("loading");
+document.getElementById("loginText").style.display = "none";
+document.getElementById("loginLoading").style.display = "inline";
 const username =
 document.getElementById("loginUsername").value;
 const password =
@@ -675,6 +700,7 @@ if(!akunSnap.exists()){
 document.getElementById("loginInfo")
 .innerHTML =
 "Username tidak ditemukan";
+resetLoginBtn();
 return;
 }
 const data = akunSnap.data();
@@ -682,6 +708,7 @@ if(data.password !== password){
 document.getElementById("loginInfo")
 .innerHTML =
 "Password salah";
+resetLoginBtn();
 return;
 }
 document.getElementById("loginInfo")
@@ -697,6 +724,7 @@ document.getElementById("loginBtn")
 .style.display = "none";
 document.getElementById("logoutBtn")
 .style.display = "block";
+resetLoginBtn();
 };
 </script>
 </body>
