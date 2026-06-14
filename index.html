@@ -3,21 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>RoManCiS Dashboard</title>
 
-<!-- CSS -->
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<!-- ========================= -->
-<!-- SIDEBAR -->
-<!-- ========================= -->
 <div class="sidebar">
-
   <div class="logo">
     RoManCiS <br>
     <div class="subtitle">
@@ -30,118 +23,52 @@
     <button onclick="showPage('setname')">📋 SetName RFID</button>
     <button onclick="showPage('monitoring')">📡 Monitoring</button>
   </div>
-
-  <div class="profile">
-    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-    <h4 id="username">Guest</h4>
-    <p id="role">Belum Login</p>
-
-    <div id="sessionTimer" class="sidebar-timer">
-      ⏳ 06:00
-    </div>
-
-    <div class="bottom-btn">
-
-      <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">
-        🌙 Dark Mode
-      </button>
-
-      <button id="loginBtn" class="login-btn" onclick="showPage('login')">
-        🔑 Login
-      </button>
-
-      <button id="logoutBtn" class="logout-btn" onclick="showLogoutPopup()">
-        🚪 Logout
-      </button>
-
-    </div>
-  </div>
-
 </div>
 
-<!-- ========================= -->
-<!-- CONTENT -->
-<!-- ========================= -->
 <div class="content">
 
+  <!-- DASHBOARD -->
   <div id="dashboard" class="page">
     <div class="card">
-      <h1>🏠 Dashboard</h1>
-      <p>Selamat datang di SmartHome RoManCiS</p>
+      <h1>Dashboard</h1>
     </div>
   </div>
 
+  <!-- SETNAME -->
   <div id="setname" class="page">
     <div class="card">
-      <h1>📋 SetName RFID</h1>
-      <p>Halaman pengaturan UID RFID.</p>
+      <h1>SetName RFID</h1>
     </div>
   </div>
 
+  <!-- MONITORING -->
   <div id="monitoring" class="page">
-    <div class="card">
-      <h1>📡 Monitoring</h1>
-      <p>Monitoring sensor ESP32 realtime.</p>
-    </div>
-  </div>
 
-  <!-- LOGIN PAGE -->
-  <div id="login" class="page">
     <div class="card">
 
-      <h1>👤 Login</h1>
+      <h1>📡 Monitoring Realtime</h1>
 
-      <input id="loginUsername"
-        type="text"
-        placeholder="Username"
-        class="input-box"
-        onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus();">
+      <div id="mqttStatus">🔴 Disconnected</div>
 
-      <br><br>
+      <p>UID: <span id="uid">-</span></p>
+      <p>Status: <span id="status">-</span></p>
+      <p>Rain: <span id="rain">-</span></p>
 
-      <div class="password-box">
-        <input id="loginPassword"
-          type="password"
-          placeholder="Password"
-          class="input-box"
-          onkeydown="if(event.key==='Enter') loginFirebase();">
-
-        <button class="show-pass" onclick="togglePassword()">👁️</button>
-      </div>
-
-      <br><br>
-
-      <button id="loginBtnAction" class="login-btn" onclick="loginFirebase()">
-        <span id="loginText">Masuk</span>
-        <span id="loginLoading" style="display:none;">Loading...</span>
-      </button>
-
-      <p id="loginInfo">Silakan login</p>
+      <h3>Log</h3>
+      <div id="logBox"></div>
 
     </div>
+
   </div>
 
 </div>
 
-<!-- ========================= -->
-<!-- POPUP LOGOUT -->
-<!-- ========================= -->
-<div class="popup" id="logoutPopup">
-  <h3>Apakah yakin ingin logout?</h3>
-
-  <button class="yes" onclick="logout()">Ya</button>
-  <button class="no" onclick="closePopup()">Tidak</button>
-</div>
-
-<!-- ========================= -->
-<!-- JS MODULES -->
-<!-- ========================= -->
+<!-- MQTT LIB -->
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script type="module" src="./config.js"></script>
 <script type="module" src="./ui.js"></script>
-<script type="module" src="./timer.js"></script>
-<script type="module" src="./auth.js"></script>
+<script type="module" src="./mqtt.js"></script>
 <script type="module" src="./app.js"></script>
 
 </body>
