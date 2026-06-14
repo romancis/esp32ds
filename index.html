@@ -263,6 +263,16 @@ margin-bottom:20px;
 box-shadow:0 5px 15px rgba(0,0,0,.1);
 }
 
+.input-box{
+width:100%;
+padding:12px;
+border:1px solid var(--border);
+border-radius:10px;
+background:var(--bg);
+color:var(--text);
+font-size:15px;
+}
+
 /* ========================= */
 /* POPUP */
 /* ========================= */
@@ -417,73 +427,61 @@ onclick="showLogoutPopup()">
 <!-- ========================= -->
 <!-- CONTENT -->
 <!-- ========================= -->
-
 <div class="content">
-
 <div id="dashboard" class="page">
-
 <div class="card">
-
 <h1>🏠 Dashboard</h1>
-
 <br>
-
 <p>
 Selamat datang di SmartHome RoManCiS
 </p>
-
 </div>
-
 </div>
-
 <div id="setname" class="page">
-
 <div class="card">
-
 <h1>📋 SetName RFID</h1>
-
 <br>
-
 <p>
 Halaman pengaturan UID RFID.
 </p>
-
 </div>
-
 </div>
-
 <div id="monitoring" class="page">
-
 <div class="card">
-
 <h1>📡 Monitoring</h1>
-
 <br>
-
 <p>
 Monitoring sensor ESP32 realtime.
 </p>
-
 </div>
-
 </div>
-
 <div id="login" class="page">
-
 <div class="card">
-
 <h1>👤 Login</h1>
-
 <br>
-
-<p>
-Form login Firebase akan dibuat tahap berikutnya.
+<input
+id="loginUsername"
+type="text"
+placeholder="Username"
+class="input-box">
+<br><br>
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+class="input-box">
+<br><br>
+<button
+class="login-btn"
+onclick="loginFirebase()">
+Masuk
+</button>
+<br><br>
+<p id="loginInfo">
+Silakan login
 </p>
-
 </div>
-
 </div>
-
 </div>
 
 <!-- ========================= -->
@@ -607,7 +605,9 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import {
 getFirestore,
 collection,
-getDocs
+getDocs,
+doc,
+getDoc
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 const firebaseConfig = {
@@ -626,6 +626,43 @@ getFirestore(app);
 console.log(
 "Firebase Connected"
 );
+window.db = db;
+window.loginFirebase = async function(){
+const username =
+document.getElementById("loginUsername").value;
+const password =
+document.getElementById("loginPassword").value;
+const akunRef =
+doc(db,"accounts",username);
+const akunSnap =
+await getDoc(akunRef);
+if(!akunSnap.exists()){
+document.getElementById("loginInfo")
+.innerHTML =
+"Username tidak ditemukan";
+return;
+}
+const data = akunSnap.data();
+if(data.password !== password){
+document.getElementById("loginInfo")
+.innerHTML =
+"Password salah";
+return;
+}
+document.getElementById("loginInfo")
+.innerHTML =
+"Login berhasil";
+document.getElementById("username")
+.innerHTML =
+username;
+document.getElementById("role")
+.innerHTML =
+data.role;
+document.getElementById("loginBtn")
+.style.display = "none";
+document.getElementById("logoutBtn")
+.style.display = "block";
+};
 </script>
 </body>
 </html>
