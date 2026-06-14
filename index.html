@@ -800,14 +800,18 @@ document.getElementById("loginUsername").value = "";
 document.getElementById("loginPassword").value = "";
 localStorage.setItem("role", data.role);
 localStorage.setItem("username", username);
-sessionType = localStorage.getItem("sessionType");
+
 const role = (data.role || "").toLowerCase();
+
 if(role === "admin"){
   localStorage.setItem("sessionType", "admin");
 } else {
+  loginTime = Date.now();
+  localStorage.setItem("loginTime", loginTime);
   localStorage.setItem("sessionType", "limited");
 }
-startTimer();
+
+startTimer(); // ✔ INI PALING BAWAH
 resetLoginBtn();
 };
 </script>
