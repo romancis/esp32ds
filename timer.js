@@ -1,5 +1,5 @@
 // =========================
-// SESSION TIMER SYSTEM
+// SESSION TIMER SYSTEM (SAFE)
 // =========================
 
 let timerInterval = null;
@@ -8,17 +8,23 @@ let timerInterval = null;
 // START TIMER
 // =========================
 export function startTimer() {
-  clearInterval(timerInterval);
-  timerInterval = null;
+
+  // stop timer lama dulu (hindari double interval)
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 
   const session = localStorage.getItem("sessionType");
   const loginTime = Number(localStorage.getItem("loginTime"));
 
   const timerEl = document.getElementById("sessionTimer");
+
+  // kalau elemen belum ada → stop
   if (!timerEl) return;
 
   // =========================
-  // ADMIN MODE (NO TIMER)
+  // ADMIN MODE
   // =========================
   if (session === "admin") {
     timerEl.innerText = "👑 Admin Mode";
@@ -29,7 +35,7 @@ export function startTimer() {
   }
 
   // =========================
-  // VALIDATION
+  // VALIDATION LOGIN TIME
   // =========================
   if (!loginTime || isNaN(loginTime)) {
     timerEl.innerText = "⏳ 06:00";
@@ -42,10 +48,13 @@ export function startTimer() {
   // RUN TIMER
   // =========================
   timerInterval = setInterval(() => {
+
     const elapsed = Math.floor((Date.now() - loginTime) / 1000);
     const remaining = TOTAL_TIME - elapsed;
 
+    // =========================
     // TIME OUT → AUTO LOGOUT
+    // =========================
     if (remaining <= 0) {
       clearInterval(timerInterval);
       timerInterval = null;
@@ -62,17 +71,24 @@ export function startTimer() {
 
     timerEl.innerText =
       `⏳ ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
   }, 1000);
 }
 
 // =========================
-// STOP TIMER (optional)
+// STOP TIMER (SAFE)
 // =========================
 export function stopTimer() {
-  clearInterval(timerInterval);
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+
   timerInterval = null;
 }
 
-// expose ke global
+// =========================
+// GLOBAL EXPORT
+// =========================
 window.startTimer = startTimer;
 window.stopTimer = stopTimer;
