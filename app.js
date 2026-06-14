@@ -76,3 +76,8 @@ function initApp() {
 // RUN ON LOAD
 // =========================
 window.addEventListener("DOMContentLoaded", initApp);
+
+import { initMQTT } from "./mqtt.js";
+
+// start system
+initMQTT();
