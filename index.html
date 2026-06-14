@@ -575,25 +575,19 @@ localStorage.setItem(
 /* ========================= */
 /* LOGOUT */
 /* ========================= */
-
 function showLogoutPopup(){
-
 document
 .getElementById("logoutPopup")
 .style.display="block";
-
 }
 
 function closePopup(){
-
 document
 .getElementById("logoutPopup")
 .style.display="none";
-
 }
 
 function logout(){
-
 alert("Logout berhasil");
 closePopup();
 document.getElementById("loginBtn")
@@ -605,8 +599,33 @@ document.getElementById("username")
 document.getElementById("role")
 .innerHTML = "Belum Login";
 }
-
 </script>
 
+<script type="module">
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAcYGCGQcwaFuXxd7R4Oq-hJRgaBRYuRPM",
+  authDomain: "romancis--smarthome.firebaseapp.com",
+  projectId: "romancis--smarthome",
+  storageBucket: "romancis--smarthome.firebasestorage.app",
+  messagingSenderId: "542536848118",
+  appId: "1:542536848118:web:059f833254c14880ff92d7",
+  measurementId: "G-QLK7DPFCXD"
+};
+const app =
+initializeApp(firebaseConfig);
+const db =
+getFirestore(app);
+console.log(
+"Firebase Connected"
+);
+</script>
 </body>
 </html>
