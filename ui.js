@@ -139,3 +139,36 @@ export function initUI() {
 }
 
 window.initUI = initUI;
+
+// PAGE SYSTEM
+window.showPage = function(page){
+
+  document.querySelectorAll(".page").forEach(p=>{
+    p.style.display = "none";
+  });
+
+  document.getElementById(page).style.display = "block";
+};
+
+showPage("dashboard");
+
+// MQTT STATUS UI
+export function setMQTTStatus(state){
+  const el = document.getElementById("mqttStatus");
+
+  if(state === "connected"){
+    el.innerText = "🟢 MQTT Connected";
+  } else {
+    el.innerText = "🔴 Disconnected";
+  }
+}
+
+// LOG UI
+export function addLog(msg){
+  const box = document.getElementById("logBox");
+
+  const div = document.createElement("div");
+  div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+
+  box.prepend(div);
+}
