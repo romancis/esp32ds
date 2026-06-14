@@ -291,3 +291,21 @@ width:220px;
 margin-left:220px;
 }
 }
+
+#logBox{
+  height:180px;
+  overflow:auto;
+  background:#111;
+  color:#0f0;
+  padding:10px;
+  font-size:12px;
+  border-radius:10px;
+}
+
+#mqttStatus{
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:10px;
+  background:#222;
+  color:white;
+}
