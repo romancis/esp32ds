@@ -1,0 +1,315 @@
+/* ========================= */
+/* SIDEBAR */
+/* ========================= */
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:260px;
+
+    height:100vh;
+
+    background:var(--card);
+
+    border-right:1px solid var(--border);
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:20px;
+
+    z-index:1000;
+
+}
+
+/* ========================= */
+/* LOGO AREA */
+/* ========================= */
+
+.logo-container{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.logo-img{
+
+    width:80px;
+
+    height:80px;
+
+    object-fit:contain;
+
+    margin-bottom:10px;
+
+}
+
+.logo-text{
+
+    color:var(--accent);
+
+    margin-bottom:5px;
+
+    font-size:26px;
+
+    font-weight:bold;
+
+}
+
+.logo-subtitle{
+
+    font-size:12px;
+
+    opacity:0.8;
+
+    line-height:18px;
+
+}
+
+/* ========================= */
+/* MENU */
+/* ========================= */
+
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.menu button{
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    text-align:left;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    border:1px solid var(--border);
+
+}
+
+.menu button:hover{
+
+    background:var(--accent);
+
+    color:#000;
+
+}
+
+/* Tombol aktif */
+
+.menu button.active{
+
+    background:var(--accent);
+
+    color:#000;
+
+}
+
+/* ========================= */
+/* PROFILE */
+/* ========================= */
+
+.profile{
+
+    margin-top:auto;
+
+    border-top:1px solid var(--border);
+
+    padding-top:20px;
+
+}
+
+/* Foto Profil */
+
+.profile-img{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    display:block;
+
+    margin:auto;
+
+    object-fit:cover;
+
+    border:2px solid var(--accent);
+
+}
+
+/* Username */
+
+.profile h4{
+
+    text-align:center;
+
+    margin-top:10px;
+
+    font-size:16px;
+
+}
+
+/* Role */
+
+.profile p{
+
+    text-align:center;
+
+    font-size:13px;
+
+    opacity:0.8;
+
+}
+
+/* ========================= */
+/* TIMER */
+/* ========================= */
+
+.session-timer{
+
+    margin-top:15px;
+
+    padding:10px;
+
+    text-align:center;
+
+    background:var(--bg);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* BUTTON AREA */
+/* ========================= */
+
+.sidebar-buttons{
+
+    margin-top:15px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+/* ========================= */
+/* THEME BUTTON */
+/* ========================= */
+
+.theme-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:var(--accent);
+
+    color:#000;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* LOGIN BUTTON */
+/* ========================= */
+
+.login-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* LOGOUT BUTTON */
+/* ========================= */
+
+.logout-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:var(--danger);
+
+    color:white;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* HOVER EFFECT */
+/* ========================= */
+
+.theme-btn:hover,
+.login-btn:hover,
+.logout-btn:hover{
+
+    transform:translateY(-2px);
+
+    filter:brightness(1.05);
+
+}
+
+/* ========================= */
+/* MOBILE */
+/* ========================= */
+
+@media(max-width:768px){
+
+    .sidebar{
+
+        width:220px;
+
+    }
+
+}

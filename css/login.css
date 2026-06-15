@@ -1,0 +1,302 @@
+/* ========================= */
+/* LOGIN PAGE */
+/* ========================= */
+
+#login{
+
+    max-width:500px;
+
+    margin:auto;
+
+}
+
+/* ========================= */
+/* LOGIN CARD */
+/* ========================= */
+
+.login-card{
+
+    background:var(--card);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid var(--border);
+
+}
+
+.login-card h1{
+
+    text-align:center;
+
+    margin-bottom:10px;
+
+}
+
+.login-card p{
+
+    text-align:center;
+
+    opacity:0.8;
+
+    margin-bottom:25px;
+
+}
+
+/* ========================= */
+/* INPUT GROUP */
+/* ========================= */
+
+.input-group{
+
+    margin-bottom:20px;
+
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+/* ========================= */
+/* INPUT */
+/* ========================= */
+
+.input-box{
+
+    width:100%;
+
+    padding:13px;
+
+    border-radius:12px;
+
+    border:1px solid var(--border);
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.input-box:focus{
+
+    border-color:var(--accent);
+
+    box-shadow:
+    0 0 12px rgba(0,255,136,.25);
+
+}
+
+/* ========================= */
+/* PASSWORD AREA */
+/* ========================= */
+
+.password-box{
+
+    position:relative;
+
+}
+
+.password-box input{
+
+    padding-right:55px;
+
+}
+
+/* ========================= */
+/* SHOW PASSWORD */
+/* ========================= */
+
+.show-pass{
+
+    position:absolute;
+
+    right:8px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:40px;
+
+    height:40px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--accent);
+
+    color:#000;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.3s;
+
+}
+
+.show-pass:hover{
+
+    transform:
+    translateY(-50%)
+    scale(1.05);
+
+}
+
+/* ========================= */
+/* LOGIN BUTTON */
+/* ========================= */
+
+#loginBtnAction{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#loginBtnAction:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* ========================= */
+/* LOADING EFFECT */
+/* ========================= */
+
+#loginBtnAction.loading{
+
+    opacity:.7;
+
+    pointer-events:none;
+
+    animation:pulse 1s infinite;
+
+}
+
+@keyframes pulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.02);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/* ========================= */
+/* LOGIN INFO */
+/* ========================= */
+
+#loginInfo{
+
+    margin-top:15px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    min-height:20px;
+
+}
+
+/* ========================= */
+/* SUCCESS */
+/* ========================= */
+
+.success{
+
+    color:#00c853;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* ERROR */
+/* ========================= */
+
+.error{
+
+    color:#ff5252;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* LOGIN ICON */
+/* ========================= */
+
+.login-logo{
+
+    width:90px;
+
+    height:90px;
+
+    object-fit:contain;
+
+    display:block;
+
+    margin:0 auto 20px;
+
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media(max-width:768px){
+
+    .login-card{
+
+        padding:20px;
+
+    }
+
+}

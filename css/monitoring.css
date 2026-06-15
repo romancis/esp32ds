@@ -1,0 +1,430 @@
+/* ========================= */
+/* MONITORING PAGE */
+/* ========================= */
+
+.monitoring-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+
+}
+
+/* ========================= */
+/* SENSOR CARD */
+/* ========================= */
+
+.sensor-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+}
+
+.sensor-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+/* ========================= */
+/* TITLE */
+/* ========================= */
+
+.sensor-title{
+
+    font-size:15px;
+
+    opacity:.8;
+
+    margin-bottom:10px;
+
+}
+
+/* ========================= */
+/* VALUE */
+/* ========================= */
+
+.sensor-value{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:var(--accent);
+
+}
+
+/* ========================= */
+/* STATUS COLORS */
+/* ========================= */
+
+.online{
+
+    color:#00c853;
+
+}
+
+.offline{
+
+    color:#ff5252;
+
+}
+
+.warning{
+
+    color:#ff9800;
+
+}
+
+/* ========================= */
+/* MQTT STATUS BOX */
+/* ========================= */
+
+.mqtt-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* BLINKING DOT */
+/* ========================= */
+
+.status-dot{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+}
+
+.status-online{
+
+    background:#00c853;
+
+    animation:blink 1s infinite;
+
+}
+
+.status-offline{
+
+    background:#ff5252;
+
+}
+
+@keyframes blink{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.3;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}
+
+/* ========================= */
+/* RFID LAST SCAN */
+/* ========================= */
+
+.rfid-box{
+
+    background:var(--card);
+
+    border-radius:18px;
+
+    border:1px solid var(--border);
+
+    padding:20px;
+
+    margin-top:20px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.rfid-box h3{
+
+    margin-bottom:15px;
+
+}
+
+.rfid-uid{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:var(--accent);
+
+}
+
+/* ========================= */
+/* LIVE LOG */
+/* ========================= */
+
+.log-box{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:15px;
+
+    margin-top:20px;
+
+    max-height:300px;
+
+    overflow-y:auto;
+
+    box-shadow:var(--shadow);
+
+}
+
+.log-box h3{
+
+    margin-bottom:15px;
+
+}
+
+/* ========================= */
+/* LOG ITEM */
+/* ========================= */
+
+.log-item{
+
+    padding:10px;
+
+    border-bottom:1px solid var(--border);
+
+    font-size:14px;
+
+}
+
+.log-item:last-child{
+
+    border-bottom:none;
+
+}
+
+/* ========================= */
+/* RFID SUCCESS */
+/* ========================= */
+
+.log-success{
+
+    color:#00c853;
+
+}
+
+/* ========================= */
+/* RFID DENIED */
+/* ========================= */
+
+.log-denied{
+
+    color:#ff5252;
+
+}
+
+/* ========================= */
+/* STATS */
+/* ========================= */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+.stat-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:18px;
+
+    text-align:center;
+
+    box-shadow:var(--shadow);
+
+}
+
+.stat-number{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:var(--accent);
+
+}
+
+.stat-label{
+
+    margin-top:8px;
+
+    font-size:14px;
+
+    opacity:.8;
+
+}
+
+/* ========================= */
+/* CONTROL BUTTON */
+/* ========================= */
+
+.control-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+.control-btn{
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.control-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* BUKA PINTU */
+
+.open-btn{
+
+    background:#00c853;
+
+    color:white;
+
+}
+
+/* TUTUP PINTU */
+
+.close-btn{
+
+    background:#ff5252;
+
+    color:white;
+
+}
+
+/* RESET */
+
+.reset-btn{
+
+    background:#ff9800;
+
+    color:white;
+
+}
+
+/* ========================= */
+/* CHART PLACEHOLDER */
+/* ========================= */
+
+.chart-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-top:20px;
+
+    min-height:300px;
+
+    box-shadow:var(--shadow);
+
+}
+
+/* ========================= */
+/* MOBILE */
+/* ========================= */
+
+@media(max-width:768px){
+
+    .sensor-value{
+
+        font-size:24px;
+
+    }
+
+    .rfid-uid{
+
+        font-size:18px;
+
+    }
+
+}
