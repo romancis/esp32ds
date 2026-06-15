@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SetName RFID - RoManCiS</title>
+
+<link rel="icon" href="../assets/logo.png">
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/sidebar.css">
+
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- SIDEBAR -->
+<!-- ========================= -->
+
+<aside class="sidebar">
+
+    <div class="logo-container">
+
+        <img
+            src="../assets/logo.png"
+            alt="Logo"
+            class="logo-img">
+
+        <h2 class="logo-text">
+            RoManCiS
+        </h2>
+
+        <p class="logo-subtitle">
+            Robotik MAN 1 Cirebon Smart Home
+        </p>
+
+    </div>
+
+    <nav class="menu">
+
+        <a href="../index.html" class="menu-link">
+            🏠 Dashboard
+        </a>
+
+        <a href="./setname.html" class="menu-link active">
+            📋 SetName RFID
+        </a>
+
+        <a href="./monitoring.html" class="menu-link">
+            📡 Monitoring
+        </a>
+
+    </nav>
+
+</aside>
+
+<!-- ========================= -->
+<!-- CONTENT -->
+<!-- ========================= -->
+
+<main class="content">
+
+    <div class="card">
+
+        <h1>
+            📋 SetName RFID
+        </h1>
+
+        <p>
+            Tambahkan nama untuk UID RFID yang telah discan.
+        </p>
+
+    </div>
+
+    <!-- FORM -->
+
+    <div class="card">
+
+        <h2>
+            Tambah Data RFID
+        </h2>
+
+        <br>
+
+        <label>
+            UID RFID
+        </label>
+
+        <input
+            type="text"
+            id="uidInput"
+            class="input-box"
+            placeholder="Tempel kartu RFID">
+
+        <br><br>
+
+        <label>
+            Nama Pemilik
+        </label>
+
+        <input
+            type="text"
+            id="namaInput"
+            class="input-box"
+            placeholder="Masukkan nama">
+
+        <br><br>
+
+        <button
+            id="saveBtn"
+            class="login-btn">
+
+            💾 Simpan
+
+        </button>
+
+        <button
+            id="deleteBtn"
+            class="logout-btn">
+
+            🗑 Hapus
+
+        </button>
+
+        <br><br>
+
+        <p id="setnameInfo">
+
+            Menunggu input...
+
+        </p>
+
+    </div>
+
+    <!-- DATA TABLE -->
+
+    <div class="card">
+
+        <h2>
+            Daftar RFID Terdaftar
+        </h2>
+
+        <br>
+
+        <div class="table-wrapper">
+
+            <table
+                id="rfidTable"
+                class="rfid-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            UID RFID
+                        </th>
+
+                        <th>
+                            Nama
+                        </th>
+
+                        <th>
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="rfidTableBody">
+
+                    <tr>
+
+                        <td colspan="3">
+
+                            Belum ada data
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</main>
+
+<!-- ========================= -->
+<!-- JS -->
+<!-- ========================= -->
+
+<script type="module"
+src="../js/firebase.js">
+</script>
+
+<script type="module"
+src="../js/setname.js">
+</script>
+
+</body>
+</html>

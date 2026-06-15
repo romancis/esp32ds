@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Monitoring - RoManCiS</title>
+
+<link rel="icon" href="../assets/logo.png">
+
+<!-- CSS -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/sidebar.css">
+<link rel="stylesheet" href="../css/monitoring.css">
+
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- SIDEBAR -->
+<!-- ========================= -->
+
+<aside class="sidebar">
+
+    <div class="logo-container">
+
+        <img
+            src="../assets/logo.png"
+            alt="RoManCiS Logo"
+            class="logo-img">
+
+        <h2 class="logo-text">
+            RoManCiS
+        </h2>
+
+        <p class="logo-subtitle">
+            Robotik MAN 1 Cirebon Smart Home
+        </p>
+
+    </div>
+
+    <nav class="menu">
+
+        <a href="../index.html" class="menu-link">
+            🏠 Dashboard
+        </a>
+
+        <a href="./setname.html" class="menu-link">
+            📋 SetName RFID
+        </a>
+
+        <a href="./monitoring.html" class="menu-link active">
+            📡 Monitoring
+        </a>
+
+    </nav>
+
+</aside>
+
+<!-- ========================= -->
+<!-- CONTENT -->
+<!-- ========================= -->
+
+<main class="content">
+
+    <h1>
+        📡 Monitoring MQTT
+    </h1>
+
+    <br>
+
+    <!-- STATUS MQTT -->
+
+    <div class="card">
+
+        <h2>
+            Status MQTT
+        </h2>
+
+        <div id="mqttStatus" class="mqtt-status">
+
+            🔴 Offline
+
+        </div>
+
+    </div>
+
+    <!-- DATA RFID -->
+
+    <div class="card">
+
+        <h2>
+            RFID Data
+        </h2>
+
+        <p>
+            UID :
+            <span id="uid">
+                -
+            </span>
+        </p>
+
+        <p>
+            Nama :
+            <span id="nama">
+                -
+            </span>
+        </p>
+
+        <p>
+            Status :
+            <span id="status">
+                -
+            </span>
+        </p>
+
+    </div>
+
+    <!-- SENSOR -->
+
+    <div class="card">
+
+    <h2>
+        Sensor & Relay
+    </h2>
+
+    <p>
+        Rain :
+        <span id="rain">
+            0
+        </span>
+    </p>
+
+    <p>
+        Suhu :
+        <span id="temperature">
+            0
+        </span>
+        °C
+    </p>
+
+    <p>
+        Kelembapan :
+        <span id="humidity">
+            0
+        </span>
+        %
+    </p>
+
+    <hr>
+
+    <p>
+        Relay 1 :
+        <span id="relay1">
+            OFF
+        </span>
+    </p>
+
+    <p>
+        Relay 2 :
+        <span id="relay2">
+            OFF
+        </span>
+    </p>
+
+    </div>
+
+    <!-- LIVE LOG -->
+
+    <div class="card">
+
+        <h2>
+            Activity Log
+        </h2>
+
+        <div id="logBox" class="log-box">
+
+        </div>
+
+    </div>
+
+</main>
+
+<!-- MQTT LIBRARY -->
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<!-- JS -->
+
+<script type="module" src="../js/firebase.js"></script>
+<script type="module" src="../js/mqtt.js"></script>
+<script type="module" src="../js/monitoring.js"></script>
+
+</body>
+
+</html>
