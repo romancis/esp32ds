@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RoManCiS Dashboard</title>
+
+<!-- Favicon -->
+<link rel="icon" href="./assets/logo.png">
+
+<!-- CSS -->
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/sidebar.css">
+<link rel="stylesheet" href="./css/login.css">
+<link rel="stylesheet" href="./css/monitoring.css">
+
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- SIDEBAR -->
+<!-- ========================= -->
+
+<aside class="sidebar">
+
+    <div class="logo-container">
+
+        <img
+            src="./assets/logo.png"
+            alt="RoManCiS Logo"
+            class="logo-img">
+
+        <h2 class="logo-text">
+            RoManCiS
+        </h2>
+
+        <p class="logo-subtitle">
+            Robotik MAN 1 Cirebon Smart Home
+        </p>
+
+    </div>
+
+    <nav class="menu">
+
+        <a href="./index.html" class="menu-link active">
+            🏠 Dashboard
+        </a>
+
+        <a href="./pages/setname.html" class="menu-link">
+            📋 SetName RFID
+        </a>
+
+        <a href="./pages/monitoring.html" class="menu-link">
+            📡 Monitoring
+        </a>
+
+    </nav>
+
+    <div class="profile">
+
+        <img
+            src="./assets/default-profile.png"
+            alt="Profile"
+            class="profile-img">
+
+        <h4 id="username">
+            Guest
+        </h4>
+
+        <p id="role">
+            Belum Login
+        </p>
+
+        <div id="sessionTimer" class="session-timer">
+            ⏳ --
+        </div>
+
+        <div class="sidebar-buttons">
+
+            <button
+                id="themeBtn"
+                class="theme-btn"
+                onclick="toggleTheme()">
+
+                🌙 Dark Mode
+
+           </button>
+
+            <a href="./pages/login.html" class="login-btn menu-link">
+                🔑 Login
+            </a>
+
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+                onclick="showLogoutPopup()">
+                🚪 Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- ========================= -->
+<!-- MAIN CONTENT -->
+<!-- ========================= -->
+
+<main class="content">
+
+    <!-- DASHBOARD -->
+
+    <div class="card">
+
+        <h1>🏠 Dashboard</h1>
+
+        <p>
+            Selamat datang di RoManCiS Dashboard
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>📊 Status Sistem</h2>
+
+        <br>
+
+        <p>
+            MQTT : <span id="mqttMiniStatus">Belum Terhubung</span>
+        </p>
+
+        <p>
+            User : <span id="dashboardUser">Guest</span>
+        </p>
+
+        <p>
+            Session : <span id="dashboardSession">--</span>
+        </p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>🚀 Fitur RoManCiS</h2>
+
+        <br>
+
+        <ul>
+
+            <li>ESP32 Smart Home</li>
+
+            <li>RFID Access Control</li>
+
+            <li>Firebase Authentication</li>
+
+            <li>Realtime MQTT Monitoring</li>
+
+            <li>Firestore Database</li>
+
+        </ul>
+
+    </div>
+
+</main>
+
+<!-- ========================= -->
+<!-- LOGOUT POPUP -->
+<!-- ========================= -->
+
+<div
+    id="logoutPopup"
+    class="popup">
+
+    <div class="popup-content">
+
+        <h3>
+            Apakah yakin ingin logout?
+        </h3>
+
+        <div class="popup-buttons">
+
+            <button
+                class="yes-btn"
+                onclick="logout()">
+                Ya
+            </button>
+
+            <button
+                class="no-btn"
+                onclick="closePopup()">
+                Tidak
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- JS MODULES -->
+<!-- ========================= -->
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script type="module" src="./js/ui.js"></script>
+<script type="module" src="./js/theme.js"></script>
+<script type="module" src="./js/firebase.js"></script>
+<script type="module" src="./js/auth.js"></script>
+<script type="module" src="./js/app.js"></script>
+
+</body>
+</html>
