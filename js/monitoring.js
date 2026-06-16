@@ -1,44 +1,16 @@
 // =========================
-// MQTT IMPORT
+// IMPORT MQTT
 // =========================
 
 import {
-
     client,
     MQTT_TOPICS
-
 }
-
 from "./mqtt.js";
 
 // =========================
-// ELEMENTS
+// LOG BOX
 // =========================
-
-const uidElement =
-document.getElementById(
-    "uid"
-);
-
-const statusElement =
-document.getElementById(
-    "status"
-);
-
-const rainElement =
-document.getElementById(
-    "rain"
-);
-
-const relay1Element =
-document.getElementById(
-    "relay1"
-);
-
-const relay2Element =
-document.getElementById(
-    "relay2"
-);
 
 const logBox =
 document.getElementById(
@@ -49,43 +21,28 @@ document.getElementById(
 // ADD LOG
 // =========================
 
-function addLog(text){
+function addLog(message){
 
     if(!logBox) return;
 
     const item =
-    document.createElement(
-        "div"
-    );
+    document.createElement("div");
 
     item.className =
     "log-item";
 
+    const now =
+    new Date();
+
+    const time =
+    now.toLocaleTimeString(
+        "id-ID"
+    );
+
     item.innerHTML =
-
-    `
-    <span>
-    ${new Date().toLocaleTimeString()}
-    </span>
-
-    <br>
-
-    ${text}
-    `;
+    `[${time}] ${message}`;
 
     logBox.prepend(item);
-
-    while(
-
-        logBox.children.length > 50
-
-    ){
-
-        logBox.removeChild(
-            logBox.lastChild
-        );
-
-    }
 
 }
 
@@ -94,131 +51,340 @@ function addLog(text){
 // =========================
 
 client.on(
-
     "message",
-
-    (topic,message)=>{
+    async (
+        topic,
+        message
+    ) => {
 
         const data =
         message.toString();
 
+        // =====================
         // UID
+        // =====================
 
         if(
-
             topic ===
             MQTT_TOPICS.uid
-
         ){
 
-            if(uidElement){
+            const uid =
+            document.getElementById(
+                "uid"
+            );
 
-                uidElement.innerHTML =
+            if(uid){
+
+                uid.innerHTML =
                 data;
 
             }
 
             addLog(
-                "RFID UID : " +
-                data
+                `RFID UID : ${data}`
             );
 
         }
 
+        // =====================
         // STATUS
+        // =====================
 
         if(
-
             topic ===
             MQTT_TOPICS.status
-
         ){
 
-            if(statusElement){
+            const status =
+            document.getElementById(
+                "status"
+            );
 
-                statusElement.innerHTML =
+            if(status){
+
+                status.innerHTML =
                 data;
 
             }
 
             addLog(
-                "Status : " +
-                data
+                `Status : ${data}`
             );
 
         }
 
+        // =====================
         // RAIN
+        // =====================
 
         if(
-
             topic ===
             MQTT_TOPICS.rain
-
         ){
 
-            if(rainElement){
+            const rain =
+            document.getElementById(
+                "rain"
+            );
 
-                rainElement.innerHTML =
+            if(rain){
+
+                rain.innerHTML =
                 data;
 
             }
 
-            addLog(
-                "Rain : " +
-                data
+        }
+
+        // =====================
+        // TEMPERATURE
+        // =====================
+
+        if(
+            topic ===
+            MQTT_TOPICS.temperature
+        ){
+
+            const temp =
+            document.getElementById(
+                "temperature"
             );
+
+            if(temp){
+
+                temp.innerHTML =
+                data;
+
+            }
 
         }
 
-        // RELAY 1
+        // =====================
+        // HUMIDITY
+        // =====================
 
         if(
+            topic ===
+            MQTT_TOPICS.humidity
+        ){
 
+            const hum =
+            document.getElementById(
+                "humidity"
+            );
+
+            if(hum){
+
+                hum.innerHTML =
+                data;
+
+            }
+
+        }
+
+        // =====================
+        // RELAY 1
+        // =====================
+
+        if(
             topic ===
             MQTT_TOPICS.relay1
-
         ){
 
-            if(relay1Element){
+            const relay1 =
+            document.getElementById(
+                "relay1"
+            );
 
-                relay1Element.innerHTML =
+            if(relay1){
+
+                relay1.innerHTML =
                 data;
 
             }
-
-            addLog(
-                "Relay 1 : " +
-                data
-            );
 
         }
 
+        // =====================
         // RELAY 2
+        // =====================
 
         if(
-
             topic ===
             MQTT_TOPICS.relay2
-
         ){
 
-            if(relay2Element){
+            const relay2 =
+            document.getElementById(
+                "relay2"
+            );
 
-                relay2Element.innerHTML =
+            if(relay2){
+
+                relay2.innerHTML =
                 data;
 
             }
-
-            addLog(
-                "Relay 2 : " +
-                data
-            );
 
         }
 
     }
+);
 
+// =========================
+// ROLE CHECK
+// =========================
+
+function canControl(){
+
+    const role =
+    localStorage.getItem(
+        "romancis_role"
+    );
+
+    return (
+        role === "admin" ||
+        role === "viewer"
+    );
+
+}
+
+// =========================
+// CONTROL RELAY 1
+// =========================
+
+window.relay1On =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Silakan login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        MQTT_TOPICS.relay1,
+        "ON"
+    );
+
+    addLog(
+        "Relay 1 ON"
+    );
+
+};
+
+window.relay1Off =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Silakan login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        MQTT_TOPICS.relay1,
+        "OFF"
+    );
+
+    addLog(
+        "Relay 1 OFF"
+    );
+
+};
+
+// =========================
+// CONTROL RELAY 2
+// =========================
+
+window.relay2On =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Silakan login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        MQTT_TOPICS.relay2,
+        "ON"
+    );
+
+    addLog(
+        "Relay 2 ON"
+    );
+
+};
+
+window.relay2Off =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Silakan login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        MQTT_TOPICS.relay2,
+        "OFF"
+    );
+
+    addLog(
+        "Relay 2 OFF"
+    );
+
+};
+
+// =========================
+// MQTT STATUS
+// =========================
+
+client.on(
+    "connect",
+    () => {
+
+        addLog(
+            "MQTT Connected"
+        );
+
+    }
+);
+
+client.on(
+    "offline",
+    () => {
+
+        addLog(
+            "MQTT Offline"
+        );
+
+    }
+);
+
+client.on(
+    "reconnect",
+    () => {
+
+        addLog(
+            "MQTT Reconnecting..."
+        );
+
+    }
 );
 
 // =========================
