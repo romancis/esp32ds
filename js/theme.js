@@ -1,65 +1,31 @@
 // =========================
-// THEME STARTUP
+// ELEMENT HELPER
 // =========================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function el(id){
 
-        loadTheme();
-
-    }
-);
-
-// =========================
-// TOGGLE THEME
-// =========================
-
-window.toggleTheme =
-function(){
-
-    document.body.classList.toggle(
-        "dark"
-    );
-
-    updateThemeButton();
-
-    saveTheme();
-
-};
-
-// =========================
-// SAVE THEME
-// =========================
-
-function saveTheme(){
-
-    const isDark =
-    document.body.classList.contains(
-        "dark"
-    );
-
-    localStorage.setItem(
-        "theme",
-        isDark ? "dark" : "light"
+    return document.getElementById(
+        id
     );
 
 }
 
 // =========================
-// LOAD THEME
+// APPLY THEME
 // =========================
 
-function loadTheme(){
+function applyTheme(theme){
 
-    const savedTheme =
-    localStorage.getItem(
-        "theme"
-    );
-
-    if(savedTheme === "dark"){
+    if(theme === "dark"){
 
         document.body.classList.add(
+            "dark"
+        );
+
+    }
+    else{
+
+        document.body.classList.remove(
             "dark"
         );
 
@@ -70,43 +36,136 @@ function loadTheme(){
 }
 
 // =========================
+// SAVE THEME
+// =========================
+
+function saveTheme(theme){
+
+    localStorage.setItem(
+        "theme",
+        theme
+    );
+
+}
+
+// =========================
+// LOAD THEME
+// =========================
+
+function loadTheme(){
+
+    let theme =
+    localStorage.getItem(
+        "theme"
+    );
+
+    // pertama kali buka
+
+    if(!theme){
+
+        const prefersDark =
+
+        window.matchMedia(
+
+            "(prefers-color-scheme: dark)"
+
+        ).matches;
+
+        theme =
+        prefersDark
+        ? "dark"
+        : "light";
+
+    }
+
+    applyTheme(theme);
+
+}
+
+// =========================
+// TOGGLE THEME
+// =========================
+
+window.toggleTheme =
+function(){
+
+    const isDark =
+
+    document.body.classList.contains(
+        "dark"
+    );
+
+    const newTheme =
+
+    isDark
+    ? "light"
+    : "dark";
+
+    applyTheme(
+        newTheme
+    );
+
+    saveTheme(
+        newTheme
+    );
+
+};
+
+// =========================
 // UPDATE BUTTON
 // =========================
 
 function updateThemeButton(){
 
     const btn =
-    document.getElementById(
-        "themeBtn"
+    el("themeBtn");
+
+    if(!btn) return;
+
+    const isDark =
+
+    document.body.classList.contains(
+        "dark"
     );
 
-    if(!btn){
+    btn.innerHTML =
 
-        return;
+    isDark
 
-    }
+    ?
 
-    if(
+    "☀️ Light Mode"
 
-        document.body.classList.contains(
-            "dark"
-        )
+    :
 
-    ){
-
-        btn.innerHTML =
-        "☀️ Light Mode";
-
-    }
-
-    else{
-
-        btn.innerHTML =
-        "🌙 Dark Mode";
-
-    }
+    "🌙 Dark Mode";
 
 }
+
+// =========================
+// INIT
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        loadTheme();
+
+        const btn =
+        el("themeBtn");
+
+        if(btn){
+
+            btn.addEventListener(
+                "click",
+                toggleTheme
+            );
+
+        }
+
+    }
+);
 
 // =========================
 // READY
