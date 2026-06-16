@@ -2,25 +2,27 @@
 // FIRESTORE IMPORT
 // =========================
 
-import {
-
-    db
-
-} from "./firebase.js";
+import { db } from "./firebase.js";
 
 import {
-
-    doc,
-    setDoc,
-    getDocs,
-    deleteDoc,
-    collection
-
+doc,
+setDoc,
+getDocs,
+deleteDoc,
+collection
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+// =========================
+// MQTT IMPORT
+// =========================
+
+import {
+client,
+MQTT_TOPICS
+}
+from "./mqtt.js";
 
 // =========================
 // ELEMENT
@@ -28,43 +30,98 @@ from
 
 const uidInput =
 document.getElementById(
-    "uidInput"
+"uidInput"
 );
 
 const namaInput =
 document.getElementById(
-    "namaInput"
+"namaInput"
 );
 
 const saveBtn =
 document.getElementById(
-    "saveBtn"
+"saveBtn"
 );
 
 const deleteBtn =
 document.getElementById(
-    "deleteBtn"
+"deleteBtn"
 );
 
 const info =
 document.getElementById(
-    "setnameInfo"
+"setnameInfo"
 );
 
 const tableBody =
 document.getElementById(
-    "rfidTableBody"
+"rfidTableBody"
 );
 
 // =========================
-// LOAD DATA
+// ROLE CHECK
+// =========================
+
+function isAdmin(){
+
+```
+return (
+    localStorage.getItem(
+        "romancis_role"
+    ) === "admin"
+);
+```
+
+}
+
+// =========================
+// MQTT UID LISTENER
+// =========================
+
+client.on(
+"message",
+(topic,message)=>{
+
+```
+    if(
+        topic ===
+        MQTT_TOPICS.uid
+    ){
+
+        const uid =
+        message.toString();
+
+        if(uidInput){
+
+            uidInput.value =
+            uid;
+        }
+
+        if(info){
+
+            info.innerHTML =
+            "📡 UID RFID diterima";
+        }
+
+    }
+
+}
+```
+
+);
+
+// =========================
+// LOAD RFID DATA
 // =========================
 
 async function loadRFID(){
 
-    if(!tableBody) return;
+```
+if(!tableBody) return;
 
-    tableBody.innerHTML = "";
+tableBody.innerHTML = "";
+
+try{
 
     const snapshot =
     await getDocs(
@@ -81,7 +138,7 @@ async function loadRFID(){
         `
         <tr>
             <td colspan="3">
-                Belum ada data
+                Belum ada data RFID
             </td>
         </tr>
         `;
@@ -102,22 +159,26 @@ async function loadRFID(){
         tr.innerHTML =
 
         `
-        <td>
-            ${docSnap.id}
-        </td>
+        <td>${docSnap.id}</td>
 
-        <td>
-            ${data.nama}
-        </td>
+        <td>${data.nama || "-"}</td>
 
         <td>
 
-            <button
-            onclick="hapusRFID('${docSnap.id}')">
+            ${
+                isAdmin()
 
-            Hapus
+                ?
 
-            </button>
+                `<button
+                    onclick="hapusRFID('${docSnap.id}')">
+                    Hapus
+                </button>`
+
+                :
+
+                `<span>Viewer</span>`
+            }
 
         </td>
         `;
@@ -129,135 +190,186 @@ async function loadRFID(){
     });
 
 }
+catch(error){
 
-// =========================
-// SIMPAN
-// =========================
+    console.error(error);
 
-async function simpanRFID(){
-
-    const uid =
-    uidInput.value.trim();
-
-    const nama =
-    namaInput.value.trim();
-
-    if(uid === ""){
+    if(info){
 
         info.innerHTML =
-        "UID kosong";
-
-        return;
-
+        "❌ Gagal memuat data";
     }
 
-    if(nama === ""){
-
-        info.innerHTML =
-        "Nama kosong";
-
-        return;
-
-    }
-
-    try{
-
-        await setDoc(
-
-            doc(
-                db,
-                "rfid",
-                uid
-            ),
-
-            {
-
-                nama:
-
-                nama,
-
-                timestamp:
-
-                new Date()
-                .toLocaleString()
-
-            }
-
-        );
-
-        info.innerHTML =
-        "Data berhasil disimpan";
-
-        uidInput.value = "";
-        namaInput.value = "";
-
-        loadRFID();
-
-    }
-
-    catch(error){
-
-        console.error(
-            error
-        );
-
-        info.innerHTML =
-        "Gagal menyimpan";
-
-    }
+}
+```
 
 }
 
 // =========================
-// HAPUS
+// SIMPAN RFID
+// =========================
+
+async function simpanRFID(){
+
+```
+if(!isAdmin()){
+
+    alert(
+        "Hanya Admin yang dapat menyimpan data RFID"
+    );
+
+    return;
+}
+
+const uid =
+uidInput?.value.trim();
+
+const nama =
+namaInput?.value.trim();
+
+if(!uid){
+
+    info.innerHTML =
+    "UID kosong";
+
+    return;
+}
+
+if(!nama){
+
+    info.innerHTML =
+    "Nama kosong";
+
+    return;
+}
+
+try{
+
+    await setDoc(
+
+        doc(
+            db,
+            "rfid",
+            uid
+        ),
+
+        {
+
+            uid: uid,
+
+            nama: nama,
+
+            timestamp:
+            new Date()
+            .toLocaleString()
+
+        }
+
+    );
+
+    info.innerHTML =
+    "✅ Data berhasil disimpan";
+
+    uidInput.value = "";
+    namaInput.value = "";
+
+    loadRFID();
+
+}
+catch(error){
+
+    console.error(error);
+
+    info.innerHTML =
+    "❌ Gagal menyimpan";
+
+}
+```
+
+}
+
+// =========================
+// HAPUS RFID
 // =========================
 
 window.hapusRFID =
 async function(uid){
 
-    if(
+```
+if(!isAdmin()){
 
-        !confirm(
-            "Hapus data RFID?"
+    alert(
+        "Hanya Admin yang dapat menghapus data"
+    );
+
+    return;
+}
+
+const konfirmasi =
+confirm(
+    "Hapus data RFID?"
+);
+
+if(!konfirmasi){
+
+    return;
+}
+
+try{
+
+    await deleteDoc(
+
+        doc(
+            db,
+            "rfid",
+            uid
         )
 
-    ){
+    );
 
-        return;
+    info.innerHTML =
+    "🗑️ Data berhasil dihapus";
 
-    }
+    loadRFID();
 
-    try{
+}
+catch(error){
 
-        await deleteDoc(
+    console.error(error);
 
-            doc(
-                db,
-                "rfid",
-                uid
-            )
+    info.innerHTML =
+    "❌ Gagal menghapus";
 
-        );
-
-        info.innerHTML =
-        "Data dihapus";
-
-        loadRFID();
-
-    }
-
-    catch(error){
-
-        console.error(
-            error
-        );
-
-        info.innerHTML =
-        "Gagal menghapus";
-
-    }
+}
+```
 
 };
+
+// =========================
+// CLEAR FORM
+// =========================
+
+function clearForm(){
+
+```
+if(uidInput){
+
+    uidInput.value = "";
+}
+
+if(namaInput){
+
+    namaInput.value = "";
+}
+
+if(info){
+
+    info.innerHTML =
+    "Form dibersihkan";
+}
+```
+
+}
 
 // =========================
 // BUTTON EVENT
@@ -265,38 +377,70 @@ async function(uid){
 
 if(saveBtn){
 
-    saveBtn.addEventListener(
-
-        "click",
-
-        simpanRFID
-
-    );
+```
+saveBtn.addEventListener(
+    "click",
+    simpanRFID
+);
+```
 
 }
 
 if(deleteBtn){
 
-    deleteBtn.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            uidInput.value = "";
-            namaInput.value = "";
-
-            info.innerHTML =
-            "Form dibersihkan";
-
-        }
-
-    );
+```
+deleteBtn.addEventListener(
+    "click",
+    clearForm
+);
+```
 
 }
 
 // =========================
-// AUTO LOAD
+// LOCK VIEWER
 // =========================
 
-loadRFID();
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+```
+    const role =
+    localStorage.getItem(
+        "romancis_role"
+    );
+
+    if(role !== "admin"){
+
+        if(namaInput){
+
+            namaInput.disabled =
+            true;
+        }
+
+        if(saveBtn){
+
+            saveBtn.disabled =
+            true;
+
+            saveBtn.innerHTML =
+            "🔒 Hanya Admin";
+        }
+
+    }
+
+    loadRFID();
+
+}
+```
+
+);
+
+// =========================
+// READY
+// =========================
+
+console.log(
+"🏷️ SetName Ready"
+);
