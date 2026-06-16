@@ -5,28 +5,57 @@
 const MQTT_BROKER =
 "wss://broker.hivemq.com:8884/mqtt";
 
+const MQTT_OPTIONS = {
+
+```
+reconnectPeriod: 3000,
+connectTimeout: 10000,
+clean: true
+```
+
+};
+
 const MQTT_TOPICS = {
 
-    uid:
-    "mansaci/rfid/uid",
+```
+// RFID
 
-    status:
-    "mansaci/rfid/status",
+uid:
+"mansaci/rfid/uid",
 
-    rain:
-    "mansaci/rain",
+status:
+"mansaci/rfid/status",
 
-    relay1:
-    "mansaci/relay1",
+// SENSOR
 
-    relay2:
-    "mansaci/relay2",
+rain:
+"mansaci/rain",
 
-    temperature:
-    "mansaci/temperature",
+temperature:
+"mansaci/temperature",
 
-    humidity:
-    "mansaci/humidity"
+humidity:
+"mansaci/humidity",
+
+// RELAY
+
+relay1:
+"mansaci/relay1",
+
+relay2:
+"mansaci/relay2",
+
+// CONTROL
+
+control:
+"mansaci/control",
+
+buzzer:
+"mansaci/buzzer",
+
+door:
+"mansaci/door"
+```
 
 };
 
@@ -34,24 +63,29 @@ const MQTT_TOPICS = {
 // MQTT CLIENT
 // =========================
 
-const client = mqtt.connect(
-    MQTT_BROKER
+const client =
+mqtt.connect(
+MQTT_BROKER,
+MQTT_OPTIONS
 );
 
 // =========================
 // CONNECT
 // =========================
 
-client.on("connect", () => {
+client.on(
+"connect",
+() => {
 
+```
     console.log(
-        "MQTT Connected"
+        "✅ MQTT Connected"
     );
 
     const mqttStatus =
-        document.getElementById(
-            "mqttStatus"
-        );
+    document.getElementById(
+        "mqttStatus"
+    );
 
     if(mqttStatus){
 
@@ -60,30 +94,39 @@ client.on("connect", () => {
 
     }
 
-    Object.values(MQTT_TOPICS)
-    .forEach(topic => {
+    Object.values(
+        MQTT_TOPICS
+    ).forEach(topic=>{
 
-        client.subscribe(topic);
+        client.subscribe(
+            topic
+        );
 
         console.log(
-            "Subscribe:",
+            "📡 Subscribe:",
             topic
         );
 
     });
 
-});
+}
+```
+
+);
 
 // =========================
-// DISCONNECT
+// OFFLINE
 // =========================
 
-client.on("offline", () => {
+client.on(
+"offline",
+()=>{
 
+```
     const mqttStatus =
-        document.getElementById(
-            "mqttStatus"
-        );
+    document.getElementById(
+        "mqttStatus"
+    );
 
     if(mqttStatus){
 
@@ -92,10 +135,20 @@ client.on("offline", () => {
 
     }
 
-});
+}
+```
 
-client.on("reconnect", () => {
+);
 
+// =========================
+// RECONNECT
+// =========================
+
+client.on(
+"reconnect",
+()=>{
+
+```
     const mqttStatus =
     document.getElementById(
         "mqttStatus"
@@ -108,16 +161,29 @@ client.on("reconnect", () => {
 
     }
 
-});
+}
+```
 
-client.on("error", (err) => {
+);
 
+// =========================
+// ERROR
+// =========================
+
+client.on(
+"error",
+(error)=>{
+
+```
     console.error(
-        "MQTT Error:",
-        err
+        "❌ MQTT Error:",
+        error
     );
 
-});
+}
+```
+
+);
 
 // =========================
 // MESSAGE HANDLER
@@ -127,6 +193,7 @@ client.on(
 "message",
 (topic,message)=>{
 
+```
     const data =
     message.toString();
 
@@ -135,42 +202,44 @@ client.on(
         data
     );
 
+    // =====================
     // UID RFID
+    // =====================
 
     if(
-    topic ===
-    MQTT_TOPICS.uid
-){
+        topic ===
+        MQTT_TOPICS.uid
+    ){
 
-    const uid =
-    document.getElementById(
-        "uid"
-    );
+        const uid =
+        document.getElementById(
+            "uid"
+        );
 
-    if(uid){
+        if(uid){
 
-        uid.innerHTML =
-        data;
+            uid.innerHTML =
+            data;
+
+        }
+
+        const uidInput =
+        document.getElementById(
+            "uidInput"
+        );
+
+        if(uidInput){
+
+            uidInput.value =
+            data;
+
+        }
 
     }
 
-    // AUTO FILL SETNAME
-
-    const uidInput =
-    document.getElementById(
-        "uidInput"
-    );
-
-    if(uidInput){
-
-        uidInput.value =
-        data;
-
-    }
-
-}
-
-    // STATUS RFID
+    // =====================
+    // STATUS
+    // =====================
 
     if(
         topic ===
@@ -191,7 +260,9 @@ client.on(
 
     }
 
-    // RAIN SENSOR
+    // =====================
+    // RAIN
+    // =====================
 
     if(
         topic ===
@@ -212,7 +283,55 @@ client.on(
 
     }
 
+    // =====================
+    // TEMPERATURE
+    // =====================
+
+    if(
+        topic ===
+        MQTT_TOPICS.temperature
+    ){
+
+        const temperature =
+        document.getElementById(
+            "temperature"
+        );
+
+        if(temperature){
+
+            temperature.innerHTML =
+            data;
+
+        }
+
+    }
+
+    // =====================
+    // HUMIDITY
+    // =====================
+
+    if(
+        topic ===
+        MQTT_TOPICS.humidity
+    ){
+
+        const humidity =
+        document.getElementById(
+            "humidity"
+        );
+
+        if(humidity){
+
+            humidity.innerHTML =
+            data;
+
+        }
+
+    }
+
+    // =====================
     // RELAY 1
+    // =====================
 
     if(
         topic ===
@@ -233,7 +352,9 @@ client.on(
 
     }
 
+    // =====================
     // RELAY 2
+    // =====================
 
     if(
         topic ===
@@ -254,69 +375,143 @@ client.on(
 
     }
 
-    // TEMPERATURE
-
-if(
-    topic ===
-    MQTT_TOPICS.temperature
-){
-
-    const temperature =
-    document.getElementById(
-        "temperature"
-    );
-
-    if(temperature){
-
-        temperature.innerHTML =
-        data;
-
-    }
-
 }
+```
 
-// HUMIDITY
-
-if(
-    topic ===
-    MQTT_TOPICS.humidity
-){
-
-    const humidity =
-    document.getElementById(
-        "humidity"
-    );
-
-    if(humidity){
-
-        humidity.innerHTML =
-        data;
-
-    }
-
-}
-
-});
+);
 
 // =========================
-// PUBLISH FUNCTION
+// GENERIC PUBLISH
+// =========================
+
+function publishMQTT(
+topic,
+message
+){
+
+```
+if(
+    !client.connected
+){
+
+    console.warn(
+        "MQTT belum connect"
+    );
+
+    return;
+}
+
+client.publish(
+    topic,
+    String(message)
+);
+```
+
+}
+
+// =========================
+// RELAY CONTROL
+// =========================
+
+function publishRelay1(
+state
+){
+
+```
+publishMQTT(
+    MQTT_TOPICS.relay1,
+    state
+);
+```
+
+}
+
+function publishRelay2(
+state
+){
+
+```
+publishMQTT(
+    MQTT_TOPICS.relay2,
+    state
+);
+```
+
+}
+
+// =========================
+// DOOR CONTROL
+// =========================
+
+function publishDoor(
+state
+){
+
+```
+publishMQTT(
+    MQTT_TOPICS.door,
+    state
+);
+```
+
+}
+
+// =========================
+// BUZZER CONTROL
+// =========================
+
+function publishBuzzer(
+state
+){
+
+```
+publishMQTT(
+    MQTT_TOPICS.buzzer,
+    state
+);
+```
+
+}
+
+// =========================
+// GLOBAL
 // =========================
 
 window.publishMQTT =
-function(topic,message){
+publishMQTT;
 
-    client.publish(
-        topic,
-        message
-    );
+window.publishRelay1 =
+publishRelay1;
 
-};
+window.publishRelay2 =
+publishRelay2;
+
+window.publishDoor =
+publishDoor;
+
+window.publishBuzzer =
+publishBuzzer;
 
 // =========================
 // EXPORT
 // =========================
 
 export {
-    client,
-    MQTT_TOPICS
+
+```
+client,
+
+MQTT_TOPICS,
+
+publishMQTT,
+
+publishRelay1,
+
+publishRelay2,
+
+publishDoor,
+
+publishBuzzer
+```
+
 };
