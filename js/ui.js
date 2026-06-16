@@ -1,6 +1,5 @@
-
 // =========================
-// UI READY
+// DOM READY
 // =========================
 
 document.addEventListener(
@@ -12,6 +11,8 @@ document.addEventListener(
         animateCards();
 
         buttonEffects();
+
+        setupLogoutPopup();
 
     }
 );
@@ -27,17 +28,23 @@ function setActiveMenu(){
         ".menu-link"
     );
 
-    const currentPage =
-    window.location.pathname;
+    const current =
+    window.location.pathname
+    .split("/")
+    .pop();
 
     links.forEach(link => {
 
         const href =
-        link.getAttribute("href");
+        link.getAttribute(
+            "href"
+        );
+
+        if(!href) return;
 
         if(
 
-            currentPage.includes(href)
+            href.includes(current)
 
         ){
 
@@ -75,7 +82,7 @@ function animateCards(){
             setTimeout(()=>{
 
                 card.style.transition =
-                ".4s ease";
+                "all .4s ease";
 
                 card.style.opacity =
                 "1";
@@ -83,7 +90,7 @@ function animateCards(){
                 card.style.transform =
                 "translateY(0)";
 
-            },index*100);
+            },index * 100);
 
         }
 
@@ -139,7 +146,7 @@ function buttonEffects(){
 }
 
 // =========================
-// TOAST NOTIFICATION
+// TOAST
 // =========================
 
 window.showToast =
@@ -183,6 +190,152 @@ function(message){
     },3000);
 
 };
+
+// =========================
+// LOGOUT POPUP
+// =========================
+
+window.showLogoutPopup =
+function(){
+
+    const popup =
+    document.getElementById(
+        "logoutPopup"
+    );
+
+    if(!popup) return;
+
+    popup.style.display =
+    "flex";
+
+};
+
+window.closePopup =
+function(){
+
+    const popup =
+    document.getElementById(
+        "logoutPopup"
+    );
+
+    if(!popup) return;
+
+    popup.style.display =
+    "none";
+
+};
+
+// =========================
+// SETUP POPUP
+// =========================
+
+function setupLogoutPopup(){
+
+    const logoutBtn =
+    document.getElementById(
+        "logoutBtn"
+    );
+
+    const confirmBtn =
+    document.getElementById(
+        "confirmLogout"
+    );
+
+    const cancelBtn =
+    document.getElementById(
+        "cancelLogout"
+    );
+
+    // tombol logout
+
+    if(logoutBtn){
+
+        logoutBtn.addEventListener(
+            "click",
+            showLogoutPopup
+        );
+
+    }
+
+    // tombol ya
+
+    if(confirmBtn){
+
+        confirmBtn.addEventListener(
+            "click",
+            ()=>{
+
+                if(
+                    typeof logout ===
+                    "function"
+                ){
+
+                    logout();
+
+                }
+
+            }
+        );
+
+    }
+
+    // tombol tidak
+
+    if(cancelBtn){
+
+        cancelBtn.addEventListener(
+            "click",
+            closePopup
+        );
+
+    }
+
+}
+
+// =========================
+// ESC KEY CLOSE POPUP
+// =========================
+
+document.addEventListener(
+    "keydown",
+    (event)=>{
+
+        if(
+            event.key ===
+            "Escape"
+        ){
+
+            closePopup();
+
+        }
+
+    }
+);
+
+// =========================
+// CLICK OUTSIDE POPUP
+// =========================
+
+window.addEventListener(
+    "click",
+    (event)=>{
+
+        const popup =
+        document.getElementById(
+            "logoutPopup"
+        );
+
+        if(
+            popup &&
+            event.target === popup
+        ){
+
+            closePopup();
+
+        }
+
+    }
+);
 
 // =========================
 // READY
