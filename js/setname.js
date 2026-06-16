@@ -95,12 +95,14 @@ client.on(
 
             uidInput.value =
             uid;
+
         }
 
         if(info){
 
             info.innerHTML =
             "📡 UID RFID diterima";
+
         }
 
     }
@@ -144,6 +146,7 @@ try{
         `;
 
         return;
+
     }
 
     snapshot.forEach(docSnap=>{
@@ -159,9 +162,13 @@ try{
         tr.innerHTML =
 
         `
-        <td>${docSnap.id}</td>
+        <td>
+            ${docSnap.id}
+        </td>
 
-        <td>${data.nama || "-"}</td>
+        <td>
+            ${data.nama || "-"}
+        </td>
 
         <td>
 
@@ -177,7 +184,7 @@ try{
 
                 :
 
-                `<span>Viewer</span>`
+                `<span>View Only</span>`
             }
 
         </td>
@@ -198,6 +205,7 @@ catch(error){
 
         info.innerHTML =
         "❌ Gagal memuat data";
+
     }
 
 }
@@ -219,6 +227,7 @@ if(!isAdmin()){
     );
 
     return;
+
 }
 
 const uid =
@@ -233,6 +242,7 @@ if(!uid){
     "UID kosong";
 
     return;
+
 }
 
 if(!nama){
@@ -241,6 +251,7 @@ if(!nama){
     "Nama kosong";
 
     return;
+
 }
 
 try{
@@ -303,6 +314,7 @@ if(!isAdmin()){
     );
 
     return;
+
 }
 
 const konfirmasi =
@@ -313,6 +325,7 @@ confirm(
 if(!konfirmasi){
 
     return;
+
 }
 
 try{
@@ -355,17 +368,20 @@ function clearForm(){
 if(uidInput){
 
     uidInput.value = "";
+
 }
 
 if(namaInput){
 
     namaInput.value = "";
+
 }
 
 if(info){
 
     info.innerHTML =
     "Form dibersihkan";
+
 }
 ```
 
@@ -398,7 +414,7 @@ deleteBtn.addEventListener(
 }
 
 // =========================
-// LOCK VIEWER
+// LOCK VIEWER / GUEST
 // =========================
 
 document.addEventListener(
@@ -406,17 +422,13 @@ document.addEventListener(
 ()=>{
 
 ```
-    const role =
-    localStorage.getItem(
-        "romancis_role"
-    );
-
-    if(role !== "admin"){
+    if(!isAdmin()){
 
         if(namaInput){
 
             namaInput.disabled =
             true;
+
         }
 
         if(saveBtn){
@@ -426,6 +438,7 @@ document.addEventListener(
 
             saveBtn.innerHTML =
             "🔒 Hanya Admin";
+
         }
 
     }
