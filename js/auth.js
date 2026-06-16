@@ -5,26 +5,68 @@
 import { db } from "./firebase.js";
 
 import {
-    doc,
-    getDoc
+doc,
+getDoc
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // =========================
-// SESSION TIMER
+// SESSION
 // =========================
 
 let sessionInterval = null;
 
 // =========================
-// SAFE ELEMENT
+// HELPER
 // =========================
 
 function el(id){
 
-    return document.getElementById(id);
+```
+return document.getElementById(id);
+```
 
 }
+
+// =========================
+// ROLE HELPER
+// =========================
+
+window.isAdmin = function(){
+
+```
+return (
+    localStorage.getItem(
+        "romancis_role"
+    ) === "admin"
+);
+```
+
+};
+
+window.isViewer = function(){
+
+```
+return (
+    localStorage.getItem(
+        "romancis_role"
+    ) === "viewer"
+);
+```
+
+};
+
+window.isGuest = function(){
+
+```
+return (
+    !localStorage.getItem(
+        "romancis_username"
+    )
+);
+```
+
+};
 
 // =========================
 // UPDATE UI
@@ -32,167 +74,191 @@ function el(id){
 
 function updateUI(){
 
-    const username =
-    localStorage.getItem(
-        "romancis_username"
-    );
+```
+const username =
+localStorage.getItem(
+    "romancis_username"
+);
 
-    const role =
-    localStorage.getItem(
-        "romancis_role"
-    );
+const role =
+localStorage.getItem(
+    "romancis_role"
+);
 
-    const usernameEl = el("username");
-    const roleEl = el("role");
+const usernameEl =
+el("username");
 
-    const loginBtn = el("loginBtn");
-    const logoutBtn = el("logoutBtn");
+const roleEl =
+el("role");
 
-    const timerEl = el("sessionTimer");
+const loginBtn =
+el("loginBtn");
 
-    const dashboardUser =
-    el("dashboardUser");
+const logoutBtn =
+el("logoutBtn");
 
-    const dashboardRole =
-    el("dashboardRole");
+const timerEl =
+el("sessionTimer");
 
-    // =====================
-    // GUEST
-    // =====================
+const dashboardUser =
+el("dashboardUser");
 
-    if(!username){
+const dashboardRole =
+el("dashboardRole");
 
-        if(usernameEl)
-            usernameEl.innerHTML =
-            "Guest";
+// =====================
+// GUEST
+// =====================
 
-        if(roleEl)
-            roleEl.innerHTML =
-            "Belum Login";
-
-        if(loginBtn)
-            loginBtn.style.display =
-            "block";
-
-        if(logoutBtn)
-            logoutBtn.style.display =
-            "none";
-
-        if(timerEl)
-            timerEl.style.display =
-            "none";
-
-        if(dashboardUser)
-            dashboardUser.innerHTML =
-            "Guest";
-
-        if(dashboardRole)
-            dashboardRole.innerHTML =
-            "Guest";
-
-        return;
-    }
-
-    // =====================
-    // USER LOGIN
-    // =====================
+if(!username){
 
     if(usernameEl)
         usernameEl.innerHTML =
-        username;
+        "Guest";
 
     if(roleEl)
         roleEl.innerHTML =
-        role;
+        "Belum Login";
 
     if(loginBtn)
         loginBtn.style.display =
-        "none";
+        "block";
 
     if(logoutBtn)
         logoutBtn.style.display =
-        "block";
+        "none";
+
+    if(timerEl)
+        timerEl.style.display =
+        "none";
 
     if(dashboardUser)
         dashboardUser.innerHTML =
-        username;
+        "Guest";
 
     if(dashboardRole)
         dashboardRole.innerHTML =
-        role;
+        "Guest";
 
-    // =====================
-    // VIEWER TIMER
-    // =====================
+    return;
+}
 
-    if(role === "viewer"){
+// =====================
+// USER LOGIN
+// =====================
 
-        startViewerTimer();
+if(usernameEl)
+    usernameEl.innerHTML =
+    username;
 
-    }
-    else{
+if(roleEl)
+    roleEl.innerHTML =
+    role;
 
-        if(timerEl)
-            timerEl.style.display =
-            "none";
+if(loginBtn)
+    loginBtn.style.display =
+    "none";
 
-    }
+if(logoutBtn)
+    logoutBtn.style.display =
+    "block";
+
+if(dashboardUser)
+    dashboardUser.innerHTML =
+    username;
+
+if(dashboardRole)
+    dashboardRole.innerHTML =
+    role;
+
+// =====================
+// VIEWER
+// =====================
+
+if(role === "viewer"){
+
+    startViewerTimer();
 
 }
 
-// =========================
-// TIMER VIEWER
-// =========================
+// =====================
+// ADMIN
+// =====================
 
-function startViewerTimer(){
+else{
 
-    const timerEl =
-    el("sessionTimer");
+    if(timerEl){
 
-    if(!timerEl) return;
+        timerEl.style.display =
+        "none";
 
-    timerEl.style.display =
-    "block";
+    }
 
     clearInterval(
         sessionInterval
     );
 
-    let seconds = 360;
+}
+```
 
-    sessionInterval =
-    setInterval(() => {
+}
 
-        const minutes =
-        Math.floor(
-            seconds / 60
+// =========================
+// VIEWER TIMER
+// =========================
+
+function startViewerTimer(){
+
+```
+const timerEl =
+el("sessionTimer");
+
+if(!timerEl) return;
+
+timerEl.style.display =
+"block";
+
+clearInterval(
+    sessionInterval
+);
+
+let seconds = 360;
+
+sessionInterval =
+setInterval(()=>{
+
+    const minutes =
+    Math.floor(
+        seconds / 60
+    );
+
+    const remain =
+    seconds % 60;
+
+    timerEl.innerHTML =
+
+    `⏳ ${String(minutes)
+    .padStart(2,"0")}:${String(remain)
+    .padStart(2,"0")}`;
+
+    seconds--;
+
+    if(seconds < 0){
+
+        clearInterval(
+            sessionInterval
         );
 
-        const remain =
-        seconds % 60;
+        alert(
+            "Session Viewer Berakhir"
+        );
 
-        timerEl.innerHTML =
-        `⏳ ${String(minutes)
-            .padStart(2,"0")}:${String(remain)
-            .padStart(2,"0")}`;
+        logout();
 
-        seconds--;
+    }
 
-        if(seconds < 0){
-
-            clearInterval(
-                sessionInterval
-            );
-
-            alert(
-                "Session Viewer Habis"
-            );
-
-            logout();
-
-        }
-
-    },1000);
+},1000);
+```
 
 }
 
@@ -203,146 +269,145 @@ function startViewerTimer(){
 window.loginFirebase =
 async function(){
 
-    const username =
-    el("loginUsername")?.value
-    ?.trim();
+```
+const username =
+el("loginUsername")
+?.value.trim();
 
-    const password =
-    el("loginPassword")?.value
-    ?.trim();
+const password =
+el("loginPassword")
+?.value.trim();
 
-    const info =
-    el("loginInfo");
+const info =
+el("loginInfo");
 
-    const btn =
-    el("loginBtnAction");
+const btn =
+el("loginBtnAction");
 
-    const text =
-    el("loginText");
+const text =
+el("loginText");
 
-    const loading =
-    el("loginLoading");
+const loading =
+el("loginLoading");
 
-    if(!username ||
-       !password){
+if(!username ||
+   !password){
+
+    if(info){
+
+        info.innerHTML =
+        "Lengkapi username dan password";
+
+    }
+
+    return;
+}
+
+try{
+
+    if(btn)
+        btn.disabled = true;
+
+    if(text)
+        text.style.display =
+        "none";
+
+    if(loading)
+        loading.style.display =
+        "inline";
+
+    const akunRef =
+    doc(
+        db,
+        "accounts",
+        username
+    );
+
+    const akunSnap =
+    await getDoc(
+        akunRef
+    );
+
+    if(!akunSnap.exists()){
 
         if(info){
 
             info.innerHTML =
-            "Lengkapi username dan password";
+            "Username tidak ditemukan";
 
         }
 
         return;
     }
 
-    try{
+    const data =
+    akunSnap.data();
 
-        if(btn)
-            btn.classList.add(
-                "loading"
-            );
-
-        if(text)
-            text.style.display =
-            "none";
-
-        if(loading)
-            loading.style.display =
-            "inline";
-
-        const akunRef =
-        doc(
-            db,
-            "accounts",
-            username
-        );
-
-        const akunSnap =
-        await getDoc(
-            akunRef
-        );
-
-        if(!akunSnap.exists()){
-
-            if(info){
-
-                info.innerHTML =
-                "Username tidak ditemukan";
-
-            }
-
-            return;
-        }
-
-        const data =
-        akunSnap.data();
-
-        if(data.password !== password){
-
-            if(info){
-
-                info.innerHTML =
-                "Password salah";
-
-            }
-
-            return;
-        }
-
-        localStorage.setItem(
-            "romancis_username",
-            username
-        );
-
-        localStorage.setItem(
-            "romancis_role",
-            data.role
-        );
+    if(data.password !== password){
 
         if(info){
 
             info.innerHTML =
-            "✅ Login berhasil";
+            "Password salah";
 
         }
 
-        setTimeout(() => {
+        return;
+    }
 
-            window.location.href =
-            "../index.html";
+    localStorage.setItem(
+        "romancis_username",
+        username
+    );
 
-        },1000);
+    localStorage.setItem(
+        "romancis_role",
+        data.role || "viewer"
+    );
+
+    if(info){
+
+        info.innerHTML =
+        "✅ Login berhasil";
 
     }
-    catch(error){
 
-        console.error(error);
+    setTimeout(()=>{
 
-        if(info){
+        window.location.href =
+        "../index.html";
 
-            info.innerHTML =
-            "Terjadi kesalahan";
+    },1000);
 
-        }
+}
+catch(error){
 
-    }
-    finally{
+    console.error(error);
 
-        if(btn)
-            btn.classList.remove(
-                "loading"
-            );
+    if(info){
 
-        if(text)
-            text.style.display =
-            "inline";
-
-        if(loading)
-            loading.style.display =
-            "none";
+        info.innerHTML =
+        "Terjadi kesalahan login";
 
     }
+
+}
+finally{
+
+    if(btn)
+        btn.disabled =
+        false;
+
+    if(text)
+        text.style.display =
+        "inline";
+
+    if(loading)
+        loading.style.display =
+        "none";
+
+}
+```
 
 };
 
@@ -353,26 +418,28 @@ async function(){
 window.togglePassword =
 function(){
 
-    const input =
-    el("loginPassword");
+```
+const input =
+el("loginPassword");
 
-    if(!input) return;
+if(!input) return;
 
-    if(
-        input.type ===
-        "password"
-    ){
+if(
+    input.type ===
+    "password"
+){
 
-        input.type =
-        "text";
+    input.type =
+    "text";
 
-    }
-    else{
+}
+else{
 
-        input.type =
-        "password";
+    input.type =
+    "password";
 
-    }
+}
+```
 
 };
 
@@ -383,20 +450,22 @@ function(){
 window.logout =
 function(){
 
-    localStorage.removeItem(
-        "romancis_username"
-    );
+```
+localStorage.removeItem(
+    "romancis_username"
+);
 
-    localStorage.removeItem(
-        "romancis_role"
-    );
+localStorage.removeItem(
+    "romancis_role"
+);
 
-    clearInterval(
-        sessionInterval
-    );
+clearInterval(
+    sessionInterval
+);
 
-    window.location.href =
-    "../index.html";
+window.location.href =
+"../index.html";
+```
 
 };
 
@@ -405,10 +474,17 @@ function(){
 // =========================
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+"DOMContentLoaded",
+()=>{
 
-        updateUI();
+```
+    updateUI();
 
-    }
+}
+```
+
+);
+
+console.log(
+"🔐 auth.js Loaded"
 );
