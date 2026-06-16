@@ -3,19 +3,22 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>RoManCiS Dashboard</title>
+    <title>RoManCiS Dashboard</title>
 
-<!-- Favicon -->
-<link rel="icon" href="./assets/logo.png">
+    <!-- Favicon -->
+    <link rel="icon"
+          href="./assets/logo.png">
 
-<!-- CSS -->
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/sidebar.css">
-<link rel="stylesheet" href="./css/login.css">
-<link rel="stylesheet" href="./css/monitoring.css">
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="./css/style.css">
+
+    <link rel="stylesheet"
+          href="./css/sidebar.css">
 
 </head>
 
@@ -26,6 +29,8 @@
 <!-- ========================= -->
 
 <aside class="sidebar">
+
+    <!-- LOGO -->
 
     <div class="logo-container">
 
@@ -44,21 +49,37 @@
 
     </div>
 
+    <!-- MENU -->
+
     <nav class="menu">
 
-        <a href="./index.html" class="menu-link active">
+        <a
+            href="./index.html"
+            class="menu-link active">
+
             🏠 Dashboard
+
         </a>
 
-        <a href="./pages/setname.html" class="menu-link">
+        <a
+            href="./pages/setname.html"
+            class="menu-link">
+
             📋 SetName RFID
+
         </a>
 
-        <a href="./pages/monitoring.html" class="menu-link">
+        <a
+            href="./pages/monitoring.html"
+            class="menu-link">
+
             📡 Monitoring
+
         </a>
 
     </nav>
+
+    <!-- PROFILE -->
 
     <div class="profile">
 
@@ -68,37 +89,60 @@
             class="profile-img">
 
         <h4 id="username">
+
             Guest
+
         </h4>
 
         <p id="role">
+
             Belum Login
+
         </p>
 
-        <div id="sessionTimer" class="session-timer">
-            ⏳ --
+        <!-- TIMER -->
+
+        <div
+            id="sessionTimer"
+            class="session-timer"
+            style="display:none;">
+
+            ⏳ 06:00
+
         </div>
+
+        <!-- BUTTON -->
 
         <div class="sidebar-buttons">
 
             <button
                 id="themeBtn"
-                class="theme-btn"
-                onclick="toggleTheme()">
+                class="theme-btn">
 
                 🌙 Dark Mode
 
-           </button>
+            </button>
 
-            <a href="./pages/login.html" class="login-btn menu-link">
+            <!-- LOGIN -->
+
+            <a
+                id="loginBtn"
+                href="./pages/login.html"
+                class="login-btn menu-link">
+
                 🔑 Login
+
             </a>
+
+            <!-- LOGOUT -->
 
             <button
                 id="logoutBtn"
                 class="logout-btn"
-                onclick="showLogoutPopup()">
+                style="display:none;">
+
                 🚪 Logout
+
             </button>
 
         </div>
@@ -117,7 +161,9 @@
 
     <div class="card">
 
-        <h1>🏠 Dashboard</h1>
+        <h1>
+            🏠 Dashboard
+        </h1>
 
         <p>
             Selamat datang di RoManCiS Dashboard
@@ -125,43 +171,85 @@
 
     </div>
 
+    <!-- STATUS -->
+
     <div class="card">
 
-        <h2>📊 Status Sistem</h2>
+        <h2>
+            📊 Status Sistem
+        </h2>
 
         <br>
 
         <p>
-            MQTT : <span id="mqttMiniStatus">Belum Terhubung</span>
+
+            MQTT :
+
+            <span id="mqttStatus">
+
+                Belum Terhubung
+
+            </span>
+
         </p>
 
         <p>
-            User : <span id="dashboardUser">Guest</span>
+
+            User :
+
+            <span id="dashboardUser">
+
+                Guest
+
+            </span>
+
         </p>
 
         <p>
-            Session : <span id="dashboardSession">--</span>
+
+            Session :
+
+            <span id="dashboardRole">
+
+                --
+
+            </span>
+
         </p>
 
     </div>
 
+    <!-- FITUR -->
+
     <div class="card">
 
-        <h2>🚀 Fitur RoManCiS</h2>
+        <h2>
+            🚀 Fitur RoManCiS
+        </h2>
 
         <br>
 
         <ul>
 
-            <li>ESP32 Smart Home</li>
+            <li>
+                ESP32 Smart Home
+            </li>
 
-            <li>RFID Access Control</li>
+            <li>
+                RFID Access Control
+            </li>
 
-            <li>Firebase Authentication</li>
+            <li>
+                Firebase Authentication
+            </li>
 
-            <li>Realtime MQTT Monitoring</li>
+            <li>
+                Realtime MQTT Monitoring
+            </li>
 
-            <li>Firestore Database</li>
+            <li>
+                Firestore Database
+            </li>
 
         </ul>
 
@@ -175,26 +263,33 @@
 
 <div
     id="logoutPopup"
-    class="popup">
+    class="popup"
+    style="display:none;">
 
     <div class="popup-content">
 
         <h3>
+
             Apakah yakin ingin logout?
+
         </h3>
 
         <div class="popup-buttons">
 
             <button
-                class="yes-btn"
-                onclick="logout()">
+                id="confirmLogout"
+                class="yes-btn">
+
                 Ya
+
             </button>
 
             <button
-                class="no-btn"
-                onclick="closePopup()">
+                id="cancelLogout"
+                class="no-btn">
+
                 Tidak
+
             </button>
 
         </div>
@@ -203,17 +298,30 @@
 
 </div>
 
-
 <!-- ========================= -->
-<!-- JS MODULES -->
+<!-- MQTT -->
 <!-- ========================= -->
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-<script type="module" src="./js/ui.js"></script>
-<script type="module" src="./js/theme.js"></script>
-<script type="module" src="./js/firebase.js"></script>
-<script type="module" src="./js/auth.js"></script>
-<script type="module" src="./js/app.js"></script>
+
+<!-- ========================= -->
+<!-- JS -->
+<!-- ========================= -->
+
+<script type="module"
+        src="./js/firebase.js"></script>
+
+<script type="module"
+        src="./js/auth.js"></script>
+
+<script type="module"
+        src="./js/theme.js"></script>
+
+<script type="module"
+        src="./js/ui.js"></script>
+
+<script type="module"
+        src="./js/app.js"></script>
 
 </body>
 </html>
