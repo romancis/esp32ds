@@ -1,173 +1,90 @@
 // =========================
-// APP STARTUP
+// APP START
 // =========================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        console.log(
-            "🚀 RoManCiS Started"
-        );
-
-        loadUser();
-
-        startSessionTimer();
-
-    }
+console.log(
+    "🚀 RoManCiS Started"
 );
 
 // =========================
-// LOAD USER
+// ROLE CHECK
 // =========================
 
-function loadUser(){
+function getRole(){
 
-    const username =
-localStorage.getItem(
-    "romancis_username"
-);
-
-const role =
-localStorage.getItem(
-    "romancis_role"
-);
-
-    const usernameElement =
-    document.getElementById(
-        "username"
+    return localStorage.getItem(
+        "romancis_role"
     );
 
-    const roleElement =
-    document.getElementById(
-        "role"
+}
+
+function getUser(){
+
+    return localStorage.getItem(
+        "romancis_username"
     );
-
-    if(username && role){
-
-        if(usernameElement){
-
-            usernameElement.innerHTML =
-            username;
-
-        }
-
-        if(roleElement){
-
-            roleElement.innerHTML =
-            role;
-
-        }
-
-    }
 
 }
 
 // =========================
-// SESSION TIMER
+// PERMISSION CHECK
 // =========================
 
-function startSessionTimer(){
+window.hasPermission =
+function(permission){
 
-    const timerElement =
-    document.getElementById(
-        "sessionTimer"
-    );
+    const role =
+    getRole();
 
-    if(!timerElement){
+    // ADMIN
 
-        return;
+    if(role === "admin"){
+
+        return true;
 
     }
 
-    let seconds = 0;
+    // VIEWER
 
-    setInterval(() => {
+    if(role === "viewer"){
 
-        seconds++;
+        switch(permission){
 
-        const hours =
-        String(
-            Math.floor(
-                seconds / 3600
-            )
-        ).padStart(2,"0");
+            case "monitoring":
 
-        const minutes =
-        String(
-            Math.floor(
-                (seconds % 3600) / 60
-            )
-        ).padStart(2,"0");
+                return true;
 
-        const secs =
-        String(
-            seconds % 60
-        ).padStart(2,"0");
+            case "view_setname":
 
-        timerElement.innerHTML =
+                return true;
 
-        `⏳ ${hours}:${minutes}:${secs}`;
+            case "edit_setname":
 
-    },1000);
+                return false;
 
-}
+            default:
 
-// =========================
-// LOGOUT POPUP
-// =========================
+                return false;
 
-window.showLogoutPopup =
-function(){
-
-    const popup =
-    document.getElementById(
-        "logoutPopup"
-    );
-
-    if(popup){
-
-        popup.style.display =
-        "flex";
+        }
 
     }
+
+    // GUEST
+
+    return false;
 
 };
 
 // =========================
-// CLOSE POPUP
+// REQUIRE LOGIN
 // =========================
 
-window.closePopup =
+window.requireLogin =
 function(){
 
-    const popup =
-    document.getElementById(
-        "logoutPopup"
-    );
-
-    if(popup){
-
-        popup.style.display =
-        "none";
-
-    }
-
-};
-
-// =========================
-// LOGOUT
-// =========================
-
-window.logout =
-function(){
-
-    localStorage.removeItem(
-        "username"
-    );
-
-    localStorage.removeItem(
-        "role"
+    alert(
+        "Silakan login terlebih dahulu"
     );
 
     window.location.href =
@@ -176,7 +93,170 @@ function(){
 };
 
 // =========================
-// READY
+// REQUIRE PERMISSION
+// =========================
+
+window.requirePermission =
+function(permission){
+
+    const allowed =
+    window.hasPermission(
+        permission
+    );
+
+    if(!allowed){
+
+        const user =
+        getUser();
+
+        if(!user){
+
+            alert(
+                "Login diperlukan"
+            );
+
+            window.location.href =
+            "./pages/login.html";
+
+            return false;
+        }
+
+        alert(
+            "Akses tidak diizinkan"
+        );
+
+        return false;
+    }
+
+    return true;
+
+};
+
+// =========================
+// DASHBOARD INFO
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const username =
+        getUser();
+
+        const role =
+        getRole();
+
+        const userBox =
+        document.getElementById(
+            "dashboardUser"
+        );
+
+        const roleBox =
+        document.getElementById(
+            "dashboardRole"
+        );
+
+        if(userBox){
+
+            userBox.innerHTML =
+            username || "Guest";
+
+        }
+
+        if(roleBox){
+
+            roleBox.innerHTML =
+            role || "Guest";
+
+        }
+
+        updateDashboardAccess();
+
+    }
+);
+
+// =========================
+// ACCESS BADGES
+// =========================
+
+function updateDashboardAccess(){
+
+    const role =
+    getRole();
+
+    const accessBox =
+    document.getElementById(
+        "accessInfo"
+    );
+
+    if(!accessBox) return;
+
+    if(role === "admin"){
+
+        accessBox.innerHTML =
+        `
+        🟢 Full Access
+        <br>
+        Dashboard
+        <br>
+        Monitoring
+        <br>
+        SetName RFID
+        <br>
+        MQTT Control
+        `;
+
+        return;
+    }
+
+    if(role === "viewer"){
+
+        accessBox.innerHTML =
+        `
+        🟡 Viewer Access
+        <br>
+        Monitoring Control
+        <br>
+        View SetName
+        <br>
+        Session 6 Menit
+        `;
+
+        return;
+    }
+
+    accessBox.innerHTML =
+    `
+    🔴 Guest
+    <br>
+    Login diperlukan
+    untuk mengontrol sistem
+    `;
+
+}
+
+// =========================
+// PROTECTED BUTTON
+// =========================
+
+window.protectedAction =
+function(permission, callback){
+
+    if(
+        !window.requirePermission(
+            permission
+        )
+    ){
+
+        return;
+    }
+
+    callback();
+
+};
+
+// =========================
+// DEBUG
 // =========================
 
 console.log(
