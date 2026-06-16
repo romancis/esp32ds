@@ -11,97 +11,284 @@ import {
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 // =========================
-// LOGIN
+// SESSION TIMER
 // =========================
 
-window.loginFirebase = async function() {
+let sessionInterval = null;
+
+// =========================
+// SAFE ELEMENT
+// =========================
+
+function el(id){
+
+    return document.getElementById(id);
+
+}
+
+// =========================
+// UPDATE UI
+// =========================
+
+function updateUI(){
 
     const username =
-        document.getElementById("loginUsername").value.trim();
+    localStorage.getItem(
+        "romancis_username"
+    );
 
-    const password =
-        document.getElementById("loginPassword").value.trim();
+    const role =
+    localStorage.getItem(
+        "romancis_role"
+    );
 
-    const info =
-        document.getElementById("loginInfo");
+    const usernameEl = el("username");
+    const roleEl = el("role");
 
-    const btn =
-        document.getElementById("loginBtnAction");
+    const loginBtn = el("loginBtn");
+    const logoutBtn = el("logoutBtn");
 
-    const text =
-        document.getElementById("loginText");
+    const timerEl = el("sessionTimer");
 
-    const loading =
-        document.getElementById("loginLoading");
+    const dashboardUser =
+    el("dashboardUser");
+
+    const dashboardRole =
+    el("dashboardRole");
 
     // =====================
-    // VALIDASI
+    // GUEST
     // =====================
 
-    if (!username || !password) {
+    if(!username){
 
-        info.innerHTML =
-            "Lengkapi username dan password";
+        if(usernameEl)
+            usernameEl.innerHTML =
+            "Guest";
+
+        if(roleEl)
+            roleEl.innerHTML =
+            "Belum Login";
+
+        if(loginBtn)
+            loginBtn.style.display =
+            "block";
+
+        if(logoutBtn)
+            logoutBtn.style.display =
+            "none";
+
+        if(timerEl)
+            timerEl.style.display =
+            "none";
+
+        if(dashboardUser)
+            dashboardUser.innerHTML =
+            "Guest";
+
+        if(dashboardRole)
+            dashboardRole.innerHTML =
+            "Guest";
 
         return;
     }
 
     // =====================
-    // LOADING
+    // USER LOGIN
     // =====================
 
-    btn.classList.add("loading");
+    if(usernameEl)
+        usernameEl.innerHTML =
+        username;
 
-    text.style.display = "none";
-    loading.style.display = "inline";
+    if(roleEl)
+        roleEl.innerHTML =
+        role;
 
-    try {
+    if(loginBtn)
+        loginBtn.style.display =
+        "none";
 
-        const akunRef =
-            doc(db, "accounts", username);
+    if(logoutBtn)
+        logoutBtn.style.display =
+        "block";
 
-        const akunSnap =
-            await getDoc(akunRef);
+    if(dashboardUser)
+        dashboardUser.innerHTML =
+        username;
 
-        if (!akunSnap.exists()) {
+    if(dashboardRole)
+        dashboardRole.innerHTML =
+        role;
+
+    // =====================
+    // VIEWER TIMER
+    // =====================
+
+    if(role === "viewer"){
+
+        startViewerTimer();
+
+    }
+    else{
+
+        if(timerEl)
+            timerEl.style.display =
+            "none";
+
+    }
+
+}
+
+// =========================
+// TIMER VIEWER
+// =========================
+
+function startViewerTimer(){
+
+    const timerEl =
+    el("sessionTimer");
+
+    if(!timerEl) return;
+
+    timerEl.style.display =
+    "block";
+
+    clearInterval(
+        sessionInterval
+    );
+
+    let seconds = 360;
+
+    sessionInterval =
+    setInterval(() => {
+
+        const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+        const remain =
+        seconds % 60;
+
+        timerEl.innerHTML =
+        `⏳ ${String(minutes)
+            .padStart(2,"0")}:${String(remain)
+            .padStart(2,"0")}`;
+
+        seconds--;
+
+        if(seconds < 0){
+
+            clearInterval(
+                sessionInterval
+            );
+
+            alert(
+                "Session Viewer Habis"
+            );
+
+            logout();
+
+        }
+
+    },1000);
+
+}
+
+// =========================
+// LOGIN
+// =========================
+
+window.loginFirebase =
+async function(){
+
+    const username =
+    el("loginUsername")?.value
+    ?.trim();
+
+    const password =
+    el("loginPassword")?.value
+    ?.trim();
+
+    const info =
+    el("loginInfo");
+
+    const btn =
+    el("loginBtnAction");
+
+    const text =
+    el("loginText");
+
+    const loading =
+    el("loginLoading");
+
+    if(!username ||
+       !password){
+
+        if(info){
 
             info.innerHTML =
+            "Lengkapi username dan password";
+
+        }
+
+        return;
+    }
+
+    try{
+
+        if(btn)
+            btn.classList.add(
+                "loading"
+            );
+
+        if(text)
+            text.style.display =
+            "none";
+
+        if(loading)
+            loading.style.display =
+            "inline";
+
+        const akunRef =
+        doc(
+            db,
+            "accounts",
+            username
+        );
+
+        const akunSnap =
+        await getDoc(
+            akunRef
+        );
+
+        if(!akunSnap.exists()){
+
+            if(info){
+
+                info.innerHTML =
                 "Username tidak ditemukan";
+
+            }
 
             return;
         }
 
         const data =
-            akunSnap.data();
+        akunSnap.data();
 
-        if (data.password !== password) {
+        if(data.password !== password){
 
-            info.innerHTML =
+            if(info){
+
+                info.innerHTML =
                 "Password salah";
+
+            }
 
             return;
         }
-
-        // =====================
-        // LOGIN BERHASIL
-        // =====================
-
-        info.innerHTML =
-            "✅ Login berhasil";
-
-        document.getElementById("username")
-            .innerHTML = username;
-
-        document.getElementById("role")
-            .innerHTML = data.role || "User";
-
-        document.getElementById("loginBtn")
-            .style.display = "none";
-
-        document.getElementById("logoutBtn")
-            .style.display = "block";
-
-        // simpan session
 
         localStorage.setItem(
             "romancis_username",
@@ -110,33 +297,80 @@ window.loginFirebase = async function() {
 
         localStorage.setItem(
             "romancis_role",
-            data.role || "User"
+            data.role
         );
 
-        // kembali ke dashboard
+        if(info){
+
+            info.innerHTML =
+            "✅ Login berhasil";
+
+        }
 
         setTimeout(() => {
 
             window.location.href =
-              "./index.html";
+            "../index.html";
 
-        }, 700);
+        },1000);
 
     }
-    catch(error) {
+    catch(error){
 
         console.error(error);
 
-        info.innerHTML =
+        if(info){
+
+            info.innerHTML =
             "Terjadi kesalahan";
 
+        }
+
     }
-    finally {
+    finally{
 
-        btn.classList.remove("loading");
+        if(btn)
+            btn.classList.remove(
+                "loading"
+            );
 
-        text.style.display = "inline";
-        loading.style.display = "none";
+        if(text)
+            text.style.display =
+            "inline";
+
+        if(loading)
+            loading.style.display =
+            "none";
+
+    }
+
+};
+
+// =========================
+// SHOW PASSWORD
+// =========================
+
+window.togglePassword =
+function(){
+
+    const input =
+    el("loginPassword");
+
+    if(!input) return;
+
+    if(
+        input.type ===
+        "password"
+    ){
+
+        input.type =
+        "text";
+
+    }
+    else{
+
+        input.type =
+        "password";
 
     }
 
@@ -146,7 +380,8 @@ window.loginFirebase = async function() {
 // LOGOUT
 // =========================
 
-window.logout = function() {
+window.logout =
+function(){
 
     localStorage.removeItem(
         "romancis_username"
@@ -156,67 +391,24 @@ window.logout = function() {
         "romancis_role"
     );
 
-    document.getElementById("username")
-        .innerHTML = "Guest";
-
-    document.getElementById("role")
-        .innerHTML = "Belum Login";
-
-    document.getElementById("loginBtn")
-        .style.display = "block";
-
-    document.getElementById("logoutBtn")
-        .style.display = "none";
-
-    closePopup();
+    clearInterval(
+        sessionInterval
+    );
 
     window.location.href =
-     "./index.html";
+    "../index.html";
 
 };
 
 // =========================
-// AUTO LOGIN
+// INIT
 // =========================
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        const username =
-            localStorage.getItem(
-                "romancis_username"
-            );
-
-        const role =
-            localStorage.getItem(
-                "romancis_role"
-            );
-
-        if (username) {
-
-            document.getElementById("username")
-                .innerHTML = username;
-
-            document.getElementById("role")
-                .innerHTML = role;
-
-            document.getElementById("loginBtn")
-                .style.display = "none";
-
-            document.getElementById("logoutBtn")
-                .style.display = "block";
-
-        }
-        else {
-
-            document.getElementById("loginBtn")
-                .style.display = "block";
-
-            document.getElementById("logoutBtn")
-                .style.display = "none";
-
-        }
+        updateUI();
 
     }
 );
