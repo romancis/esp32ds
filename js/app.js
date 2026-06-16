@@ -3,132 +3,144 @@
 // =========================
 
 console.log(
-    "🚀 RoManCiS Started"
+"🚀 RoManCiS Started"
 );
 
 // =========================
-// ROLE CHECK
+// USER DATA
 // =========================
 
 function getRole(){
 
-    return localStorage.getItem(
-        "romancis_role"
-    );
+```
+return localStorage.getItem(
+    "romancis_role"
+) || "guest";
+```
 
 }
 
 function getUser(){
 
-    return localStorage.getItem(
-        "romancis_username"
-    );
+```
+return localStorage.getItem(
+    "romancis_username"
+);
+```
 
 }
 
 // =========================
-// PERMISSION CHECK
+// ROLE CHECK
 // =========================
 
-window.hasPermission =
-function(permission){
+window.isGuest = function(){
 
-    const role =
-    getRole();
+```
+return !getUser();
+```
 
-    // ADMIN
+};
 
-    if(role === "admin"){
+window.isViewer = function(){
 
-        return true;
+```
+return getRole() === "viewer";
+```
 
-    }
+};
 
-    // VIEWER
+window.isAdmin = function(){
 
-    if(role === "viewer"){
-
-        switch(permission){
-
-            case "monitoring":
-
-                return true;
-
-            case "view_setname":
-
-                return true;
-
-            case "edit_setname":
-
-                return false;
-
-            default:
-
-                return false;
-
-        }
-
-    }
-
-    // GUEST
-
-    return false;
+```
+return getRole() === "admin";
+```
 
 };
 
 // =========================
-// REQUIRE LOGIN
+// RFID ACCESS
 // =========================
 
-window.requireLogin =
+window.canEditRFID = function(){
+
+```
+return (
+    getRole() === "admin"
+);
+```
+
+};
+
+window.canViewRFID = function(){
+
+```
+return true;
+```
+
+};
+
+// =========================
+// ESP32 ACCESS
+// =========================
+
+window.canControlESP = function(){
+
+```
+return (
+    getRole() === "admin" ||
+    getRole() === "viewer"
+);
+```
+
+};
+
+// =========================
+// ACCESS MESSAGE
+// =========================
+
+window.showAccessDenied =
 function(){
+
+```
+const user =
+getUser();
+
+if(!user){
 
     alert(
         "Silakan login terlebih dahulu"
     );
 
-    window.location.href =
-    "./pages/login.html";
+    return;
+}
+
+alert(
+    "Akses tidak diizinkan"
+);
+```
 
 };
 
 // =========================
-// REQUIRE PERMISSION
+// PROTECTED ACTION
 // =========================
 
-window.requirePermission =
-function(permission){
+window.protectedAction =
+function(callback){
 
-    const allowed =
-    window.hasPermission(
-        permission
-    );
+```
+if(
+    !window.canControlESP()
+){
 
-    if(!allowed){
+    window.showAccessDenied();
 
-        const user =
-        getUser();
+    return;
+}
 
-        if(!user){
-
-            alert(
-                "Login diperlukan"
-            );
-
-            window.location.href =
-            "./pages/login.html";
-
-            return false;
-        }
-
-        alert(
-            "Akses tidak diizinkan"
-        );
-
-        return false;
-    }
-
-    return true;
+callback();
+```
 
 };
 
@@ -136,129 +148,127 @@ function(permission){
 // DASHBOARD INFO
 // =========================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function updateDashboard(){
 
-        const username =
-        getUser();
-
-        const role =
-        getRole();
-
-        const userBox =
-        document.getElementById(
-            "dashboardUser"
-        );
-
-        const roleBox =
-        document.getElementById(
-            "dashboardRole"
-        );
-
-        if(userBox){
-
-            userBox.innerHTML =
-            username || "Guest";
-
-        }
-
-        if(roleBox){
-
-            roleBox.innerHTML =
-            role || "Guest";
-
-        }
-
-        updateDashboardAccess();
-
-    }
+```
+const userBox =
+document.getElementById(
+    "dashboardUser"
 );
 
-// =========================
-// ACCESS BADGES
-// =========================
+const roleBox =
+document.getElementById(
+    "dashboardRole"
+);
 
-function updateDashboardAccess(){
+if(userBox){
 
-    const role =
+    userBox.innerHTML =
+    getUser() || "Guest";
+
+}
+
+if(roleBox){
+
+    roleBox.innerHTML =
     getRole();
 
-    const accessBox =
-    document.getElementById(
-        "accessInfo"
-    );
-
-    if(!accessBox) return;
-
-    if(role === "admin"){
-
-        accessBox.innerHTML =
-        `
-        🟢 Full Access
-        <br>
-        Dashboard
-        <br>
-        Monitoring
-        <br>
-        SetName RFID
-        <br>
-        MQTT Control
-        `;
-
-        return;
-    }
-
-    if(role === "viewer"){
-
-        accessBox.innerHTML =
-        `
-        🟡 Viewer Access
-        <br>
-        Monitoring Control
-        <br>
-        View SetName
-        <br>
-        Session 6 Menit
-        `;
-
-        return;
-    }
-
-    accessBox.innerHTML =
-    `
-    🔴 Guest
-    <br>
-    Login diperlukan
-    untuk mengontrol sistem
-    `;
+}
+```
 
 }
 
 // =========================
-// PROTECTED BUTTON
+// ACCESS INFO
 // =========================
 
-window.protectedAction =
-function(permission, callback){
+function updateAccessInfo(){
 
-    if(
-        !window.requirePermission(
-            permission
-        )
-    ){
+```
+const accessBox =
+document.getElementById(
+    "accessInfo"
+);
 
-        return;
-    }
+if(!accessBox) return;
 
-    callback();
+const role =
+getRole();
 
-};
+if(role === "admin"){
+
+    accessBox.innerHTML =
+
+    `
+    🟢 Admin
+    <br>
+    Full Access
+    <br>
+    Monitoring
+    <br>
+    RFID
+    <br>
+    ESP32 Control
+    `;
+
+    return;
+
+}
+
+if(role === "viewer"){
+
+    accessBox.innerHTML =
+
+    `
+    🟡 Viewer
+    <br>
+    Monitoring
+    <br>
+    RFID Control
+    <br>
+    Timer 6 Menit
+    `;
+
+    return;
+
+}
+
+accessBox.innerHTML =
+
+`
+🔴 Guest
+<br>
+Hanya melihat data
+<br>
+Tidak dapat
+mengontrol sistem
+`;
+```
+
+}
+
+// =========================
+// INIT
+// =========================
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+```
+    updateDashboard();
+
+    updateAccessInfo();
+
+}
+```
+
+);
 
 // =========================
 // DEBUG
 // =========================
 
 console.log(
-    "✅ app.js Loaded"
+"✅ app.js Loaded"
 );
