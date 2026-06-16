@@ -14,10 +14,13 @@
 }
 
 /* ========================= */
-/* SENSOR CARD */
+/* CARD */
 /* ========================= */
 
-.sensor-card{
+.sensor-card,
+.rfid-box,
+.chart-card,
+.stat-card{
 
     background:var(--card);
 
@@ -33,14 +36,17 @@
 
 }
 
-.sensor-card:hover{
+.sensor-card:hover,
+.rfid-box:hover,
+.chart-card:hover,
+.stat-card:hover{
 
-    transform:translateY(-4px);
+    transform:translateY(-3px);
 
 }
 
 /* ========================= */
-/* TITLE */
+/* SENSOR */
 /* ========================= */
 
 .sensor-title{
@@ -53,10 +59,6 @@
 
 }
 
-/* ========================= */
-/* VALUE */
-/* ========================= */
-
 .sensor-value{
 
     font-size:28px;
@@ -68,8 +70,16 @@
 }
 
 /* ========================= */
-/* STATUS COLORS */
+/* MQTT STATUS */
 /* ========================= */
+
+#mqttStatus{
+
+    font-weight:bold;
+
+    font-size:16px;
+
+}
 
 .online{
 
@@ -90,25 +100,7 @@
 }
 
 /* ========================= */
-/* MQTT STATUS BOX */
-/* ========================= */
-
-.mqtt-box{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-}
-
-/* ========================= */
-/* BLINKING DOT */
+/* STATUS DOT */
 /* ========================= */
 
 .status-dot{
@@ -138,44 +130,22 @@
 @keyframes blink{
 
     0%{
-
         opacity:1;
-
     }
 
     50%{
-
         opacity:.3;
-
     }
 
     100%{
-
         opacity:1;
-
     }
 
 }
 
 /* ========================= */
-/* RFID LAST SCAN */
+/* RFID */
 /* ========================= */
-
-.rfid-box{
-
-    background:var(--card);
-
-    border-radius:18px;
-
-    border:1px solid var(--border);
-
-    padding:20px;
-
-    margin-top:20px;
-
-    box-shadow:var(--shadow);
-
-}
 
 .rfid-box h3{
 
@@ -194,38 +164,24 @@
 }
 
 /* ========================= */
-/* LIVE LOG */
+/* LOG */
 /* ========================= */
 
 .log-box{
 
-    background:var(--card);
+    background:var(--bg);
 
     border:1px solid var(--border);
 
-    border-radius:18px;
+    border-radius:12px;
 
     padding:15px;
-
-    margin-top:20px;
 
     max-height:300px;
 
     overflow-y:auto;
 
-    box-shadow:var(--shadow);
-
 }
-
-.log-box h3{
-
-    margin-bottom:15px;
-
-}
-
-/* ========================= */
-/* LOG ITEM */
-/* ========================= */
 
 .log-item{
 
@@ -243,19 +199,11 @@
 
 }
 
-/* ========================= */
-/* RFID SUCCESS */
-/* ========================= */
-
 .log-success{
 
     color:#00c853;
 
 }
-
-/* ========================= */
-/* RFID DENIED */
-/* ========================= */
 
 .log-denied{
 
@@ -280,22 +228,6 @@
 
 }
 
-.stat-card{
-
-    background:var(--card);
-
-    border:1px solid var(--border);
-
-    border-radius:16px;
-
-    padding:18px;
-
-    text-align:center;
-
-    box-shadow:var(--shadow);
-
-}
-
 .stat-number{
 
     font-size:28px;
@@ -317,7 +249,7 @@
 }
 
 /* ========================= */
-/* CONTROL BUTTON */
+/* RELAY CONTROL */
 /* ========================= */
 
 .control-grid{
@@ -335,11 +267,11 @@
 
 .control-btn{
 
-    padding:15px;
+    padding:14px;
 
     border:none;
 
-    border-radius:14px;
+    border-radius:12px;
 
     cursor:pointer;
 
@@ -357,7 +289,7 @@
 
 }
 
-/* BUKA PINTU */
+/* RELAY ON */
 
 .open-btn{
 
@@ -367,7 +299,7 @@
 
 }
 
-/* TUTUP PINTU */
+/* RELAY OFF */
 
 .close-btn{
 
@@ -388,29 +320,57 @@
 }
 
 /* ========================= */
-/* CHART PLACEHOLDER */
+/* ROLE BADGE */
 /* ========================= */
 
-.chart-card{
+.role-admin{
 
-    background:var(--card);
+    color:#00c853;
 
-    border:1px solid var(--border);
+    font-weight:bold;
 
-    border-radius:18px;
+}
 
-    padding:20px;
+.role-viewer{
 
-    margin-top:20px;
+    color:#2196f3;
 
-    min-height:300px;
+    font-weight:bold;
 
-    box-shadow:var(--shadow);
+}
+
+.role-guest{
+
+    color:#ff5252;
+
+    font-weight:bold;
 
 }
 
 /* ========================= */
-/* MOBILE */
+/* ACCESS INFO */
+/* ========================= */
+
+#accessInfo{
+
+    margin-top:10px;
+
+    line-height:1.8;
+
+}
+
+/* ========================= */
+/* CHART */
+/* ========================= */
+
+.chart-card{
+
+    min-height:300px;
+
+}
+
+/* ========================= */
+/* RESPONSIVE */
 /* ========================= */
 
 @media(max-width:768px){
@@ -424,6 +384,12 @@
     .rfid-uid{
 
         font-size:18px;
+
+    }
+
+    .control-grid{
+
+        grid-template-columns:1fr;
 
     }
 
