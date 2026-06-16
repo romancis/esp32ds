@@ -1,5 +1,5 @@
 // =========================
-// IMPORT MQTT
+// MQTT IMPORT
 // =========================
 
 import {
@@ -9,7 +9,7 @@ import {
 from "./mqtt.js";
 
 // =========================
-// LOG BOX
+// ELEMENT
 // =========================
 
 const logBox =
@@ -18,7 +18,30 @@ document.getElementById(
 );
 
 // =========================
-// ADD LOG
+// ROLE CHECK
+// =========================
+
+function getRole(){
+
+    return localStorage.getItem(
+        "romancis_role"
+    );
+
+}
+
+function canControl(){
+
+    const role = getRole();
+
+    return (
+        role === "admin" ||
+        role === "viewer"
+    );
+
+}
+
+// =========================
+// LOG SYSTEM
 // =========================
 
 function addLog(message){
@@ -26,7 +49,9 @@ function addLog(message){
     if(!logBox) return;
 
     const item =
-    document.createElement("div");
+    document.createElement(
+        "div"
+    );
 
     item.className =
     "log-item";
@@ -34,13 +59,9 @@ function addLog(message){
     const now =
     new Date();
 
-    const time =
-    now.toLocaleTimeString(
-        "id-ID"
-    );
-
     item.innerHTML =
-    `[${time}] ${message}`;
+
+    `[${now.toLocaleTimeString("id-ID")}] ${message}`;
 
     logBox.prepend(item);
 
@@ -52,17 +73,12 @@ function addLog(message){
 
 client.on(
     "message",
-    async (
-        topic,
-        message
-    ) => {
+    (topic,message)=>{
 
         const data =
         message.toString();
 
-        // =====================
-        // UID
-        // =====================
+        // UID RFID
 
         if(
             topic ===
@@ -87,9 +103,7 @@ client.on(
 
         }
 
-        // =====================
-        // STATUS
-        // =====================
+        // STATUS RFID
 
         if(
             topic ===
@@ -109,14 +123,12 @@ client.on(
             }
 
             addLog(
-                `Status : ${data}`
+                `RFID Status : ${data}`
             );
 
         }
 
-        // =====================
         // RAIN
-        // =====================
 
         if(
             topic ===
@@ -135,11 +147,13 @@ client.on(
 
             }
 
+            addLog(
+                `Rain : ${data}`
+            );
+
         }
 
-        // =====================
         // TEMPERATURE
-        // =====================
 
         if(
             topic ===
@@ -160,9 +174,7 @@ client.on(
 
         }
 
-        // =====================
         // HUMIDITY
-        // =====================
 
         if(
             topic ===
@@ -183,9 +195,7 @@ client.on(
 
         }
 
-        // =====================
         // RELAY 1
-        // =====================
 
         if(
             topic ===
@@ -204,11 +214,13 @@ client.on(
 
             }
 
+            addLog(
+                `Relay 1 : ${data}`
+            );
+
         }
 
-        // =====================
         // RELAY 2
-        // =====================
 
         if(
             topic ===
@@ -227,31 +239,17 @@ client.on(
 
             }
 
+            addLog(
+                `Relay 2 : ${data}`
+            );
+
         }
 
     }
 );
 
 // =========================
-// ROLE CHECK
-// =========================
-
-function canControl(){
-
-    const role =
-    localStorage.getItem(
-        "romancis_role"
-    );
-
-    return (
-        role === "admin" ||
-        role === "viewer"
-    );
-
-}
-
-// =========================
-// CONTROL RELAY 1
+// RELAY CONTROL
 // =========================
 
 window.relay1On =
@@ -260,7 +258,7 @@ function(){
     if(!canControl()){
 
         alert(
-            "Silakan login terlebih dahulu"
+            "Login terlebih dahulu"
         );
 
         return;
@@ -269,10 +267,6 @@ function(){
     client.publish(
         MQTT_TOPICS.relay1,
         "ON"
-    );
-
-    addLog(
-        "Relay 1 ON"
     );
 
 };
@@ -283,7 +277,7 @@ function(){
     if(!canControl()){
 
         alert(
-            "Silakan login terlebih dahulu"
+            "Login terlebih dahulu"
         );
 
         return;
@@ -294,15 +288,7 @@ function(){
         "OFF"
     );
 
-    addLog(
-        "Relay 1 OFF"
-    );
-
 };
-
-// =========================
-// CONTROL RELAY 2
-// =========================
 
 window.relay2On =
 function(){
@@ -310,7 +296,7 @@ function(){
     if(!canControl()){
 
         alert(
-            "Silakan login terlebih dahulu"
+            "Login terlebih dahulu"
         );
 
         return;
@@ -321,10 +307,6 @@ function(){
         "ON"
     );
 
-    addLog(
-        "Relay 2 ON"
-    );
-
 };
 
 window.relay2Off =
@@ -333,7 +315,7 @@ function(){
     if(!canControl()){
 
         alert(
-            "Silakan login terlebih dahulu"
+            "Login terlebih dahulu"
         );
 
         return;
@@ -344,8 +326,54 @@ function(){
         "OFF"
     );
 
+};
+
+// =========================
+// RFID CONTROL
+// =========================
+
+window.rfidEnable =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        "mansaci/rfid/control",
+        "ENABLE"
+    );
+
     addLog(
-        "Relay 2 OFF"
+        "RFID ENABLE"
+    );
+
+};
+
+window.rfidDisable =
+function(){
+
+    if(!canControl()){
+
+        alert(
+            "Login terlebih dahulu"
+        );
+
+        return;
+    }
+
+    client.publish(
+        "mansaci/rfid/control",
+        "DISABLE"
+    );
+
+    addLog(
+        "RFID DISABLE"
     );
 
 };
@@ -356,7 +384,7 @@ function(){
 
 client.on(
     "connect",
-    () => {
+    ()=>{
 
         addLog(
             "MQTT Connected"
@@ -367,7 +395,7 @@ client.on(
 
 client.on(
     "offline",
-    () => {
+    ()=>{
 
         addLog(
             "MQTT Offline"
@@ -378,10 +406,30 @@ client.on(
 
 client.on(
     "reconnect",
-    () => {
+    ()=>{
 
         addLog(
             "MQTT Reconnecting..."
+        );
+
+    }
+);
+
+// =========================
+// PAGE READY
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        const role =
+        getRole();
+
+        addLog(
+            `User Role : ${
+                role || "guest"
+            }`
         );
 
     }
