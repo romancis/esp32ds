@@ -13,14 +13,23 @@ html{
 }
 
 body{
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
     background:var(--bg);
     color:var(--text);
-    transition:0.3s;
+
+    transition:.3s;
+
+    min-height:100vh;
+
+    display:flex;
 }
 
 /* ========================= */
-/* ROOT COLORS */
+/* ROOT */
 /* ========================= */
 
 :root{
@@ -31,7 +40,7 @@ body{
 
     --text:#222222;
 
-    --border:#dddddd;
+    --border:#e4e7ee;
 
     --accent:#00c16a;
 
@@ -39,24 +48,28 @@ body{
 
     --primary:#2196f3;
 
+    --warning:#ff9800;
+
     --shadow:
-    0 5px 15px rgba(0,0,0,0.08);
+    0 8px 25px rgba(
+        0,0,0,.08
+    );
 
 }
 
 /* ========================= */
-/* DARK MODE */
+/* DARK */
 /* ========================= */
 
-.dark{
+body.dark{
 
-    --bg:#111111;
+    --bg:#111827;
 
-    --card:#1c1c1c;
+    --card:#1f2937;
 
-    --text:#ffffff;
+    --text:#f8fafc;
 
-    --border:#333333;
+    --border:#374151;
 
     --accent:#00ff88;
 
@@ -64,26 +77,12 @@ body{
 
     --primary:#42a5f5;
 
-}
-
-/* ========================= */
-/* BODY */
-/* ========================= */
-
-body{
-
-    background:var(--bg);
-
-    color:var(--text);
-
-    min-height:100vh;
-
-    display:flex;
+    --warning:#ffb74d;
 
 }
 
 /* ========================= */
-/* MAIN CONTENT */
+/* CONTENT */
 /* ========================= */
 
 .content{
@@ -99,44 +98,6 @@ body{
 }
 
 /* ========================= */
-/* PAGE SYSTEM */
-/* ========================= */
-
-.page{
-
-    display:none;
-
-    animation:fade .3s ease;
-
-}
-
-.page.active{
-
-    display:block;
-
-}
-
-@keyframes fade{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(10px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
-
-/* ========================= */
 /* CARD */
 /* ========================= */
 
@@ -144,25 +105,38 @@ body{
 
     background:var(--card);
 
-    border-radius:18px;
+    border:1px solid
+    var(--border);
+
+    border-radius:20px;
 
     padding:25px;
 
     margin-bottom:20px;
 
-    box-shadow:var(--shadow);
+    box-shadow:
+    var(--shadow);
 
-    border:1px solid var(--border);
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:
+    translateY(-3px);
 
 }
 
 /* ========================= */
-/* TITLE */
+/* TITLES */
 /* ========================= */
 
 h1{
 
     margin-bottom:15px;
+
+    font-size:30px;
 
 }
 
@@ -178,25 +152,9 @@ h3{
 
 }
 
-/* ========================= */
-/* BUTTON */
-/* ========================= */
+p{
 
-button{
-
-    border:none;
-
-    outline:none;
-
-    cursor:pointer;
-
-    transition:0.3s;
-
-}
-
-button:hover{
-
-    transform:translateY(-2px);
+    line-height:1.7;
 
 }
 
@@ -208,11 +166,12 @@ input{
 
     width:100%;
 
-    padding:12px;
+    padding:12px 15px;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    border:1px solid var(--border);
+    border:1px solid
+    var(--border);
 
     background:var(--card);
 
@@ -220,16 +179,129 @@ input{
 
     outline:none;
 
-    transition:0.3s;
+    transition:.3s;
 
 }
 
 input:focus{
 
-    border-color:var(--accent);
+    border-color:
+    var(--accent);
 
     box-shadow:
-    0 0 10px rgba(0,255,136,0.2);
+    0 0 12px
+    rgba(
+        0,255,136,.2
+    );
+
+}
+
+/* ========================= */
+/* BUTTON */
+/* ========================= */
+
+button{
+
+    border:none;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    transform:
+    translateY(-2px);
+
+}
+
+button:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+}
+
+/* ========================= */
+/* PRIMARY BUTTON */
+/* ========================= */
+
+.login-btn{
+
+    background:
+    var(--primary);
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:600;
+}
+
+/* ========================= */
+/* LOGOUT BUTTON */
+/* ========================= */
+
+.logout-btn{
+
+    background:
+    var(--danger);
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+}
+
+/* ========================= */
+/* THEME BUTTON */
+/* ========================= */
+
+.theme-btn{
+
+    background:
+    var(--warning);
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+}
+
+/* ========================= */
+/* SESSION TIMER */
+/* ========================= */
+
+.session-timer{
+
+    margin-top:10px;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    font-weight:bold;
+
+    background:
+    rgba(255,152,0,.15);
+
+    color:
+    var(--warning);
 
 }
 
@@ -239,29 +311,99 @@ input:focus{
 
 .mqtt-status{
 
-    position:fixed;
+    display:inline-block;
 
-    right:20px;
+    padding:10px 15px;
 
-    bottom:20px;
+    border-radius:10px;
 
-    background:var(--card);
+    background:
+    rgba(33,150,243,.15);
 
-    color:var(--text);
+    color:
+    var(--primary);
 
-    padding:12px 18px;
+    font-weight:bold;
+
+}
+
+/* ========================= */
+/* TABLE */
+/* ========================= */
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+.rfid-table{
+
+    width:100%;
+
+    border-collapse:
+    collapse;
+
+}
+
+.rfid-table th{
+
+    background:
+    var(--primary);
+
+    color:white;
+
+    padding:12px;
+
+}
+
+.rfid-table td{
+
+    border:
+    1px solid
+    var(--border);
+
+    padding:12px;
+
+    text-align:center;
+
+}
+
+.rfid-table tr:nth-child(even){
+
+    background:
+    rgba(0,0,0,.03);
+
+}
+
+/* ========================= */
+/* LOG BOX */
+/* ========================= */
+
+.log-box{
+
+    max-height:300px;
+
+    overflow-y:auto;
+
+    border:1px solid
+    var(--border);
 
     border-radius:12px;
 
-    box-shadow:var(--shadow);
+    padding:10px;
 
-    border:1px solid var(--border);
+}
 
-    z-index:999;
+.log-item{
+
+    padding:8px;
+
+    border-bottom:
+    1px solid
+    var(--border);
 
     font-size:14px;
-
-    font-weight:bold;
 
 }
 
@@ -276,7 +418,7 @@ input:focus{
     inset:0;
 
     background:
-    rgba(0,0,0,0.45);
+    rgba(0,0,0,.5);
 
     display:none;
 
@@ -290,27 +432,25 @@ input:focus{
 
 .popup-content{
 
-    background:var(--card);
+    background:
+    var(--card);
 
-    color:var(--text);
-
-    padding:25px;
-
-    border-radius:18px;
+    color:
+    var(--text);
 
     width:90%;
 
-    max-width:350px;
+    max-width:380px;
+
+    padding:25px;
+
+    border-radius:20px;
 
     text-align:center;
-
-    box-shadow:var(--shadow);
 
 }
 
 .popup-buttons{
-
-    margin-top:20px;
 
     display:flex;
 
@@ -318,11 +458,14 @@ input:focus{
 
     gap:10px;
 
+    margin-top:20px;
+
 }
 
 .yes-btn{
 
-    background:var(--danger);
+    background:
+    var(--danger);
 
     color:white;
 
@@ -345,6 +488,47 @@ input:focus{
 }
 
 /* ========================= */
+/* TOAST */
+/* ========================= */
+
+.toast{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:20px;
+
+    background:
+    #222;
+
+    color:white;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    opacity:0;
+
+    transform:
+    translateY(20px);
+
+    transition:.3s;
+
+    z-index:9999;
+
+}
+
+.toast.show{
+
+    opacity:1;
+
+    transform:
+    translateY(0);
+
+}
+
+/* ========================= */
 /* SCROLLBAR */
 /* ========================= */
 
@@ -354,17 +538,19 @@ input:focus{
 
 }
 
-::-webkit-scrollbar-track{
+::-webkit-scrollbar-thumb{
 
-    background:var(--bg);
+    background:
+    var(--accent);
+
+    border-radius:20px;
 
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-track{
 
-    background:var(--accent);
-
-    border-radius:20px;
+    background:
+    var(--bg);
 
 }
 
@@ -382,42 +568,16 @@ input:focus{
 
     }
 
-}
+    .card{
 
-/* ========================= */
-/* TOAST */
-/* ========================= */
+        padding:18px;
 
-.toast{
+    }
 
-position:fixed;
+    h1{
 
-right:20px;
+        font-size:24px;
 
-bottom:20px;
-
-background:#222;
-
-color:white;
-
-padding:12px 18px;
-
-border-radius:10px;
-
-opacity:0;
-
-transform:translateY(20px);
-
-transition:.3s;
-
-z-index:9999;
-
-}
-
-.toast.show{
-
-opacity:1;
-
-transform:translateY(0);
+    }
 
 }
