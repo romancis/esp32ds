@@ -2,7 +2,9 @@
 // FIREBASE IMPORT
 // =========================
 
-import { initializeApp }
+import {
+    initializeApp
+}
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
 import {
@@ -15,35 +17,68 @@ from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 // =========================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAcYGCGQcwaFuXxd7R4Oq-hJRgaBRYuRPM",
-  authDomain: "romancis--smarthome.firebaseapp.com",
-  projectId: "romancis--smarthome",
-  storageBucket: "romancis--smarthome.firebasestorage.app",
-  messagingSenderId: "542536848118",
-  appId: "1:542536848118:web:059f833254c14880ff92d7",
-  measurementId: "G-QLK7DPFCXD"
+
+    apiKey:
+    "AIzaSyAcYGCGQcwaFuXxd7R4Oq-hJRgaBRYuRPM",
+
+    authDomain:
+    "romancis--smarthome.firebaseapp.com",
+
+    projectId:
+    "romancis--smarthome",
+
+    storageBucket:
+    "romancis--smarthome.firebasestorage.app",
+
+    messagingSenderId:
+    "542536848118",
+
+    appId:
+    "1:542536848118:web:059f833254c14880ff92d7",
+
+    measurementId:
+    "G-QLK7DPFCXD"
+
 };
 
 // =========================
 // INITIALIZE FIREBASE
 // =========================
 
-const app =
-initializeApp(firebaseConfig);
+let app;
+let db;
 
-const db =
-getFirestore(app);
+try {
+
+    app =
+    initializeApp(
+        firebaseConfig
+    );
+
+    db =
+    getFirestore(
+        app
+    );
+
+    console.log(
+        "🔥 Firebase Connected"
+    );
+
+}
+catch(error){
+
+    console.error(
+        "❌ Firebase Error:",
+        error
+    );
+
+}
 
 // =========================
 // EXPORT
 // =========================
 
-export { db };
-
-// =========================
-// TEST
-// =========================
-
-console.log(
-    "🔥 Firebase Connected"
-);
+export {
+    app,
+    db
+};
