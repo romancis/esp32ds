@@ -44,16 +44,25 @@
 
     <nav class="menu">
 
-        <a href="../index.html" class="menu-link">
+        <a href="../index.html"
+           class="menu-link">
+
             🏠 Dashboard
+
         </a>
 
-        <a href="./setname.html" class="menu-link">
+        <a href="./setname.html"
+           class="menu-link">
+
             📋 SetName RFID
+
         </a>
 
-        <a href="./monitoring.html" class="menu-link active">
+        <a href="./monitoring.html"
+           class="menu-link active">
+
             📡 Monitoring
+
         </a>
 
     </nav>
@@ -66,13 +75,21 @@
 
 <main class="content">
 
-    <h1>
-        📡 Monitoring MQTT
-    </h1>
+    <!-- TITLE -->
 
-    <br>
+    <div class="card">
 
-    <!-- STATUS MQTT -->
+        <h1>
+            📡 Monitoring MQTT
+        </h1>
+
+        <p>
+            Monitoring realtime ESP32 Smart Home
+        </p>
+
+    </div>
+
+    <!-- MQTT STATUS -->
 
     <div class="card">
 
@@ -80,15 +97,55 @@
             Status MQTT
         </h2>
 
-        <div id="mqttStatus" class="mqtt-status">
+        <p>
 
-            🔴 Offline
+            Koneksi :
 
-        </div>
+            <span id="mqttStatus">
+
+                🔴 Offline
+
+            </span>
+
+        </p>
 
     </div>
 
-    <!-- DATA RFID -->
+    <!-- USER -->
+
+    <div class="card">
+
+        <h2>
+            Informasi User
+        </h2>
+
+        <p>
+
+            Username :
+
+            <span id="monitorUsername">
+
+                Guest
+
+            </span>
+
+        </p>
+
+        <p>
+
+            Role :
+
+            <span id="monitorRole">
+
+                Guest
+
+            </span>
+
+        </p>
+
+    </div>
+
+    <!-- RFID -->
 
     <div class="card">
 
@@ -97,24 +154,39 @@
         </h2>
 
         <p>
+
             UID :
+
             <span id="uid">
+
                 -
+
             </span>
+
         </p>
 
         <p>
+
             Nama :
+
             <span id="nama">
+
                 -
+
             </span>
+
         </p>
 
         <p>
+
             Status :
+
             <span id="status">
+
                 -
+
             </span>
+
         </p>
 
     </div>
@@ -123,52 +195,123 @@
 
     <div class="card">
 
-    <h2>
-        Sensor & Relay
-    </h2>
+        <h2>
+            Sensor Data
+        </h2>
 
-    <p>
-        Rain :
-        <span id="rain">
-            0
-        </span>
-    </p>
+        <p>
 
-    <p>
-        Suhu :
-        <span id="temperature">
-            0
-        </span>
-        °C
-    </p>
+            Rain :
 
-    <p>
-        Kelembapan :
-        <span id="humidity">
-            0
-        </span>
-        %
-    </p>
+            <span id="rain">
 
-    <hr>
+                0
 
-    <p>
-        Relay 1 :
-        <span id="relay1">
-            OFF
-        </span>
-    </p>
+            </span>
 
-    <p>
-        Relay 2 :
-        <span id="relay2">
-            OFF
-        </span>
-    </p>
+        </p>
+
+        <p>
+
+            Suhu :
+
+            <span id="temperature">
+
+                0
+
+            </span>
+
+            °C
+
+        </p>
+
+        <p>
+
+            Kelembapan :
+
+            <span id="humidity">
+
+                0
+
+            </span>
+
+            %
+
+        </p>
 
     </div>
 
-    <!-- LIVE LOG -->
+    <!-- RELAY CONTROL -->
+
+    <div class="card">
+
+        <h2>
+            Kontrol Relay
+        </h2>
+
+        <br>
+
+        <p>
+
+            Relay 1 :
+
+            <span id="relay1">
+
+                OFF
+
+            </span>
+
+        </p>
+
+        <button id="relay1On">
+
+            ON
+
+        </button>
+
+        <button id="relay1Off">
+
+            OFF
+
+        </button>
+
+        <br><br>
+
+        <p>
+
+            Relay 2 :
+
+            <span id="relay2">
+
+                OFF
+
+            </span>
+
+        </p>
+
+        <button id="relay2On">
+
+            ON
+
+        </button>
+
+        <button id="relay2Off">
+
+            OFF
+
+        </button>
+
+        <br><br>
+
+        <p id="controlInfo">
+
+            Menunggu perintah...
+
+        </p>
+
+    </div>
+
+    <!-- LOG -->
 
     <div class="card">
 
@@ -176,7 +319,8 @@
             Activity Log
         </h2>
 
-        <div id="logBox" class="log-box">
+        <div id="logBox"
+             class="log-box">
 
         </div>
 
@@ -184,16 +328,27 @@
 
 </main>
 
-<!-- MQTT LIBRARY -->
+<!-- ========================= -->
+<!-- MQTT -->
+<!-- ========================= -->
 
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+<!-- ========================= -->
 <!-- JS -->
+<!-- ========================= -->
 
-<script type="module" src="../js/firebase.js"></script>
-<script type="module" src="../js/mqtt.js"></script>
-<script type="module" src="../js/monitoring.js"></script>
+<script type="module"
+src="../js/firebase.js"></script>
+
+<script type="module"
+src="../js/auth.js"></script>
+
+<script type="module"
+src="../js/mqtt.js"></script>
+
+<script type="module"
+src="../js/monitoring.js"></script>
 
 </body>
-
 </html>
