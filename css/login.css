@@ -2,11 +2,15 @@
 /* LOGIN PAGE */
 /* ========================= */
 
-#login{
+.content{
 
-    max-width:500px;
+    display:flex;
 
-    margin:auto;
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:100vh;
 
 }
 
@@ -15,6 +19,10 @@
 /* ========================= */
 
 .login-card{
+
+    width:100%;
+
+    max-width:500px;
 
     background:var(--card);
 
@@ -28,6 +36,10 @@
 
 }
 
+/* ========================= */
+/* TITLE */
+/* ========================= */
+
 .login-card h1{
 
     text-align:center;
@@ -36,35 +48,13 @@
 
 }
 
-.login-card p{
+.login-subtitle{
 
     text-align:center;
 
-    opacity:0.8;
-
-    margin-bottom:25px;
-
-}
-
-/* ========================= */
-/* INPUT GROUP */
-/* ========================= */
-
-.input-group{
+    opacity:.8;
 
     margin-bottom:20px;
-
-}
-
-.input-group label{
-
-    display:block;
-
-    margin-bottom:8px;
-
-    font-size:14px;
-
-    font-weight:600;
 
 }
 
@@ -88,6 +78,8 @@
 
     font-size:15px;
 
+    outline:none;
+
     transition:.3s;
 
 }
@@ -102,16 +94,18 @@
 }
 
 /* ========================= */
-/* PASSWORD AREA */
+/* PASSWORD BOX */
 /* ========================= */
 
 .password-box{
 
     position:relative;
 
+    width:100%;
+
 }
 
-.password-box input{
+.password-box .input-box{
 
     padding-right:55px;
 
@@ -194,7 +188,7 @@
 }
 
 /* ========================= */
-/* LOADING EFFECT */
+/* LOADING */
 /* ========================= */
 
 #loginBtnAction.loading{
@@ -235,13 +229,13 @@
 
 #loginInfo{
 
-    margin-top:15px;
-
     text-align:center;
+
+    min-height:20px;
 
     font-size:14px;
 
-    min-height:20px;
+    margin-top:10px;
 
 }
 
@@ -270,28 +264,18 @@
 }
 
 /* ========================= */
-/* LOGIN ICON */
-/* ========================= */
-
-.login-logo{
-
-    width:90px;
-
-    height:90px;
-
-    object-fit:contain;
-
-    display:block;
-
-    margin:0 auto 20px;
-
-}
-
-/* ========================= */
 /* RESPONSIVE */
 /* ========================= */
 
 @media(max-width:768px){
+
+    .content{
+
+        padding:20px;
+
+        margin-left:0;
+
+    }
 
     .login-card{
 
