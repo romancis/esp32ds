@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+RoManCiS Smart Home Dashboard
+</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<!-- OVERLAY -->
+
+<div id="overlay"></div>
+
+<!-- MENU -->
+
+<button id="menuBtn">
+☰
+</button>
+
+<aside id="sidebar">
+
+<div class="sidebar-header">
+RoManCiS
+</div>
+
+<button id="showMonitor">
+📊 Live Monitoring
+</button>
+
+<button id="showAbout">
+🤖 Tentang Kami
+</button>
+
+</aside>
+
+<!-- HEADER -->
+
+<header>
+
+<div class="header-left">
+
+<h1>
+
+RoManCiS Smart Home
+
+</h1>
+
+<div class="status-group">
+
+<span id="mqttStatus">
+
+🟡 Connecting MQTT...
+
+</span>
+
+<span id="deviceStatus">
+
+⚪ ESP32 Unknown
+
+</span>
+
+<span id="esp32LastSeen">
+🕒 Last Seen: -
+</span>
+
+</div>
+
+</div>
+
+<div class="header-right">
+
+<div class="datetime">
+
+<div id="clock">
+
+00:00:00
+
+</div>
+
+<div id="date">
+
+01 Januari 2026
+
+</div>
+
+</div>
+
+<button id="themeToggle">
+
+🌙
+
+</button>
+
+</div>
+
+</header>
+
+<!-- ========================= -->
+<!-- LIVE MONITOR PAGE -->
+<!-- ========================= -->
+
+<section id="livePage">
+
+<main>
+
+<!-- RFID -->
+
+<section class="panel">
+
+<h2>
+
+RFID MONITOR
+
+</h2>
+
+<div class="content">
+
+<div class="info">
+
+<span>
+
+UID TERAKHIR
+
+</span>
+
+<h3 id="uid">
+
+-
+
+</h3>
+
+</div>
+
+<div class="info">
+
+<span>
+
+STATUS AKSES
+
+</span>
+
+<h3 id="status">
+
+-
+
+</h3>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- HUJAN -->
+
+<section class="panel">
+
+<h2>
+
+SENSOR HUJAN
+
+</h2>
+
+<div class="content">
+
+<div class="info">
+
+<span>
+
+NILAI SENSOR
+
+</span>
+
+<h3 id="rain">
+
+0
+
+</h3>
+
+</div>
+
+<div class="info">
+
+<span>
+
+STATUS CUACA
+
+</span>
+
+<h3 id="rainStatus">
+
+-
+
+</h3>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- GRAFIK -->
+
+<section class="panel">
+
+<h2>
+
+RIWAYAT SENSOR HUJAN
+
+</h2>
+
+<div class="chart-wrapper">
+
+<canvas id="rainChart">
+
+</canvas>
+
+</div>
+
+</section>
+
+<!-- PALANG -->
+
+<section class="panel">
+
+<h2>
+
+STATUS PALANG
+
+</h2>
+
+<h3 id="palangStatus">
+
+TIDAK DIKETAHUI
+
+</h3>
+
+</section>
+
+<!-- JEMURAN -->
+
+<section class="panel">
+
+<h2>
+
+STATUS JEMURAN
+
+</h2>
+
+<h3 id="jemuranStatus">
+
+TIDAK DIKETAHUI
+
+</h3>
+
+</section>
+
+<!-- KENDARAAN -->
+
+<section class="panel">
+
+<h2>
+
+SENSOR KENDARAAN
+
+</h2>
+
+<h3 id="kendaraanStatus">
+TIDAK ADA KENDARAAN
+</h3>
+
+</section>
+
+<!-- STATISTIK -->
+
+<section class="panel">
+
+<h2>
+
+STATISTIK
+
+</h2>
+
+<div class="stats">
+
+<div>
+
+<h3 id="scan">
+
+0
+
+</h3>
+
+<span>
+
+TOTAL SCAN
+
+</span>
+
+</div>
+
+<div>
+
+<h3 id="allow">
+
+0
+
+</h3>
+
+<span>
+
+DITERIMA
+
+</span>
+
+</div>
+
+<div>
+
+<h3 id="reject">
+
+0
+
+</h3>
+
+<span>
+
+DITOLAK
+
+</span>
+
+</div>
+
+<div>
+
+<h3 id="todayOnline">
+
+0
+
+</h3>
+
+<span>
+
+ONLINE HARI INI
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- LOG -->
+
+<section class="panel">
+
+<h2>
+
+LOG AKTIVITAS
+
+</h2>
+
+<div id="activityLog">
+
+Menunggu aktivitas...
+
+</div>
+
+</section>
+
+<!-- KONTROL -->
+
+<section class="panel">
+
+<h2>
+
+KONTROL PALANG
+
+</h2>
+
+<div class="controls">
+
+<button id="openBtn">
+
+🚧 BUKA PALANG
+
+</button>
+
+<button id="closeBtn">
+
+⛔ TUTUP PALANG
+
+</button>
+
+<button id="restartBtn">
+
+🔄 RESTART ESP32
+
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+</section>
+
+<!-- ========================= -->
+<!-- ABOUT PAGE -->
+<!-- ========================= -->
+
+<section id="aboutPage">
+
+<div class="about-container">
+
+<h1>
+
+ESKUL ROBOTIK
+
+</h1>
+
+<h2>
+
+MAN 1 CIREBON
+
+</h2>
+
+<p>
+
+Ekstrakurikuler Robotik MAN 1 Cirebon
+atau yang dikenal sebagai
+RoManCiS
+(Robotik MAN 1 Cirebon Super)
+merupakan wadah bagi siswa
+untuk belajar teknologi,
+robotika, pemrograman,
+dan Internet of Things (IoT).
+
+</p>
+
+<h3>
+
+Apa itu Eskul Robotik?
+
+</h3>
+
+<p>
+
+Eskul Robotik adalah kegiatan
+yang berfokus pada pengembangan
+teknologi modern seperti
+robotika, elektronika,
+pemrograman,
+otomasi dan IoT.
+
+</p>
+
+<h3>
+
+Sejarah
+
+</h3>
+
+<p>
+
+Eskul Robotik MAN 1 Cirebon
+lahir dari semangat siswa
+untuk mengembangkan
+kemampuan teknologi dan inovasi.
+
+Komunitas ini berkembang
+melalui berbagai kegiatan
+pembelajaran serta partisipasi
+dalam perlombaan teknologi
+hingga akhirnya menjadi
+ekstrakurikuler yang aktif
+dan terus berkembang.
+
+</p>
+
+<h3>
+
+Visi
+
+</h3>
+
+<p>
+
+Menjadi wadah pengembangan
+kreativitas dan inovasi teknologi
+bagi siswa MAN 1 Cirebon.
+
+</p>
+
+<h3>
+
+Misi
+
+</h3>
+
+<ul>
+
+<li>
+Mengenalkan teknologi robotika modern
+</li>
+
+<li>
+Mengembangkan kemampuan pemrograman
+</li>
+
+<li>
+Mendorong inovasi berbasis IoT
+</li>
+
+<li>
+Mempersiapkan siswa menghadapi era digital
+</li>
+
+<li>
+Meningkatkan kemampuan problem solving
+</li>
+
+</ul>
+
+<h3>
+
+Kegiatan
+
+</h3>
+
+<ul>
+
+<li>Robotika</li>
+<li>Elektronika</li>
+<li>IoT</li>
+<li>Pemrograman</li>
+<li>Kompetisi</li>
+
+</ul>
+
+<h3>
+
+Pembelajaran
+
+</h3>
+
+<ul>
+
+<li>Arduino</li>
+<li>ESP32</li>
+<li>MQTT</li>
+<li>Website Dashboard</li>
+<li>Sensor dan Aktuator</li>
+<li>C++</li>
+<li>Internet of Things</li>
+
+</ul>
+
+<h3>
+
+Prestasi
+
+</h3>
+
+<p>
+
+Prestasi dan pencapaian
+anggota RoManCiS akan
+ditampilkan pada bagian ini.
+
+</p>
+
+<h3>
+
+Ingin bergabung?
+
+</h3>
+
+<a
+href="https://romancis.github.io/romancis"
+target="_blank"
+class="join-btn">
+
+🚀 Kunjungi Website RoManCiS
+
+</a>
+
+</div>
+
+</section>
+
+<!-- TOAST -->
+
+<div id="toast">
+
+Pesan
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
