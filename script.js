@@ -261,6 +261,7 @@ themeToggle.addEventListener(
 document.body.classList.toggle(
 "light"
 );
+updateChartTheme();
 if(
 document.body.classList.contains(
 "light"
@@ -765,14 +766,11 @@ let jemuranState =
 
 const rainChart =
 new Chart(
-
 document.getElementById(
 "rainChart"
 ),
-
 {
 type:"line",
-
 data:{
 labels:[],
 datasets:[
@@ -782,16 +780,42 @@ data:[]
 }
 ]
 },
-
 options:{
 responsive:true,
-maintainAspectRatio:false
+maintainAspectRatio:false,
+scales:{
+x:{
+ticks:{
+color:"#ffffff"
 }
-
+},
+y:{
+ticks:{
+color:"#ffffff"
 }
-
+}
+}
+}
+}
 );
-
+function updateChartTheme(){
+const dark =
+document.body.classList.contains(
+"dark"
+);
+rainChart.data.datasets[0].borderColor =
+dark ? "#38bdf8" : "#2563eb";
+rainChart.data.datasets[0].backgroundColor =
+dark
+? "rgba(56,189,248,.15)"
+: "rgba(37,99,235,.1)";
+rainChart.options.scales.x.ticks.color =
+dark ? "#ffffff" : "#0f172a";
+rainChart.options.scales.y.ticks.color =
+dark ? "#ffffff" : "#0f172a";
+rainChart.update();
+}
+updateChartTheme();
 
 // =====================================
 // MQTT MESSAGE
