@@ -68,6 +68,8 @@ document.getElementById("aboutPage");
 
 const themeToggle =
 document.getElementById("themeToggle");
+themeToggle.addEventListener("click",
+()=>{ document.body.classList.toggle("dark");});
 
 const toast =
 document.getElementById("toast");
