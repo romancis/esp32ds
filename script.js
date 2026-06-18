@@ -41,7 +41,7 @@ const topicESP32 =
 "mansaci/device/status";
 
 const GAS_URL =
-"https://script.google.com/macros/s/AKfycbxxxxxx/exec";
+"https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjWG_-Us0ONR0VrdmJSpgq9v5Dr8CsaISk-AEJSXRHPO-Ka/exec";
 
 // =====================================
 // ELEMENT
