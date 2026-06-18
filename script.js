@@ -43,6 +43,47 @@ const topicESP32 =
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjWG_-Us0ONR0VrdmJSpgq9v5Dr8CsaISk-AEJSXRHPO-Ka/exec";
 
+const visitorId =
+localStorage.getItem(
+"visitorId"
+) ||
+crypto.randomUUID();
+localStorage.setItem(
+"visitorId",
+visitorId
+);
+const lastVisit =
+localStorage.getItem(
+"lastVisit"
+);
+const now =
+Date.now();
+if(
+!lastVisit ||
+now - lastVisit >
+600000
+){
+localStorage.setItem(
+"lastVisit",
+now
+);
+fetch(
+GAS_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+type:"visitor",
+visitorId:
+visitorId
+})
+}
+);
+}
+
 // =====================================
 // ELEMENT
 // =====================================
@@ -612,7 +653,27 @@ sessionStorage.setItem(
 }
 
 todayOnline.textContent =
-onlineCounter;
+const lastVisit =
+localStorage.getItem(
+"lastVisit"
+);
+
+const now =
+Date.now();
+if(
+!lastVisit ||
+now - lastVisit >
+600000
+){
+
+onlineCounter++;
+
+localStorage.setItem(
+"lastVisit",
+now
+);
+
+}
 
 
 // =====================================
