@@ -19,10 +19,6 @@ color:white;
 min-height:100vh;
 overflow-x:hidden;
 }
-body.light{
-background:#f5f7fb;
-color:#0f172a;
-}
 
 
 /* =========================
@@ -30,10 +26,8 @@ color:#0f172a;
 ========================= */
 
 body.light{
-
 background:#f4f7fb;
 color:#111827;
-
 }
 
 
