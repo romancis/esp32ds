@@ -93,7 +93,7 @@ transition:.3s;
 body.dark #menuBtn{
 background:
 rgba(255,255,255,.08);
-color:white;
+color:#ffffff;
 }
 
 #menuBtn:hover{
