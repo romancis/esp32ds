@@ -193,29 +193,37 @@ closeMenu();
 // DARK MODE
 // =====================================
 
-if(
+// =========================
+// LOAD THEME
+// =========================
+
+const savedTheme =
 localStorage.getItem(
 "theme"
-)==="light"
+);
+if(
+savedTheme === "light"
 ){
-
 document.body.classList.add(
 "light"
 );
-
 themeToggle.textContent =
 "☀️";
-
+}else{
+themeToggle.textContent =
+"🌙";
 }
+
+// =========================
+// TOGGLE THEME
+// =========================
 
 themeToggle.addEventListener(
 "click",
 ()=>{
-
 document.body.classList.toggle(
 "light"
 );
-
 if(
 document.body.classList.contains(
 "light"
@@ -242,9 +250,7 @@ themeToggle.textContent =
 
 }
 
-}
-);
-
+});
 
 // =====================================
 // CLOCK
