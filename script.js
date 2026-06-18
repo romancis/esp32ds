@@ -653,6 +653,13 @@ sessionStorage.setItem(
 }
 
 todayOnline.textContent =
+onlineCounter;
+
+
+// =====================
+// ANTI SPAM VISITOR
+// =====================
+
 const lastVisit =
 localStorage.getItem(
 "lastVisit"
@@ -660,17 +667,38 @@ localStorage.getItem(
 
 const now =
 Date.now();
+
 if(
 !lastVisit ||
 now - lastVisit >
 600000
 ){
 
-onlineCounter++;
-
 localStorage.setItem(
 "lastVisit",
 now
+);
+
+fetch(
+GAS_URL,
+{
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:JSON.stringify({
+
+type:"visitor",
+
+visitorId:
+visitorId
+
+})
+
+}
 );
 
 }
