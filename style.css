@@ -144,18 +144,24 @@ rgba(0,0,0,.08);
 ========================= */
 
 .sidebar-header{
-
-font-size:1.3rem;
-
-font-weight:700;
-
 margin-bottom:20px;
-
 padding-bottom:15px;
-
 border-bottom:
 1px solid rgba(255,255,255,.08);
-
+}
+body.light .sidebar-header{
+border-bottom:
+1px solid rgba(0,0,0,.08);
+}
+.sidebar-title{
+font-size:1.8rem;
+font-weight:700;
+margin-bottom:5px;
+}
+.sidebar-subtitle{
+font-size:.85rem;
+opacity:.75;
+line-height:1.5;
 }
 
 
