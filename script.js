@@ -40,6 +40,8 @@ const topicKendaraan =
 const topicESP32 =
 "mansaci/device/status";
 
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycbxxxxxx/exec";
 
 // =====================================
 // ELEMENT
@@ -78,22 +80,59 @@ document.getElementById("toast");
 // =====================================
 
 function showToast(text){
-
 toast.textContent =
 text;
-
 toast.classList.add(
 "show"
 );
-
 setTimeout(()=>{
-
 toast.classList.remove(
 "show"
 );
-
 },3000);
-
+}
+async function sendDailyReport(){
+try{
+await fetch(
+GAS_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+tanggal:
+new Date()
+.toLocaleDateString(
+"id-ID"
+),
+online:
+onlineCounter,
+scan:
+document
+.getElementById(
+"scan"
+).textContent,
+allow:
+document
+.getElementById(
+"allow"
+).textContent,
+reject:
+document
+.getElementById(
+"reject"
+).textContent
+})
+}
+);
+console.log(
+"Laporan terkirim"
+);
+}catch(err){
+console.log(err);
+}
 }
 
 
@@ -538,6 +577,10 @@ localStorage.setItem(
 "0"
 );
 
+sessionStorage.removeItem(
+"alreadyCounted"
+);
+
 }
 
 onlineCounter =
@@ -547,12 +590,25 @@ localStorage.getItem(
 ) || "0"
 );
 
+if(
+!sessionStorage.getItem(
+"alreadyCounted"
+)
+){
+
 onlineCounter++;
 
 localStorage.setItem(
 "onlineCounter",
 onlineCounter
 );
+
+sessionStorage.setItem(
+"alreadyCounted",
+"true"
+);
+
+}
 
 todayOnline.textContent =
 onlineCounter;
@@ -574,6 +630,53 @@ now.toLocaleTimeString(
 );
 
 }
+
+// =====================================
+// LAPORAN HARIAN
+// =====================================
+
+let reportSentToday =
+false;
+setInterval(()=>{
+const now =
+new Date();
+if(
+now.getHours()===23 &&
+now.getMinutes()===55 &&
+!reportSentToday
+){
+sendDailyReport();
+reportSentToday =
+true;
+}
+if(
+now.getHours()===0 &&
+now.getMinutes()===1
+){
+reportSentToday =
+false;
+}
+},60000);
+
+// =====================================
+// RESET OTOMATIS
+// =====================================
+setInterval(()=>{
+const now =
+new Date();
+if(
+now.getHours()===0 &&
+now.getMinutes()===0
+){
+onlineCounter = 0;
+localStorage.setItem(
+"onlineCounter",
+"0"
+);
+todayOnline.textContent =
+0;
+}
+},60000);
 
 // =====================================
 // ELEMENT DATA
