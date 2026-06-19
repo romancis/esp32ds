@@ -40,80 +40,150 @@ const topicKendaraan =
 const topicESP32 =
 "mansaci/device/status";
 
+
+// =====================================
+// GOOGLE APPS SCRIPT
+// =====================================
+
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjWG_-Us0ONR0VrdmJSpgq9v5Dr8CsaISk-AEJSXRHPO-Ka/exec";
+
+
+// =====================================
+// DAILY REPORT TIME
+// =====================================
+
+const REPORT_HOUR = 23;
+const REPORT_MINUTE = 55;
+
+let reportSentToday =
+false;
+
+
+// =====================================
+// VISITOR TRACKING
+// =====================================
 
 const visitorId =
 localStorage.getItem(
 "visitorId"
 ) ||
 crypto.randomUUID();
+
 localStorage.setItem(
 "visitorId",
 visitorId
 );
+
 const lastVisit =
 localStorage.getItem(
 "lastVisit"
 );
+
 const now =
 Date.now();
+
 if(
 !lastVisit ||
-now - lastVisit >
+now - Number(lastVisit) >
 600000
 ){
+
 localStorage.setItem(
 "lastVisit",
 now
 );
+
 fetch(
 GAS_URL,
 {
 method:"POST",
+
 headers:{
 "Content-Type":
 "application/json"
 },
+
 body:JSON.stringify({
+
 type:"visitor",
+
 visitorId:
 visitorId
+
 })
+
 }
+)
+.then(res=>res.text())
+.then(data=>{
+
+console.log(
+"Visitor Saved:",
+data
 );
+
+})
+.catch(err=>{
+
+console.log(
+"Visitor Error:",
+err
+);
+
+});
+
 }
+
 
 // =====================================
 // ELEMENT
 // =====================================
 
 const sidebar =
-document.getElementById("sidebar");
+document.getElementById(
+"sidebar"
+);
 
 const overlay =
-document.getElementById("overlay");
+document.getElementById(
+"overlay"
+);
 
 const menuBtn =
-document.getElementById("menuBtn");
+document.getElementById(
+"menuBtn"
+);
 
 const showMonitor =
-document.getElementById("showMonitor");
+document.getElementById(
+"showMonitor"
+);
 
 const showAbout =
-document.getElementById("showAbout");
+document.getElementById(
+"showAbout"
+);
 
 const livePage =
-document.getElementById("livePage");
+document.getElementById(
+"livePage"
+);
 
 const aboutPage =
-document.getElementById("aboutPage");
+document.getElementById(
+"aboutPage"
+);
 
 const themeToggle =
-document.getElementById("themeToggle");
+document.getElementById(
+"themeToggle"
+);
 
 const toast =
-document.getElementById("toast");
+document.getElementById(
+"toast"
+);
 
 
 // =====================================
@@ -121,59 +191,90 @@ document.getElementById("toast");
 // =====================================
 
 function showToast(text){
+
 toast.textContent =
 text;
+
 toast.classList.add(
 "show"
 );
+
 setTimeout(()=>{
+
 toast.classList.remove(
 "show"
 );
+
 },3000);
+
 }
+
+
+// =====================================
+// DAILY REPORT
+// =====================================
+
 async function sendDailyReport(){
+
 try{
+
 await fetch(
 GAS_URL,
 {
 method:"POST",
+
 headers:{
 "Content-Type":
 "application/json"
 },
+
 body:JSON.stringify({
+
 tanggal:
 new Date()
 .toLocaleDateString(
 "id-ID"
 ),
+
 online:
 onlineCounter,
+
 scan:
 document
 .getElementById(
 "scan"
 ).textContent,
+
 allow:
 document
 .getElementById(
 "allow"
 ).textContent,
+
 reject:
 document
 .getElementById(
 "reject"
 ).textContent
+
 })
+
 }
 );
+
 console.log(
 "Laporan terkirim"
 );
+
 }catch(err){
-console.log(err);
+
+console.log(
+"Laporan gagal:",
+err
+);
+
 }
+
 }
 
 
@@ -268,41 +369,54 @@ closeMenu();
 
 
 // =====================================
-// DARK MODE
+// THEME
 // =====================================
-
-// =========================
-// LOAD THEME
-// =========================
 
 const savedTheme =
 localStorage.getItem(
 "theme"
 );
+
 if(
 savedTheme === "light"
 ){
+
 document.body.classList.add(
 "light"
 );
+
 themeToggle.textContent =
 "☀️";
+
 }else{
+
 themeToggle.textContent =
 "🌙";
+
 }
 
-// =========================
+
+// =====================================
 // TOGGLE THEME
-// =========================
+// =====================================
 
 themeToggle.addEventListener(
 "click",
 ()=>{
+
 document.body.classList.toggle(
 "light"
 );
+
+if(
+typeof updateChartTheme
+=== "function"
+){
+
 updateChartTheme();
+
+}
+
 if(
 document.body.classList.contains(
 "light"
@@ -326,6 +440,26 @@ localStorage.setItem(
 
 themeToggle.textContent =
 "🌙";
+
+}
+
+});
+
+
+// =====================================
+// LOAD EVENT
+// =====================================
+
+window.addEventListener(
+"load",
+()=>{
+
+if(
+typeof updateChartTheme
+=== "function"
+){
+
+updateChartTheme();
 
 }
 
@@ -374,6 +508,7 @@ setInterval(
 updateClock,
 1000
 );
+
 
 // =====================================
 // MQTT STATUS
@@ -501,6 +636,10 @@ client.subscribe(
 topicESP32
 );
 
+addLog(
+"Subscribe MQTT Selesai"
+);
+
 }
 );
 
@@ -551,7 +690,10 @@ client.on(
 "error",
 (err)=>{
 
-console.error(err);
+console.error(
+"MQTT Error:",
+err
+);
 
 mqttStatus.textContent =
 "🔴 MQTT Error";
@@ -572,7 +714,9 @@ Date.now();
 const diff =
 now - lastHeartbeat;
 
-if(diff < 30000){
+if(
+diff < 30000
+){
 
 deviceStatus.textContent =
 "🟢 ESP32 Online";
@@ -594,6 +738,7 @@ updateESP32Status,
 
 // =====================================
 // ONLINE HARI INI
+// (LOKAL DEVICE)
 // =====================================
 
 const storedDate =
@@ -656,52 +801,42 @@ todayOnline.textContent =
 onlineCounter;
 
 
-// =====================
-// ANTI SPAM VISITOR
-// =====================
-
-const lastVisit =
-localStorage.getItem(
-"lastVisit"
-);
-
-const now =
-Date.now();
-
-if(
-!lastVisit ||
-now - lastVisit >
-600000
-){
-
-localStorage.setItem(
-"lastVisit",
-now
-);
+// =====================================
+// LOAD DATA GOOGLE SHEET
+// =====================================
 
 fetch(
-GAS_URL,
-{
-method:"POST",
+GAS_URL
+)
+.then(
+res=>res.json()
+)
+.then(
+data=>{
 
-headers:{
-"Content-Type":
-"application/json"
-},
+console.log(
+"Google Sheet:",
+data
+);
 
-body:JSON.stringify({
+// jika nanti mau pakai
+// visitorToday global
 
-type:"visitor",
-
-visitorId:
-visitorId
-
-})
+window.visitorToday =
+data.visitorToday || 0;
 
 }
+)
+.catch(
+err=>{
+
+console.log(
+"Sheet Error:",
+err
 );
 
 }
+);
 
 
 // =====================================
@@ -721,52 +856,73 @@ now.toLocaleTimeString(
 
 }
 
+
 // =====================================
 // LAPORAN HARIAN
 // =====================================
 
 let reportSentToday =
 false;
+
 setInterval(()=>{
+
 const now =
 new Date();
+
 if(
-now.getHours()===23 &&
-now.getMinutes()===55 &&
+now.getHours() === REPORT_HOUR &&
+now.getMinutes() === REPORT_MINUTE &&
 !reportSentToday
 ){
+
 sendDailyReport();
+
 reportSentToday =
 true;
+
 }
+
 if(
-now.getHours()===0 &&
-now.getMinutes()===1
+now.getHours() === 0 &&
+now.getMinutes() === 1
 ){
+
 reportSentToday =
 false;
+
 }
+
 },60000);
+
 
 // =====================================
 // RESET OTOMATIS
 // =====================================
+
 setInterval(()=>{
+
 const now =
 new Date();
+
 if(
-now.getHours()===0 &&
-now.getMinutes()===0
+now.getHours() === 0 &&
+now.getMinutes() === 0
 ){
+
 onlineCounter = 0;
+
 localStorage.setItem(
 "onlineCounter",
 "0"
 );
+
 todayOnline.textContent =
 0;
+
 }
+
 },60000);
+
 
 // =====================================
 // ELEMENT DATA
@@ -860,18 +1016,23 @@ document.getElementById(
 ),
 {
 type:"line",
+
 data:{
 labels:[],
 datasets:[
 {
 label:"Sensor Hujan",
-data:[]
+data:[],
+borderWidth:2,
+fill:true
 }
 ]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false,
+
 scales:{
 x:{
 ticks:{
@@ -887,24 +1048,45 @@ color:"#ffffff"
 }
 }
 );
+
+
+// =====================================
+// UPDATE CHART THEME
+// =====================================
+
 function updateChartTheme(){
-const dark =
+
+const light =
 document.body.classList.contains(
-"dark"
+"light"
 );
+
 rainChart.data.datasets[0].borderColor =
-dark ? "#38bdf8" : "#2563eb";
+light
+? "#2563eb"
+: "#38bdf8";
+
 rainChart.data.datasets[0].backgroundColor =
-dark
-? "rgba(56,189,248,.15)"
-: "rgba(37,99,235,.1)";
+light
+? "rgba(37,99,235,.10)"
+: "rgba(56,189,248,.15)";
+
 rainChart.options.scales.x.ticks.color =
-dark ? "#ffffff" : "#0f172a";
+light
+? "#0f172a"
+: "#ffffff";
+
 rainChart.options.scales.y.ticks.color =
-dark ? "#ffffff" : "#0f172a";
+light
+? "#0f172a"
+: "#ffffff";
+
 rainChart.update();
+
 }
+
 updateChartTheme();
+
 
 // =====================================
 // MQTT MESSAGE
@@ -987,7 +1169,9 @@ rainEl.textContent =
 message;
 
 const rainValue =
-parseInt(message);
+parseInt(
+message
+);
 
 let kondisi =
 "TIDAK HUJAN";
@@ -1025,8 +1209,7 @@ rainValue
 );
 
 if(
-rainChart.data.labels.length
-> 15
+rainChart.data.labels.length > 15
 ){
 
 rainChart.data.labels.shift();
@@ -1050,7 +1233,9 @@ topic === topicStat
 ){
 
 const data =
-message.split(",");
+message.split(
+","
+);
 
 if(
 data.length >= 3
@@ -1157,9 +1342,7 @@ message === "DETECTED"
 kendaraanStatusEl.textContent =
 "🚗 TERDETEKSI";
 
-}
-
-else{
+}else{
 
 kendaraanStatusEl.textContent =
 "⭕ TIDAK ADA";
@@ -1201,6 +1384,10 @@ showToast(
 "Membuka palang..."
 );
 
+addLog(
+"Perintah buka palang dikirim"
+);
+
 }
 );
 
@@ -1234,6 +1421,10 @@ showToast(
 "Menutup palang..."
 );
 
+addLog(
+"Perintah tutup palang dikirim"
+);
+
 }
 );
 
@@ -1261,7 +1452,31 @@ showToast(
 "Restart dikirim"
 );
 
+addLog(
+"Perintah restart ESP32 dikirim"
+);
+
 }
 
 }
+);
+
+
+// =====================================
+// INITIAL STATUS
+// =====================================
+
+updateESP32Status();
+
+if(
+typeof updateChartTheme
+=== "function"
+){
+
+updateChartTheme();
+
+}
+
+addLog(
+"Dashboard siap digunakan"
 );
