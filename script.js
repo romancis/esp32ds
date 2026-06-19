@@ -133,54 +133,43 @@ showAbout.addEventListener("click", () => {
 });
 
 // =====================================
-// ADMIN RESET SYSTEM
+// ADMIN RESET SYSTEM (DENGAN MENYIMPAN THEMA)
 // =====================================
 const resetWebsiteBtn = document.getElementById("resetWebsiteBtn");
 
 if(resetWebsiteBtn) {
     resetWebsiteBtn.addEventListener("click", () => {
         closeMenu();
-
-        // 1. Minta Password
         const pwd = prompt("🔒 Masukkan Password Admin:");
 
-        if (pwd === "Romancis_eskul") {
-            // 2. Konfirmasi pertama (Reset Lokal)
-            const confirmReset = confirm("Password Benar! Yakin ingin mereset sistem website?");
+        if (pwd ==="Romancis_eskul") {
+            const confirmReset = confirm("Yakin ingin mereset sistem? (Data pengunjung hari ini di server & browser akan dihapus, TEMA akan tetap tersimpan)");
             
             if (confirmReset) {
-                // 3. Konfirmasi kedua (Reset Google Sheet)
-                // 3. Konfirmasi kedua (Reset Google Sheet)
-                const resetSheet = confirm("⚠️ Apakah Anda JUGA ingin mereset angka 'Online Hari Ini' di Google Sheet menjadi 0?\n\n(Aman: Hanya data HARI INI saja yang akan dihapus, riwayat kemarin tetap aman!)");
-                
-                showToast("Memulai reset sistem...");
-                addLog("Sistem direset oleh Admin");
+                // 1. Ambil data TEMA yang ingin dipertahankan
+                const currentTheme = localStorage.getItem("theme");
 
-                // Hapus memori lokal browser
+                // 2. Hapus SEMUA data di browser
                 localStorage.clear();
                 sessionStorage.clear();
 
-                // Jika Admin memilih "OK" untuk mereset Google Sheet
-                if (resetSheet) {
-                    showToast("Mereset data server...");
-                    fetch(GAS_URL, {
-                        method: "POST",
-                        headers: { "Content-Type": "text/plain" },
-                        body: JSON.stringify({ type: "reset_visitors" })
-                    }).then(() => {
-                        // Refresh halaman setelah selesai mereset server
-                        setTimeout(() => { location.reload(true); }, 2000);
-                    }).catch(() => {
-                        alert("Gagal mereset server!");
-                        setTimeout(() => { location.reload(true); }, 1000);
-                    });
-                } else {
-                    // Jika hanya reset lokal, langsung refresh halaman
-                    setTimeout(() => { location.reload(true); }, 1500);
+                // 3. Kembalikan data TEMA ke localStorage yang baru saja kosong
+                if (currentTheme) {
+                    localStorage.setItem("theme", currentTheme);
                 }
+
+                // 4. Jika butuh reset server Google Sheet
+                fetch(GAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify({ type: "reset_visitors" })
+                });
+
+                showToast("Sistem direset. Mengulang halaman...");
+                setTimeout(() => { location.reload(true); }, 1500);
             }
         } else if (pwd !== null) {
-            alert("❌ Password Salah! Akses Ditolak.");
+            alert("❌ Password Salah! Yahahaha, nyoba-nyoba nih ye😝😝😝");
         }
     });
 }
