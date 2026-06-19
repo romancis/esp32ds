@@ -133,6 +133,59 @@ showAbout.addEventListener("click", () => {
 });
 
 // =====================================
+// ADMIN RESET SYSTEM
+// =====================================
+const resetWebsiteBtn = document.getElementById("resetWebsiteBtn");
+
+if(resetWebsiteBtn) {
+    resetWebsiteBtn.addEventListener("click", () => {
+        closeMenu();
+
+        // 1. Minta Password
+        const pwd = prompt("🔒 Masukkan Password Admin:");
+
+        if (pwd === "romancis123") {
+            // 2. Konfirmasi pertama (Reset Lokal)
+            const confirmReset = confirm("Password Benar! Yakin ingin mereset sistem website?");
+            
+            if (confirmReset) {
+                // 3. Konfirmasi kedua (Reset Google Sheet)
+                // 3. Konfirmasi kedua (Reset Google Sheet)
+                const resetSheet = confirm("⚠️ Apakah Anda JUGA ingin mereset angka 'Online Hari Ini' di Google Sheet menjadi 0?\n\n(Aman: Hanya data HARI INI saja yang akan dihapus, riwayat kemarin tetap aman!)");
+                
+                showToast("Memulai reset sistem...");
+                addLog("Sistem direset oleh Admin");
+
+                // Hapus memori lokal browser
+                localStorage.clear();
+                sessionStorage.clear();
+
+                // Jika Admin memilih "OK" untuk mereset Google Sheet
+                if (resetSheet) {
+                    showToast("Mereset data server...");
+                    fetch(GAS_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain" },
+                        body: JSON.stringify({ type: "reset_visitors" })
+                    }).then(() => {
+                        // Refresh halaman setelah selesai mereset server
+                        setTimeout(() => { location.reload(true); }, 2000);
+                    }).catch(() => {
+                        alert("Gagal mereset server!");
+                        setTimeout(() => { location.reload(true); }, 1000);
+                    });
+                } else {
+                    // Jika hanya reset lokal, langsung refresh halaman
+                    setTimeout(() => { location.reload(true); }, 1500);
+                }
+            }
+        } else if (pwd !== null) {
+            alert("❌ Password Salah! Akses Ditolak.");
+        }
+    });
+}
+
+// =====================================
 // THEME INITIALIZATION
 // =====================================
 const savedTheme = localStorage.getItem("theme");
