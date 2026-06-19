@@ -27,7 +27,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjW
 // =====================================
 const REPORT_HOUR = 23;
 const REPORT_MINUTE = 55;
-let reportSentToday = false; // [PERBAIKAN] Dideklarasikan sekali di sini saja
+let reportSentToday = false; 
 
 // =====================================
 // VISITOR TRACKING
@@ -42,7 +42,6 @@ if(!lastVisit || now - Number(lastVisit) > 600000){
     localStorage.setItem("lastVisit", now);
     fetch(GAS_URL, {
         method: "POST",
-        // UBAH bagian ini dari application/json menjadi text/plain
         headers: { "Content-Type": "text/plain" }, 
         body: JSON.stringify({ type: "visitor", visitorId: visitorId })
     })
@@ -80,11 +79,10 @@ async function sendDailyReport(){
     try {
         await fetch(GAS_URL, {
             method: "POST",
-            // UBAH bagian ini juga menjadi text/plain
             headers: { "Content-Type": "text/plain" },
             body: JSON.stringify({
                 tanggal: new Date().toLocaleDateString("id-ID"),
-                online: onlineCounter,
+                online: document.getElementById("todayOnline").textContent, // [PERBAIKAN] Ambil data langsung dari UI yang sudah sinkron dengan Sheet
                 scan: document.getElementById("scan").textContent,
                 allow: document.getElementById("allow").textContent,
                 reject: document.getElementById("reject").textContent
@@ -189,9 +187,8 @@ const activityLog = document.getElementById("activityLog");
 const todayOnline = document.getElementById("todayOnline");
 
 // =====================================
-// ONLINE COUNTER
+// ONLINE COUNTER & HEARTBEAT
 // =====================================
-let onlineCounter = 0;
 let lastHeartbeat = Date.now();
 
 // =====================================
@@ -256,38 +253,13 @@ function updateESP32Status(){
 setInterval(updateESP32Status, 5000);
 
 // =====================================
-// ONLINE LOCAL STATUS
-// =====================================
-const storedDate = localStorage.getItem("onlineDate");
-const today = new Date().toDateString();
-
-if(storedDate !== today){
-    localStorage.setItem("onlineDate", today);
-    localStorage.setItem("onlineCounter", "0");
-    sessionStorage.removeItem("alreadyCounted");
-}
-
-onlineCounter = parseInt(localStorage.getItem("onlineCounter") || "0");
-
-if(!sessionStorage.getItem("alreadyCounted")){
-    onlineCounter++;
-    localStorage.setItem("onlineCounter", onlineCounter);
-    sessionStorage.setItem("alreadyCounted", "true");
-}
-todayOnline.textContent = onlineCounter;
-
-// =====================================
-// LOAD DATA GOOGLE SHEET
-// =====================================
-// =====================================
-// LOAD DATA GOOGLE SHEET (REALTIME PER 30 DETIK)
+// LOAD DATA GOOGLE SHEET (REALTIME)
 // =====================================
 function fetchLiveVisitors() {
     fetch(GAS_URL)
     .then(res => res.json())
     .then(data => {
         console.log("Google Sheet Data:", data);
-        // Menampilkan angka dari Google Sheet langsung ke kotak dashboard
         const visitorCount = data.visitorToday || 0;
         document.getElementById("todayOnline").textContent = visitorCount;
     })
@@ -305,7 +277,10 @@ setInterval(fetchLiveVisitors, 30000);
 // =====================================
 function updateLastSeen(){
     const now = new Date();
-    esp32LastSeen.textContent = "🕒 Last Seen: " + now.toLocaleTimeString("id-ID");
+    espLastSeenEl = document.getElementById("esp32LastSeen");
+    if(espLastSeenEl) {
+        espLastSeenEl.textContent = "🕒 Last Seen: " + now.toLocaleTimeString("id-ID");
+    }
 }
 
 // =====================================
@@ -319,18 +294,6 @@ setInterval(() => {
     }
     if(now.getHours() === 0 && now.getMinutes() === 1){
         reportSentToday = false;
-    }
-}, 60000);
-
-// =====================================
-// RESET AUTOMATIC COUNTER AT MIDNIGHT
-// =====================================
-setInterval(() => {
-    const now = new Date();
-    if(now.getHours() === 0 && now.getMinutes() === 0){
-        onlineCounter = 0;
-        localStorage.setItem("onlineCounter", "0");
-        todayOnline.textContent = 0;
     }
 }, 60000);
 
