@@ -1,1482 +1,492 @@
 // =====================================
 // MQTT CONFIG
 // =====================================
-
-const broker =
-"wss://broker.hivemq.com:8884/mqtt";
-
-const client =
-mqtt.connect(broker);
-
+const broker = "wss://broker.hivemq.com:8884/mqtt";
+const client = mqtt.connect(broker);
 
 // =====================================
 // MQTT TOPIC
 // =====================================
-
-const topicUID =
-"mansaci/rfid/uid";
-
-const topicStatus =
-"mansaci/rfid/status";
-
-const topicRain =
-"mansaci/rain";
-
-const topicStat =
-"mansaci/statistik";
-
-const topicControl =
-"mansaci/control";
-
-const topicPalang =
-"mansaci/palang/status";
-
-const topicJemuran =
-"mansaci/jemuran/status";
-
-const topicKendaraan =
-"mansaci/kendaraan/status";
-
-const topicESP32 =
-"mansaci/device/status";
-
+const topicUID = "mansaci/rfid/uid";
+const topicStatus = "mansaci/rfid/status";
+const topicRain = "mansaci/rain";
+const topicStat = "mansaci/statistik";
+const topicControl = "mansaci/control";
+const topicPalang = "mansaci/palang/status";
+const topicJemuran = "mansaci/jemuran/status";
+const topicKendaraan = "mansaci/kendaraan/status";
+const topicESP32 = "mansaci/device/status";
 
 // =====================================
 // GOOGLE APPS SCRIPT
 // =====================================
-
-const GAS_URL =
-"https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjWG_-Us0ONR0VrdmJSpgq9v5Dr8CsaISk-AEJSXRHPO-Ka/exec";
-
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyTgVaNcKqR4JOe9iCvETjWG_-Us0ONR0VrdmJSpgq9v5Dr8CsaISk-AEJSXRHPO-Ka/exec";
 
 // =====================================
 // DAILY REPORT TIME
 // =====================================
-
 const REPORT_HOUR = 23;
 const REPORT_MINUTE = 55;
-
-let reportSentToday =
-false;
-
+let reportSentToday = false; // [PERBAIKAN] Dideklarasikan sekali di sini saja
 
 // =====================================
 // VISITOR TRACKING
 // =====================================
+const visitorId = localStorage.getItem("visitorId") || crypto.randomUUID();
+localStorage.setItem("visitorId", visitorId);
 
-const visitorId =
-localStorage.getItem(
-"visitorId"
-) ||
-crypto.randomUUID();
+const lastVisit = localStorage.getItem("lastVisit");
+const now = Date.now();
 
-localStorage.setItem(
-"visitorId",
-visitorId
-);
-
-const lastVisit =
-localStorage.getItem(
-"lastVisit"
-);
-
-const now =
-Date.now();
-
-if(
-!lastVisit ||
-now - Number(lastVisit) >
-600000
-){
-
-localStorage.setItem(
-"lastVisit",
-now
-);
-
-fetch(
-GAS_URL,
-{
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-type:"visitor",
-
-visitorId:
-visitorId
-
-})
-
+if(!lastVisit || now - Number(lastVisit) > 600000){
+    localStorage.setItem("lastVisit", now);
+    fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "visitor", visitorId: visitorId })
+    })
+    .then(res => res.text())
+    .then(data => { console.log("Visitor Saved:", data); })
+    .catch(err => { console.log("Visitor Error:", err); });
 }
-)
-.then(res=>res.text())
-.then(data=>{
-
-console.log(
-"Visitor Saved:",
-data
-);
-
-})
-.catch(err=>{
-
-console.log(
-"Visitor Error:",
-err
-);
-
-});
-
-}
-
 
 // =====================================
 // ELEMENT
 // =====================================
-
-const sidebar =
-document.getElementById(
-"sidebar"
-);
-
-const overlay =
-document.getElementById(
-"overlay"
-);
-
-const menuBtn =
-document.getElementById(
-"menuBtn"
-);
-
-const showMonitor =
-document.getElementById(
-"showMonitor"
-);
-
-const showAbout =
-document.getElementById(
-"showAbout"
-);
-
-const livePage =
-document.getElementById(
-"livePage"
-);
-
-const aboutPage =
-document.getElementById(
-"aboutPage"
-);
-
-const themeToggle =
-document.getElementById(
-"themeToggle"
-);
-
-const toast =
-document.getElementById(
-"toast"
-);
-
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const menuBtn = document.getElementById("menuBtn");
+const showMonitor = document.getElementById("showMonitor");
+const showAbout = document.getElementById("showAbout");
+const livePage = document.getElementById("livePage");
+const aboutPage = document.getElementById("aboutPage");
+const themeToggle = document.getElementById("themeToggle");
+const toast = document.getElementById("toast");
 
 // =====================================
 // TOAST
 // =====================================
-
 function showToast(text){
-
-toast.textContent =
-text;
-
-toast.classList.add(
-"show"
-);
-
-setTimeout(()=>{
-
-toast.classList.remove(
-"show"
-);
-
-},3000);
-
+    toast.textContent = text;
+    toast.classList.add("show");
+    setTimeout(() => { toast.classList.remove("show"); }, 3000);
 }
-
 
 // =====================================
 // DAILY REPORT
 // =====================================
-
 async function sendDailyReport(){
-
-try{
-
-await fetch(
-GAS_URL,
-{
-method:"POST",
-
-headers:{
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-tanggal:
-new Date()
-.toLocaleDateString(
-"id-ID"
-),
-
-online:
-onlineCounter,
-
-scan:
-document
-.getElementById(
-"scan"
-).textContent,
-
-allow:
-document
-.getElementById(
-"allow"
-).textContent,
-
-reject:
-document
-.getElementById(
-"reject"
-).textContent
-
-})
-
+    try {
+        await fetch(GAS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tanggal: new Date().toLocaleDateString("id-ID"),
+                online: onlineCounter,
+                scan: document.getElementById("scan").textContent,
+                allow: document.getElementById("allow").textContent,
+                reject: document.getElementById("reject").textContent
+            })
+        });
+        console.log("Laporan terkirim");
+    } catch(err) {
+        console.log("Laporan gagal:", err);
+    }
 }
-);
-
-console.log(
-"Laporan terkirim"
-);
-
-}catch(err){
-
-console.log(
-"Laporan gagal:",
-err
-);
-
-}
-
-}
-
 
 // =====================================
-// SIDEBAR
+// SIDEBAR CONTROL
 // =====================================
-
 function openMenu(){
-
-sidebar.classList.add(
-"active"
-);
-
-overlay.classList.add(
-"active"
-);
-
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
 }
 
 function closeMenu(){
-
-sidebar.classList.remove(
-"active"
-);
-
-overlay.classList.remove(
-"active"
-);
-
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
 }
 
-menuBtn.addEventListener(
-"click",
-()=>{
+menuBtn.addEventListener("click", () => {
+    if(sidebar.classList.contains("active")){
+        closeMenu();
+    } else {
+        openMenu();
+    }
+});
 
-if(
-sidebar.classList.contains(
-"active"
-)
-){
-
-closeMenu();
-
-}else{
-
-openMenu();
-
-}
-
-}
-);
-
-overlay.addEventListener(
-"click",
-closeMenu
-);
-
+overlay.addEventListener("click", closeMenu);
 
 // =====================================
 // PAGE SWITCH
 // =====================================
+showMonitor.addEventListener("click", () => {
+    livePage.style.display = "block";
+    aboutPage.style.display = "none";
+    closeMenu();
+});
 
-showMonitor.addEventListener(
-"click",
-()=>{
-
-livePage.style.display =
-"block";
-
-aboutPage.style.display =
-"none";
-
-closeMenu();
-
-}
-);
-
-showAbout.addEventListener(
-"click",
-()=>{
-
-livePage.style.display =
-"none";
-
-aboutPage.style.display =
-"block";
-
-closeMenu();
-
-}
-);
-
+showAbout.addEventListener("click", () => {
+    livePage.style.display = "none";
+    aboutPage.style.display = "block";
+    closeMenu();
+});
 
 // =====================================
-// THEME
+// THEME INITIALIZATION
 // =====================================
-
-const savedTheme =
-localStorage.getItem(
-"theme"
-);
-
-if(
-savedTheme === "light"
-){
-
-document.body.classList.add(
-"light"
-);
-
-themeToggle.textContent =
-"☀️";
-
-}else{
-
-themeToggle.textContent =
-"🌙";
-
+const savedTheme = localStorage.getItem("theme");
+if(savedTheme === "light"){
+    document.body.classList.add("light");
+    themeToggle.textContent = "☀️";
+} else {
+    themeToggle.textContent = "🌙";
 }
-
 
 // =====================================
 // TOGGLE THEME
 // =====================================
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+    if(typeof updateChartTheme === "function"){
+        updateChartTheme();
+    }
 
-themeToggle.addEventListener(
-"click",
-()=>{
-
-document.body.classList.toggle(
-"light"
-);
-
-if(
-typeof updateChartTheme
-=== "function"
-){
-
-updateChartTheme();
-
-}
-
-if(
-document.body.classList.contains(
-"light"
-)
-){
-
-localStorage.setItem(
-"theme",
-"light"
-);
-
-themeToggle.textContent =
-"☀️";
-
-}else{
-
-localStorage.setItem(
-"theme",
-"dark"
-);
-
-themeToggle.textContent =
-"🌙";
-
-}
-
-});
-
-
-// =====================================
-// LOAD EVENT
-// =====================================
-
-window.addEventListener(
-"load",
-()=>{
-
-if(
-typeof updateChartTheme
-=== "function"
-){
-
-updateChartTheme();
-
-}
-
+    if(document.body.classList.contains("light")){
+        localStorage.setItem("theme", "light");
+        themeToggle.textContent = "☀️";
+    } else {
+        localStorage.setItem("theme", "dark");
+        themeToggle.textContent = "🌙";
+    }
 });
 
 // =====================================
-// CLOCK
+// CLOCK FUNCTION
 // =====================================
-
 function updateClock(){
+    const now = new Date();
+    const time = now.toLocaleTimeString("id-ID");
+    const date = now.toLocaleDateString("id-ID", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+    });
 
-const now =
-new Date();
-
-const time =
-now.toLocaleTimeString(
-"id-ID"
-);
-
-const date =
-now.toLocaleDateString(
-"id-ID",
-{
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
+    document.getElementById("clock").textContent = time;
+    document.getElementById("date").textContent = date;
 }
-);
-
-document.getElementById(
-"clock"
-).textContent =
-time;
-
-document.getElementById(
-"date"
-).textContent =
-date;
-
-}
-
 updateClock();
-
-setInterval(
-updateClock,
-1000
-);
-
+setInterval(updateClock, 1000);
 
 // =====================================
-// MQTT STATUS
+// MQTT ELEMENTS
 // =====================================
-
-const mqttStatus =
-document.getElementById(
-"mqttStatus"
-);
-
-const deviceStatus =
-document.getElementById(
-"deviceStatus"
-);
-
-const esp32LastSeen =
-document.getElementById(
-"esp32LastSeen"
-);
-
-const activityLog =
-document.getElementById(
-"activityLog"
-);
-
-const todayOnline =
-document.getElementById(
-"todayOnline"
-);
-
+const mqttStatus = document.getElementById("mqttStatus");
+const deviceStatus = document.getElementById("deviceStatus");
+const esp32LastSeen = document.getElementById("esp32LastSeen");
+const activityLog = document.getElementById("activityLog");
+const todayOnline = document.getElementById("todayOnline");
 
 // =====================================
 // ONLINE COUNTER
 // =====================================
-
 let onlineCounter = 0;
-
-let lastHeartbeat =
-Date.now();
-
+let lastHeartbeat = Date.now();
 
 // =====================================
-// LOG
+// LOG SYSTEM
 // =====================================
-
 function addLog(text){
+    const now = new Date();
+    const jam = now.toLocaleTimeString("id-ID");
+    const item = document.createElement("div");
+    item.innerHTML = `[${jam}] ${text}`;
+    activityLog.prepend(item);
 
-const now =
-new Date();
-
-const jam =
-now.toLocaleTimeString(
-"id-ID"
-);
-
-const item =
-document.createElement(
-"div"
-);
-
-item.innerHTML =
-`[${jam}] ${text}`;
-
-activityLog.prepend(
-item
-);
-
-while(
-activityLog.children.length > 50
-){
-
-activityLog.removeChild(
-activityLog.lastChild
-);
-
+    while(activityLog.children.length > 50){
+        activityLog.removeChild(activityLog.lastChild);
+    }
 }
 
-}
-
-
 // =====================================
-// MQTT CONNECT
+// MQTT EVENT LISTENERS
 // =====================================
+client.on("connect", () => {
+    mqttStatus.textContent = "🟢 MQTT Connected";
+    addLog("MQTT Connected");
+    client.subscribe(topicUID);
+    client.subscribe(topicStatus);
+    client.subscribe(topicRain);
+    client.subscribe(topicStat);
+    client.subscribe(topicPalang);
+    client.subscribe(topicJemuran);
+    client.subscribe(topicKendaraan);
+    client.subscribe(topicESP32);
+    addLog("Subscribe MQTT Selesai");
+});
 
-client.on(
-"connect",
-()=>{
+client.on("reconnect", () => {
+    mqttStatus.textContent = "🟡 Reconnecting...";
+    addLog("MQTT Reconnecting");
+});
 
-mqttStatus.textContent =
-"🟢 MQTT Connected";
+client.on("offline", () => {
+    mqttStatus.textContent = "🔴 MQTT Offline";
+    addLog("MQTT Offline");
+});
 
-addLog(
-"MQTT Connected"
-);
-
-client.subscribe(
-topicUID
-);
-
-client.subscribe(
-topicStatus
-);
-
-client.subscribe(
-topicRain
-);
-
-client.subscribe(
-topicStat
-);
-
-client.subscribe(
-topicPalang
-);
-
-client.subscribe(
-topicJemuran
-);
-
-client.subscribe(
-topicKendaraan
-);
-
-client.subscribe(
-topicESP32
-);
-
-addLog(
-"Subscribe MQTT Selesai"
-);
-
-}
-);
-
-
-// =====================================
-// MQTT RECONNECT
-// =====================================
-
-client.on(
-"reconnect",
-()=>{
-
-mqttStatus.textContent =
-"🟡 Reconnecting...";
-
-addLog(
-"MQTT Reconnecting"
-);
-
-}
-);
-
-
-// =====================================
-// MQTT OFFLINE
-// =====================================
-
-client.on(
-"offline",
-()=>{
-
-mqttStatus.textContent =
-"🔴 MQTT Offline";
-
-addLog(
-"MQTT Offline"
-);
-
-}
-);
-
-
-// =====================================
-// MQTT ERROR
-// =====================================
-
-client.on(
-"error",
-(err)=>{
-
-console.error(
-"MQTT Error:",
-err
-);
-
-mqttStatus.textContent =
-"🔴 MQTT Error";
-
-}
-);
-
+client.on("error", (err) => {
+    console.error("MQTT Error:", err);
+    mqttStatus.textContent = "🔴 MQTT Error";
+});
 
 // =====================================
 // HEARTBEAT ESP32
 // =====================================
-
 function updateESP32Status(){
-
-const now =
-Date.now();
-
-const diff =
-now - lastHeartbeat;
-
-if(
-diff < 30000
-){
-
-deviceStatus.textContent =
-"🟢 ESP32 Online";
-
-}else{
-
-deviceStatus.textContent =
-"🔴 ESP32 Offline";
-
+    const now = Date.now();
+    const diff = now - lastHeartbeat;
+    if(diff < 30000){
+        deviceStatus.textContent = "🟢 ESP32 Online";
+    } else {
+        deviceStatus.textContent = "🔴 ESP32 Offline";
+    }
 }
-
-}
-
-setInterval(
-updateESP32Status,
-5000
-);
-
+setInterval(updateESP32Status, 5000);
 
 // =====================================
-// ONLINE HARI INI
-// (LOKAL DEVICE)
+// ONLINE LOCAL STATUS
 // =====================================
+const storedDate = localStorage.getItem("onlineDate");
+const today = new Date().toDateString();
 
-const storedDate =
-localStorage.getItem(
-"onlineDate"
-);
-
-const today =
-new Date()
-.toDateString();
-
-if(
-storedDate !== today
-){
-
-localStorage.setItem(
-"onlineDate",
-today
-);
-
-localStorage.setItem(
-"onlineCounter",
-"0"
-);
-
-sessionStorage.removeItem(
-"alreadyCounted"
-);
-
+if(storedDate !== today){
+    localStorage.setItem("onlineDate", today);
+    localStorage.setItem("onlineCounter", "0");
+    sessionStorage.removeItem("alreadyCounted");
 }
 
-onlineCounter =
-parseInt(
-localStorage.getItem(
-"onlineCounter"
-) || "0"
-);
+onlineCounter = parseInt(localStorage.getItem("onlineCounter") || "0");
 
-if(
-!sessionStorage.getItem(
-"alreadyCounted"
-)
-){
-
-onlineCounter++;
-
-localStorage.setItem(
-"onlineCounter",
-onlineCounter
-);
-
-sessionStorage.setItem(
-"alreadyCounted",
-"true"
-);
-
+if(!sessionStorage.getItem("alreadyCounted")){
+    onlineCounter++;
+    localStorage.setItem("onlineCounter", onlineCounter);
+    sessionStorage.setItem("alreadyCounted", "true");
 }
-
-todayOnline.textContent =
-onlineCounter;
-
+todayOnline.textContent = onlineCounter;
 
 // =====================================
 // LOAD DATA GOOGLE SHEET
 // =====================================
-
-fetch(
-GAS_URL
-)
-.then(
-res=>res.json()
-)
-.then(
-data=>{
-
-console.log(
-"Google Sheet:",
-data
-);
-
-// jika nanti mau pakai
-// visitorToday global
-
-window.visitorToday =
-data.visitorToday || 0;
-
-}
-)
-.catch(
-err=>{
-
-console.log(
-"Sheet Error:",
-err
-);
-
-}
-);
-
+fetch(GAS_URL)
+.then(res => res.json())
+.then(data => {
+    console.log("Google Sheet:", data);
+    window.visitorToday = data.visitorToday || 0;
+})
+.catch(err => { console.log("Sheet Error:", err); });
 
 // =====================================
 // LAST SEEN
 // =====================================
-
 function updateLastSeen(){
-
-const now =
-new Date();
-
-esp32LastSeen.textContent =
-"🕒 Last Seen: " +
-now.toLocaleTimeString(
-"id-ID"
-);
-
+    const now = new Date();
+    esp32LastSeen.textContent = "🕒 Last Seen: " + now.toLocaleTimeString("id-ID");
 }
-
 
 // =====================================
-// LAPORAN HARIAN
+// AUTOMATIC REPORTING INTERVAL
 // =====================================
-
-let reportSentToday =
-false;
-
-setInterval(()=>{
-
-const now =
-new Date();
-
-if(
-now.getHours() === REPORT_HOUR &&
-now.getMinutes() === REPORT_MINUTE &&
-!reportSentToday
-){
-
-sendDailyReport();
-
-reportSentToday =
-true;
-
-}
-
-if(
-now.getHours() === 0 &&
-now.getMinutes() === 1
-){
-
-reportSentToday =
-false;
-
-}
-
-},60000);
-
+setInterval(() => {
+    const now = new Date();
+    if(now.getHours() === REPORT_HOUR && now.getMinutes() === REPORT_MINUTE && !reportSentToday){
+        sendDailyReport();
+        reportSentToday = true;
+    }
+    if(now.getHours() === 0 && now.getMinutes() === 1){
+        reportSentToday = false;
+    }
+}, 60000);
 
 // =====================================
-// RESET OTOMATIS
+// RESET AUTOMATIC COUNTER AT MIDNIGHT
 // =====================================
-
-setInterval(()=>{
-
-const now =
-new Date();
-
-if(
-now.getHours() === 0 &&
-now.getMinutes() === 0
-){
-
-onlineCounter = 0;
-
-localStorage.setItem(
-"onlineCounter",
-"0"
-);
-
-todayOnline.textContent =
-0;
-
-}
-
-},60000);
-
+setInterval(() => {
+    const now = new Date();
+    if(now.getHours() === 0 && now.getMinutes() === 0){
+        onlineCounter = 0;
+        localStorage.setItem("onlineCounter", "0");
+        todayOnline.textContent = 0;
+    }
+}, 60000);
 
 // =====================================
-// ELEMENT DATA
+// DATA ELEMENTS
 // =====================================
+const uidEl = document.getElementById("uid");
+const statusEl = document.getElementById("status");
+const rainEl = document.getElementById("rain");
+const rainStatusEl = document.getElementById("rainStatus");
+const allowEl = document.getElementById("allow");
+const rejectEl = document.getElementById("reject");
+const scanEl = document.getElementById("scan");
+const palangStatusEl = document.getElementById("palangStatus");
+const jemuranStatusEl = document.getElementById("jemuranStatus");
+const kendaraanStatusEl = document.getElementById("kendaraanStatus");
+const openBtn = document.getElementById("openBtn");
+const closeBtn = document.getElementById("closeBtn");
+const restartBtn = document.getElementById("restartBtn");
 
-const uidEl =
-document.getElementById(
-"uid"
-);
-
-const statusEl =
-document.getElementById(
-"status"
-);
-
-const rainEl =
-document.getElementById(
-"rain"
-);
-
-const rainStatusEl =
-document.getElementById(
-"rainStatus"
-);
-
-const allowEl =
-document.getElementById(
-"allow"
-);
-
-const rejectEl =
-document.getElementById(
-"reject"
-);
-
-const scanEl =
-document.getElementById(
-"scan"
-);
-
-const palangStatusEl =
-document.getElementById(
-"palangStatus"
-);
-
-const jemuranStatusEl =
-document.getElementById(
-"jemuranStatus"
-);
-
-const kendaraanStatusEl =
-document.getElementById(
-"kendaraanStatus"
-);
-
-const openBtn =
-document.getElementById(
-"openBtn"
-);
-
-const closeBtn =
-document.getElementById(
-"closeBtn"
-);
-
-const restartBtn =
-document.getElementById(
-"restartBtn"
-);
-
+let palangState = "UNKNOWN";
+let jemuranState = "UNKNOWN";
 
 // =====================================
-// STATUS CACHE
+// CHART INITIALIZATION
 // =====================================
-
-let palangState =
-"UNKNOWN";
-
-let jemuranState =
-"UNKNOWN";
-
-
-// =====================================
-// CHART HUJAN
-// =====================================
-
-const rainChart =
-new Chart(
-document.getElementById(
-"rainChart"
-),
-{
-type:"line",
-
-data:{
-labels:[],
-datasets:[
-{
-label:"Sensor Hujan",
-data:[],
-borderWidth:2,
-fill:true
-}
-]
-},
-
-options:{
-responsive:true,
-maintainAspectRatio:false,
-
-scales:{
-x:{
-ticks:{
-color:"#ffffff"
-}
-},
-y:{
-ticks:{
-color:"#ffffff"
-}
-}
-}
-}
-}
-);
-
+const rainChart = new Chart(document.getElementById("rainChart"), {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Sensor Hujan",
+            data: [],
+            borderWidth: 2,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { ticks: { color: "#ffffff" } },
+            y: { ticks: { color: "#ffffff" } }
+        }
+    }
+});
 
 // =====================================
 // UPDATE CHART THEME
 // =====================================
-
 function updateChartTheme(){
-
-const light =
-document.body.classList.contains(
-"light"
-);
-
-rainChart.data.datasets[0].borderColor =
-light
-? "#2563eb"
-: "#38bdf8";
-
-rainChart.data.datasets[0].backgroundColor =
-light
-? "rgba(37,99,235,.10)"
-: "rgba(56,189,248,.15)";
-
-rainChart.options.scales.x.ticks.color =
-light
-? "#0f172a"
-: "#ffffff";
-
-rainChart.options.scales.y.ticks.color =
-light
-? "#0f172a"
-: "#ffffff";
-
-rainChart.update();
-
+    const light = document.body.classList.contains("light");
+    rainChart.data.datasets[0].borderColor = light ? "#2563eb" : "#38bdf8";
+    rainChart.data.datasets[0].backgroundColor = light ? "rgba(37,99,235,.10)" : "rgba(56,189,248,.15)";
+    rainChart.options.scales.x.ticks.color = light ? "#0f172a" : "#ffffff";
+    rainChart.options.scales.y.ticks.color = light ? "#0f172a" : "#ffffff";
+    rainChart.update();
 }
 
-updateChartTheme();
+// =====================================
+// MQTT MESSAGE PROCESSING
+// =====================================
+client.on("message", (topic, message) => {
+    message = message.toString();
 
+    if(topic === topicESP32){
+        lastHeartbeat = Date.now();
+        updateLastSeen();
+        deviceStatus.textContent = "🟢 ESP32 Online";
+    }
+
+    if(topic === topicUID){
+        uidEl.textContent = message;
+        addLog("UID Scan : " + message);
+    }
+
+    if(topic === topicStatus){
+        statusEl.textContent = message;
+        addLog("Akses : " + message);
+    }
+
+    if(topic === topicRain){
+        rainEl.textContent = message;
+        const rainValue = parseInt(message);
+        let kondisi = "TIDAK HUJAN";
+        if(rainValue < 2499){ kondisi = "HUJAN"; }
+        rainStatusEl.textContent = kondisi;
+
+        const waktu = new Date().toLocaleTimeString("id-ID");
+        rainChart.data.labels.push(waktu);
+        rainChart.data.datasets[0].data.push(rainValue);
+
+        if(rainChart.data.labels.length > 15){
+            rainChart.data.labels.shift();
+            rainChart.data.datasets[0].data.shift();
+        }
+        rainChart.update();
+    }
+
+    if(topic === topicStat){
+        const data = message.split(",");
+        if(data.length >= 3){
+            allowEl.textContent = data[0];
+            rejectEl.textContent = data[1];
+            scanEl.textContent = data[2];
+        }
+    }
+
+    if(topic === topicPalang){
+        palangState = message;
+        if(message === "OPEN"){
+            palangStatusEl.textContent = "🟢 TERBUKA";
+            addLog("Palang dibuka");
+        }
+        if(message === "CLOSED"){
+            palangStatusEl.textContent = "🔴 TERTUTUP";
+            addLog("Palang ditutup");
+        }
+    }
+
+    if(topic === topicJemuran){
+        jemuranState = message;
+        if(message === "OPEN"){ jemuranStatusEl.textContent = "🟢 TERBUKA"; }
+        if(message === "CLOSED"){ jemuranStatusEl.textContent = "🔴 TERTUTUP"; }
+    }
+
+    if(topic === topicKendaraan){
+        if(message === "DETECTED"){
+            kendaraanStatusEl.textContent = "🚗 TERDETEKSI";
+        } else {
+            kendaraanStatusEl.textContent = "⭕ TIDAK ADA";
+        }
+    }
+});
 
 // =====================================
-// MQTT MESSAGE
+// BUTTON ACTION LISTENERS
 // =====================================
+openBtn.addEventListener("click", () => {
+    if(palangState === "OPEN"){
+        showToast("Palang sudah terbuka");
+        return;
+    }
+    client.publish(topicControl, "OPEN");
+    showToast("Membuka palang...");
+    addLog("Perintah buka palang dikirim");
+});
 
-client.on(
-"message",
-(topic,message)=>{
+closeBtn.addEventListener("click", () => {
+    if(palangState === "CLOSED"){
+        showToast("Palang sudah tertutup");
+        return;
+    }
+    client.publish(topicControl, "CLOSE");
+    showToast("Menutup palang...");
+    addLog("Perintah tutup palang dikirim");
+});
 
-message =
-message.toString();
-
-
-// =====================================
-// ESP32 HEARTBEAT
-// =====================================
-
-if(
-topic === topicESP32
-){
-
-lastHeartbeat =
-Date.now();
-
-updateLastSeen();
-
-deviceStatus.textContent =
-"🟢 ESP32 Online";
-
-}
-
-
-// =====================================
-// RFID UID
-// =====================================
-
-if(
-topic === topicUID
-){
-
-uidEl.textContent =
-message;
-
-addLog(
-"UID Scan : " +
-message
-);
-
-}
-
+restartBtn.addEventListener("click", () => {
+    if(confirm("Restart ESP32?")){
+        client.publish(topicControl, "RESTART");
+        showToast("Restart dikirim");
+        addLog("Perintah restart ESP32 dikirim");
+    }
+});
 
 // =====================================
-// RFID STATUS
+// EXECUTE INITIAL FUNCTION
 // =====================================
-
-if(
-topic === topicStatus
-){
-
-statusEl.textContent =
-message;
-
-addLog(
-"Akses : " +
-message
-);
-
-}
-
-
-// =====================================
-// SENSOR HUJAN
-// =====================================
-
-if(
-topic === topicRain
-){
-
-rainEl.textContent =
-message;
-
-const rainValue =
-parseInt(
-message
-);
-
-let kondisi =
-"TIDAK HUJAN";
-
-if(
-rainValue < 2499
-){
-
-kondisi =
-"HUJAN";
-
-}
-
-rainStatusEl.textContent =
-kondisi;
-
-
-// ====================
-// CHART UPDATE
-// ====================
-
-const waktu =
-new Date()
-.toLocaleTimeString(
-"id-ID"
-);
-
-rainChart.data.labels.push(
-waktu
-);
-
-rainChart.data.datasets[0]
-.data.push(
-rainValue
-);
-
-if(
-rainChart.data.labels.length > 15
-){
-
-rainChart.data.labels.shift();
-
-rainChart.data.datasets[0]
-.data.shift();
-
-}
-
-rainChart.update();
-
-}
-
-
-// =====================================
-// STATISTIK
-// =====================================
-
-if(
-topic === topicStat
-){
-
-const data =
-message.split(
-","
-);
-
-if(
-data.length >= 3
-){
-
-allowEl.textContent =
-data[0];
-
-rejectEl.textContent =
-data[1];
-
-scanEl.textContent =
-data[2];
-
-}
-
-}
-
-
-// =====================================
-// PALANG
-// =====================================
-
-if(
-topic === topicPalang
-){
-
-palangState =
-message;
-
-if(
-message === "OPEN"
-){
-
-palangStatusEl.textContent =
-"🟢 TERBUKA";
-
-addLog(
-"Palang dibuka"
-);
-
-}
-
-if(
-message === "CLOSED"
-){
-
-palangStatusEl.textContent =
-"🔴 TERTUTUP";
-
-addLog(
-"Palang ditutup"
-);
-
-}
-
-}
-
-
-// =====================================
-// JEMURAN
-// =====================================
-
-if(
-topic === topicJemuran
-){
-
-jemuranState =
-message;
-
-if(
-message === "OPEN"
-){
-
-jemuranStatusEl.textContent =
-"🟢 TERBUKA";
-
-}
-
-if(
-message === "CLOSED"
-){
-
-jemuranStatusEl.textContent =
-"🔴 TERTUTUP";
-
-}
-
-}
-
-
-// =====================================
-// KENDARAAN
-// =====================================
-
-if(
-topic === topicKendaraan
-){
-
-if(
-message === "DETECTED"
-){
-
-kendaraanStatusEl.textContent =
-"🚗 TERDETEKSI";
-
-}else{
-
-kendaraanStatusEl.textContent =
-"⭕ TIDAK ADA";
-
-}
-
-}
-
-}
-);
-
-
-// =====================================
-// OPEN BUTTON
-// =====================================
-
-openBtn.addEventListener(
-"click",
-()=>{
-
-if(
-palangState === "OPEN"
-){
-
-showToast(
-"Palang sudah terbuka"
-);
-
-return;
-
-}
-
-client.publish(
-topicControl,
-"OPEN"
-);
-
-showToast(
-"Membuka palang..."
-);
-
-addLog(
-"Perintah buka palang dikirim"
-);
-
-}
-);
-
-
-// =====================================
-// CLOSE BUTTON
-// =====================================
-
-closeBtn.addEventListener(
-"click",
-()=>{
-
-if(
-palangState === "CLOSED"
-){
-
-showToast(
-"Palang sudah tertutup"
-);
-
-return;
-
-}
-
-client.publish(
-topicControl,
-"CLOSE"
-);
-
-showToast(
-"Menutup palang..."
-);
-
-addLog(
-"Perintah tutup palang dikirim"
-);
-
-}
-);
-
-
-// =====================================
-// RESTART BUTTON
-// =====================================
-
-restartBtn.addEventListener(
-"click",
-()=>{
-
-if(
-confirm(
-"Restart ESP32?"
-)
-){
-
-client.publish(
-topicControl,
-"RESTART"
-);
-
-showToast(
-"Restart dikirim"
-);
-
-addLog(
-"Perintah restart ESP32 dikirim"
-);
-
-}
-
-}
-);
-
-
-// =====================================
-// INITIAL STATUS
-// =====================================
-
-updateESP32Status();
-
-if(
-typeof updateChartTheme
-=== "function"
-){
-
-updateChartTheme();
-
-}
-
-addLog(
-"Dashboard siap digunakan"
-);
+window.addEventListener("load", () => {
+    updateESP32Status();
+    updateChartTheme();
+    addLog("Dashboard siap digunakan");
+});
