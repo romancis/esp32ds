@@ -279,13 +279,26 @@ todayOnline.textContent = onlineCounter;
 // =====================================
 // LOAD DATA GOOGLE SHEET
 // =====================================
-fetch(GAS_URL)
-.then(res => res.json())
-.then(data => {
-    console.log("Google Sheet:", data);
-    window.visitorToday = data.visitorToday || 0;
-})
-.catch(err => { console.log("Sheet Error:", err); });
+// =====================================
+// LOAD DATA GOOGLE SHEET (REALTIME PER 30 DETIK)
+// =====================================
+function fetchLiveVisitors() {
+    fetch(GAS_URL)
+    .then(res => res.json())
+    .then(data => {
+        console.log("Google Sheet Data:", data);
+        // Menampilkan angka dari Google Sheet langsung ke kotak dashboard
+        const visitorCount = data.visitorToday || 0;
+        document.getElementById("todayOnline").textContent = visitorCount;
+    })
+    .catch(err => { console.log("Gagal memuat data Sheet:", err); });
+}
+
+// Jalankan pertama kali saat web dibuka
+fetchLiveVisitors();
+
+// Jalankan otomatis setiap 30 detik secara background (Realtime)
+setInterval(fetchLiveVisitors, 30000);
 
 // =====================================
 // LAST SEEN
