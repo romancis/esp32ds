@@ -144,7 +144,7 @@ if(resetWebsiteBtn) {
         // 1. Minta Password
         const pwd = prompt("🔒 Masukkan Password Admin:");
 
-        if (pwd === "romancis123") {
+        if (pwd === "Romancis_eskul") {
             // 2. Konfirmasi pertama (Reset Lokal)
             const confirmReset = confirm("Password Benar! Yakin ingin mereset sistem website?");
             
