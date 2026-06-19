@@ -42,7 +42,8 @@ if(!lastVisit || now - Number(lastVisit) > 600000){
     localStorage.setItem("lastVisit", now);
     fetch(GAS_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // UBAH bagian ini dari application/json menjadi text/plain
+        headers: { "Content-Type": "text/plain" }, 
         body: JSON.stringify({ type: "visitor", visitorId: visitorId })
     })
     .then(res => res.text())
@@ -79,7 +80,8 @@ async function sendDailyReport(){
     try {
         await fetch(GAS_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            // UBAH bagian ini juga menjadi text/plain
+            headers: { "Content-Type": "text/plain" },
             body: JSON.stringify({
                 tanggal: new Date().toLocaleDateString("id-ID"),
                 online: onlineCounter,
