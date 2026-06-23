@@ -67,9 +67,11 @@ const toast = document.getElementById("toast");
 // TOAST
 // =====================================
 function showToast(text){
-    toast.textContent = text;
-    toast.classList.add("show");
-    setTimeout(() => { toast.classList.remove("show"); }, 3000);
+    if (toast) {
+        toast.textContent = text;
+        toast.classList.add("show");
+        setTimeout(() => { toast.classList.remove("show"); }, 3000);
+    }
 }
 
 // =====================================
@@ -82,10 +84,10 @@ async function sendDailyReport(){
             headers: { "Content-Type": "text/plain" },
             body: JSON.stringify({
                 tanggal: new Date().toLocaleDateString("id-ID"),
-                online: document.getElementById("todayOnline").textContent, // [PERBAIKAN] Ambil data langsung dari UI yang sudah sinkron dengan Sheet
-                scan: document.getElementById("scan").textContent,
-                allow: document.getElementById("allow").textContent,
-                reject: document.getElementById("reject").textContent
+                online: document.getElementById("todayOnline")?.textContent || "0", 
+                scan: document.getElementById("scan")?.textContent || "0",
+                allow: document.getElementById("allow")?.textContent || "0",
+                reject: document.getElementById("reject")?.textContent || "0"
             })
         });
         console.log("Laporan terkirim");
@@ -107,30 +109,36 @@ function closeMenu(){
     overlay.classList.remove("active");
 }
 
-menuBtn.addEventListener("click", () => {
-    if(sidebar.classList.contains("active")){
-        closeMenu();
-    } else {
-        openMenu();
-    }
-});
+if (menuBtn) {
+    menuBtn.addEventListener("click", () => {
+        if(sidebar.classList.contains("active")){
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+}
 
-overlay.addEventListener("click", closeMenu);
+if (overlay) overlay.addEventListener("click", closeMenu);
 
 // =====================================
 // PAGE SWITCH
 // =====================================
-showMonitor.addEventListener("click", () => {
-    livePage.style.display = "block";
-    aboutPage.style.display = "none";
-    closeMenu();
-});
+if (showMonitor) {
+    showMonitor.addEventListener("click", () => {
+        livePage.style.display = "block";
+        aboutPage.style.display = "none";
+        closeMenu();
+    });
+}
 
-showAbout.addEventListener("click", () => {
-    livePage.style.display = "none";
-    aboutPage.style.display = "block";
-    closeMenu();
-});
+if (showAbout) {
+    showAbout.addEventListener("click", () => {
+        livePage.style.display = "none";
+        aboutPage.style.display = "block";
+        closeMenu();
+    });
+}
 
 // =====================================
 // ADMIN RESET SYSTEM (DENGAN MENYIMPAN THEMA)
@@ -146,19 +154,14 @@ if(resetWebsiteBtn) {
             const confirmReset = confirm("Yakin ingin mereset sistem? (Data pengunjung hari ini di server & browser akan dihapus, TEMA akan tetap tersimpan)");
             
             if (confirmReset) {
-                // 1. Ambil data TEMA yang ingin dipertahankan
                 const currentTheme = localStorage.getItem("theme");
-
-                // 2. Hapus SEMUA data di browser
                 localStorage.clear();
                 sessionStorage.clear();
 
-                // 3. Kembalikan data TEMA ke localStorage yang baru saja kosong
                 if (currentTheme) {
                     localStorage.setItem("theme", currentTheme);
                 }
 
-                // 4. Jika butuh reset server Google Sheet
                 fetch(GAS_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain" },
@@ -180,28 +183,30 @@ if(resetWebsiteBtn) {
 const savedTheme = localStorage.getItem("theme");
 if(savedTheme === "light"){
     document.body.classList.add("light");
-    themeToggle.textContent = "☀️";
+    if (themeToggle) themeToggle.textContent = "☀️";
 } else {
-    themeToggle.textContent = "🌙";
+    if (themeToggle) themeToggle.textContent = "🌙";
 }
 
 // =====================================
 // TOGGLE THEME
 // =====================================
-themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light");
-    if(typeof updateChartTheme === "function"){
-        updateChartTheme();
-    }
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("light");
+        if(typeof updateChartTheme === "function"){
+            updateChartTheme();
+        }
 
-    if(document.body.classList.contains("light")){
-        localStorage.setItem("theme", "light");
-        themeToggle.textContent = "☀️";
-    } else {
-        localStorage.setItem("theme", "dark");
-        themeToggle.textContent = "🌙";
-    }
-});
+        if(document.body.classList.contains("light")){
+            localStorage.setItem("theme", "light");
+            themeToggle.textContent = "☀️";
+        } else {
+            localStorage.setItem("theme", "dark");
+            themeToggle.textContent = "🌙";
+        }
+    });
+}
 
 // =====================================
 // CLOCK FUNCTION
@@ -213,8 +218,10 @@ function updateClock(){
         weekday: "long", year: "numeric", month: "long", day: "numeric"
     });
 
-    document.getElementById("clock").textContent = time;
-    document.getElementById("date").textContent = date;
+    const clockEl = document.getElementById("clock");
+    const dateEl = document.getElementById("date");
+    if (clockEl) clockEl.textContent = time;
+    if (dateEl) dateEl.textContent = date;
 }
 updateClock();
 setInterval(updateClock, 1000);
@@ -237,6 +244,7 @@ let lastHeartbeat = Date.now();
 // LOG SYSTEM
 // =====================================
 function addLog(text){
+    if (!activityLog) return;
     const now = new Date();
     const jam = now.toLocaleTimeString("id-ID");
     const item = document.createElement("div");
@@ -252,7 +260,7 @@ function addLog(text){
 // MQTT EVENT LISTENERS
 // =====================================
 client.on("connect", () => {
-    mqttStatus.textContent = "🟢 MQTT Connected";
+    if (mqttStatus) mqttStatus.textContent = "🟢 MQTT Connected";
     addLog("MQTT Connected");
     client.subscribe(topicUID);
     client.subscribe(topicStatus);
@@ -266,24 +274,25 @@ client.on("connect", () => {
 });
 
 client.on("reconnect", () => {
-    mqttStatus.textContent = "🟡 Reconnecting...";
+    if (mqttStatus) mqttStatus.textContent = "🟡 Reconnecting...";
     addLog("MQTT Reconnecting");
 });
 
 client.on("offline", () => {
-    mqttStatus.textContent = "🔴 MQTT Offline";
+    if (mqttStatus) mqttStatus.textContent = "🔴 MQTT Offline";
     addLog("MQTT Offline");
 });
 
 client.on("error", (err) => {
     console.error("MQTT Error:", err);
-    mqttStatus.textContent = "🔴 MQTT Error";
+    if (mqttStatus) mqttStatus.textContent = "🔴 MQTT Error";
 });
 
 // =====================================
 // HEARTBEAT ESP32
 // =====================================
 function updateESP32Status(){
+    if (!deviceStatus) return;
     const now = Date.now();
     const diff = now - lastHeartbeat;
     if(diff < 30000){
@@ -303,15 +312,13 @@ function fetchLiveVisitors() {
     .then(data => {
         console.log("Google Sheet Data:", data);
         const visitorCount = data.visitorToday || 0;
-        document.getElementById("todayOnline").textContent = visitorCount;
+        const todayOnlineEl = document.getElementById("todayOnline");
+        if (todayOnlineEl) todayOnlineEl.textContent = visitorCount;
     })
     .catch(err => { console.log("Gagal memuat data Sheet:", err); });
 }
 
-// Jalankan pertama kali saat web dibuka
 fetchLiveVisitors();
-
-// Jalankan otomatis setiap 30 detik secara background (Realtime)
 setInterval(fetchLiveVisitors, 30000);
 
 // =====================================
@@ -319,7 +326,7 @@ setInterval(fetchLiveVisitors, 30000);
 // =====================================
 function updateLastSeen(){
     const now = new Date();
-    espLastSeenEl = document.getElementById("esp32LastSeen");
+    const espLastSeenEl = document.getElementById("esp32LastSeen");
     if(espLastSeenEl) {
         espLastSeenEl.textContent = "🕒 Last Seen: " + now.toLocaleTimeString("id-ID");
     }
@@ -362,31 +369,36 @@ let jemuranState = "UNKNOWN";
 // =====================================
 // CHART INITIALIZATION
 // =====================================
-const rainChart = new Chart(document.getElementById("rainChart"), {
-    type: "line",
-    data: {
-        labels: [],
-        datasets: [{
-            label: "Sensor Hujan",
-            data: [],
-            borderWidth: 2,
-            fill: true
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: { ticks: { color: "#ffffff" } },
-            y: { ticks: { color: "#ffffff" } }
+const rainChartEl = document.getElementById("rainChart");
+let rainChart = null;
+if (rainChartEl) {
+    rainChart = new Chart(rainChartEl, {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: [{
+                label: "Sensor Hujan",
+                data: [],
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { ticks: { color: "#ffffff" } },
+                y: { ticks: { color: "#ffffff" } }
+            }
         }
-    }
-});
+    });
+}
 
 // =====================================
 // UPDATE CHART THEME
 // =====================================
 function updateChartTheme(){
+    if (!rainChart) return;
     const light = document.body.classList.contains("light");
     rainChart.data.datasets[0].borderColor = light ? "#2563eb" : "#38bdf8";
     rainChart.data.datasets[0].backgroundColor = light ? "rgba(37,99,235,.10)" : "rgba(56,189,248,.15)";
@@ -404,53 +416,55 @@ client.on("message", (topic, message) => {
     if(topic === topicESP32){
         lastHeartbeat = Date.now();
         updateLastSeen();
-        deviceStatus.textContent = "🟢 ESP32 Online";
+        if (deviceStatus) deviceStatus.textContent = "🟢 ESP32 Online";
     }
 
-    if(topic === topicUID){
+    if(topic === topicUID && uidEl){
         uidEl.textContent = message;
         addLog("UID Scan : " + message);
     }
 
-    if(topic === topicStatus){
+    if(topic === topicStatus && statusEl){
         statusEl.textContent = message;
         addLog("Akses : " + message);
     }
 
     if(topic === topicRain){
-        rainEl.textContent = message;
+        if (rainEl) rainEl.textContent = message;
         const rainValue = parseInt(message);
         let kondisi = "TIDAK HUJAN";
         if(rainValue < 2499){ kondisi = "HUJAN"; }
-        rainStatusEl.textContent = kondisi;
+        if (rainStatusEl) rainStatusEl.textContent = kondisi;
 
-        const waktu = new Date().toLocaleTimeString("id-ID");
-        rainChart.data.labels.push(waktu);
-        rainChart.data.datasets[0].data.push(rainValue);
+        if (rainChart) {
+            const waktu = new Date().toLocaleTimeString("id-ID");
+            rainChart.data.labels.push(waktu);
+            rainChart.data.datasets[0].data.push(rainValue);
 
-        if(rainChart.data.labels.length > 15){
-            rainChart.data.labels.shift();
-            rainChart.data.datasets[0].data.shift();
+            if(rainChart.data.labels.length > 15){
+                rainChart.data.labels.shift();
+                rainChart.data.datasets[0].data.shift();
+            }
+            rainChart.update();
         }
-        rainChart.update();
     }
 
     if(topic === topicStat){
         const data = message.split(",");
         if(data.length >= 3){
-            allowEl.textContent = data[0];
-            rejectEl.textContent = data[1];
-            scanEl.textContent = data[2];
+            if (allowEl) allowEl.textContent = data[0];
+            if (rejectEl) rejectEl.textContent = data[1];
+            if (scanEl) scanEl.textContent = data[2];
         }
     }
 
     if(topic === topicPalang){
         palangState = message;
-        if(message === "OPEN"){
+        if(message === "OPEN" && palangStatusEl){
             palangStatusEl.textContent = "🟢 TERBUKA";
             addLog("Palang dibuka");
         }
-        if(message === "CLOSED"){
+        if(message === "CLOSED" && palangStatusEl){
             palangStatusEl.textContent = "🔴 TERTUTUP";
             addLog("Palang ditutup");
         }
@@ -458,12 +472,12 @@ client.on("message", (topic, message) => {
 
     if(topic === topicJemuran){
         jemuranState = message;
-        if(message === "OPEN"){ jemuranStatusEl.textContent = "🟢 TERBUKA"; }
-        if(message === "CLOSED"){ jemuranStatusEl.textContent = "🔴 TERTUTUP"; }
+        if(message === "OPEN" && jemuranStatusEl){ jemuranStatusEl.textContent = "🟢 TERBUKA"; }
+        if(message === "CLOSED" && jemuranStatusEl){ jemuranStatusEl.textContent = "🔴 TERTUTUP"; }
     }
 
-    if(topic === topicKendaraan){
-        if(message === "DETECTED"){
+    if(topic === topicKendaraan && kendaraanStatusEl){
+        if(message === "DETECTED" || message === "ADA"){
             kendaraanStatusEl.textContent = "🚗 TERDETEKSI";
         } else {
             kendaraanStatusEl.textContent = "⭕ TIDAK ADA";
@@ -474,33 +488,39 @@ client.on("message", (topic, message) => {
 // =====================================
 // BUTTON ACTION LISTENERS
 // =====================================
-openBtn.addEventListener("click", () => {
-    if(palangState === "OPEN"){
-        showToast("Palang sudah terbuka");
-        return;
-    }
-    client.publish(topicControl, "OPEN");
-    showToast("Membuka palang...");
-    addLog("Perintah buka palang dikirim");
-});
+if (openBtn) {
+    openBtn.addEventListener("click", () => {
+        if(palangState === "OPEN"){
+            showToast("Palang sudah terbuka");
+            return;
+        }
+        client.publish(topicControl, "OPEN", { qos: 1 });
+        showToast("Membuka palang...");
+        addLog("Perintah buka palang dikirim");
+    });
+}
 
-closeBtn.addEventListener("click", () => {
-    if(palangState === "CLOSED"){
-        showToast("Palang sudah tertutup");
-        return;
-    }
-    client.publish(topicControl, "CLOSE");
-    showToast("Menutup palang...");
-    addLog("Perintah tutup palang dikirim");
-});
+if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+        if(palangState === "CLOSED"){
+            showToast("Palang sudah tertutup");
+            return;
+        }
+        client.publish(topicControl, "CLOSE", { qos: 1 });
+        showToast("Menutup palang...");
+        addLog("Perintah tutup palang dikirim");
+    });
+}
 
-restartBtn.addEventListener("click", () => {
-    if(confirm("Restart ESP32?")){
-        client.publish(topicControl, "RESTART");
-        showToast("Restart dikirim");
-        addLog("Perintah restart ESP32 dikirim");
-    }
-});
+if (restartBtn) {
+    restartBtn.addEventListener("click", () => {
+        if(confirm("Restart ESP32?")){
+            client.publish(topicControl, "RESTART", { qos: 1 });
+            showToast("Restart dikirim");
+            addLog("Perintah restart ESP32 dikirim");
+        }
+    });
+}
 
 // =====================================
 // EXECUTE INITIAL FUNCTION
