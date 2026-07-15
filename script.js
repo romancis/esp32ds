@@ -362,6 +362,8 @@ const kendaraanStatusEl = document.getElementById("kendaraanStatus");
 const openBtn = document.getElementById("openBtn");
 const closeBtn = document.getElementById("closeBtn");
 const restartBtn = document.getElementById("restartBtn");
+const buzzerOnBtn = document.getElementById("buzzerOnBtn");
+const buzzerOffBtn = document.getElementById("buzzerOffBtn");
 
 let palangState = "UNKNOWN";
 let jemuranState = "UNKNOWN";
@@ -519,6 +521,22 @@ if (restartBtn) {
             showToast("Restart dikirim");
             addLog("Perintah restart ESP32 dikirim");
         }
+    });
+}
+
+if (buzzerOnBtn) {
+    buzzerOnBtn.addEventListener("click", () => {
+        client.publish(topicControl, "BUZZER_ON", { qos: 1 });
+        showToast("Buzzer dinyalakan");
+        addLog("Perintah buzzer ON dikirim");
+    });
+}
+
+if (buzzerOffBtn) {
+    buzzerOffBtn.addEventListener("click", () => {
+        client.publish(topicControl, "BUZZER_OFF", { qos: 1 });
+        showToast("Buzzer dimatikan");
+        addLog("Perintah buzzer OFF dikirim");
     });
 }
 
